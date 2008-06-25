@@ -1,11 +1,9 @@
 #!/bin/sh
 
-set -e
+set -e -u
 
 run_test()
 (
-        echo "Running test $1:"
-        echo
 	cd "$1"
 	"$ESEQ" < input > output
 	diff -u expected output
@@ -13,25 +11,42 @@ run_test()
 
 ########################################
 
-if [ -z "$ESEQ" ]
-then
-	# ESEQ=../build/eseq
-	ESEQ=cat
-fi
-
-if [ -z "$ESEQ_TESTS" ]
-then
-	ESEQ_TESTS=basic-text
-fi
+: ${ESEQ=cat}
+: ${ESEQ_TESTS=basic-text}
 
 nt=0
+np=0
+nf=0
 for t in $ESEQ_TESTS
 do
-	run_test $t
-	nt=$((nt+1))
+	echo $t
+	if run_test $t
+        then
+		np=$((np+1))
+	else
+		nf=$((np+1))
+		echo
+		echo FAILED: $t
+		echo
+	fi
 done
 
-echo SUCCESS
-echo $nt tests passed.
+set +e
+echo
+echo "Ran $nt total tests"
+if [ $nf -eq 0 ]
+then
+	tput setaf 2 2>/dev/null
+	tput bold 2>/dev/null
+	echo PASSED
+	tput sgr0 2>/dev/null
+else
+	tput setaf 1 2>/dev/null
+	tput bold 2>/dev/null
+	echo FAILED
+	tput sgr0 2>/dev/null
+fi
+echo "Passed: $np"
+echo "Failed: $nf"
 
-# vim sw=8 sts=8 ts=8 noet
+# vim:sw=8 sts=8 ts=8 noet
