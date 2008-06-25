@@ -1,0 +1,6 @@
+A wrapped line follows:
+123456789012345678901234567890123456789012345678901234567890123456789012345678
+Pipe: |
+Trailing spaces:   
+CRLF pair
+CR onlyMissing newline

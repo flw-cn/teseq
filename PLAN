@@ -62,6 +62,7 @@ Categories of supported controls:
         Unrecognized extensions
 
 MILESTONES:
+    0. Token generator
     1. Support for stripping controls.
     2. Support for printable expansions of controls, in Ecma format.
     3. Add highlight support (using defaults, no explicit specification).
