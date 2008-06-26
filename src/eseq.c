@@ -28,6 +28,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 
 #define DEFAULT_LINE_MAX	78
 
@@ -63,12 +64,14 @@ process (struct processor *p, unsigned char c)
 		switch (p->st) {
 		case ST_INIT:
 			if (c == '\r') {
+				putchar ('.');
+				p->nc = 1;
 				p->st = ST_CTRL;
 				continue;
 			}
 			putchar ('|');
-			p->st = ST_TEXT;
 			p->nc = 1;
+			p->st = ST_TEXT;
 			/* falls through */
 		case ST_TEXT:
 			if (c == '\n') {
@@ -82,8 +85,9 @@ process (struct processor *p, unsigned char c)
 				p->nc = 3;	/* "-|" and c */
 			}
 			else if (c == '\r') {
-				fputs ("|\n.", stdout);
-				p->st = ST_CTRL;
+				putchar ('|');
+				putchar ('\n');
+				p->st = ST_INIT;
 				continue;
 			}
 			else {
@@ -93,7 +97,15 @@ process (struct processor *p, unsigned char c)
 			break;
 		case ST_CTRL:
 			if (is_ascii_cntrl (c)) {
-				fprintf (stdout, " %s", control_names[c]);
+				const char *name = control_names[c];
+				if (p->nc + 1 + strlen (name)
+				    > DEFAULT_LINE_MAX) {
+					putchar ('\n');
+					p->st = ST_INIT;
+					continue;
+				}
+				fprintf (stdout, " %s", name);
+				p->nc += 1 + strlen (name);
 			}
 			else {
 				putchar ('\n');
