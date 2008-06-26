@@ -11,7 +11,7 @@ run_test()
 
 ########################################
 
-: ${ESEQ=cat}
+: ${ESEQ=../../build/eseq}
 : ${ESEQ_TESTS=empty basic-text}
 
 nt=0
