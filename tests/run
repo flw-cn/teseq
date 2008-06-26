@@ -18,7 +18,7 @@ run_test()
 ########################################
 
 : ${ESEQ=../../eseq}
-: ${ESEQ_TESTS=empty cmdline-in-out basic-text wrap}
+: ${ESEQ_TESTS=empty cmdline-in-out cmdline-- basic-text wrap}
 
 nt=0
 np=0
