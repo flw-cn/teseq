@@ -1,1 +1,1 @@
-"$ESEQ" input -o output
+"$ESEQ" -o output input

@@ -27,7 +27,9 @@
    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define DEFAULT_LINE_MAX	78
@@ -39,6 +41,8 @@ enum state {
 };
 
 struct processor {
+	FILE *inf;
+	FILE *outf;
 	enum state st;
 	size_t	   nc;	/* Number of characters in current output line. */
 };
@@ -60,12 +64,12 @@ void
 init_state (struct processor *p, unsigned char c)
 {
 	if (c != '\n' && is_ascii_cntrl (c)) {
-		putchar ('.');
+		putc ('.', p->outf);
 		p->nc = 1;
 		p->st = ST_CTRL;
 	}
 	else {
-		putchar ('|');
+		putc ('|', p->outf);
 		p->nc = 1;
 		p->st = ST_TEXT;
 	}
@@ -82,24 +86,23 @@ process (struct processor *p, unsigned char c)
 			continue;
 		case ST_TEXT:
 			if (c == '\n') {
-				puts ("|.");
+				fputs ("|.\n", p->outf);
 				p->st = ST_INIT;
 				/* Handled, don't continue. */
 			}
 			else if (p->nc == DEFAULT_LINE_MAX
 			                  - 2) /* space for "|-" */ {
-				fputs ("|-\n-|", stdout);
-				putchar (c);
+				fputs ("|-\n-|", p->outf);
+				putc (c, p->outf);
 				p->nc = 3;	/* "-|" and c */
 			}
 			else if (is_ascii_cntrl (c)) {
-				putchar ('|');
-				putchar ('\n');
+				fputs ("|\n", p->outf);
 				p->st = ST_INIT;
 				continue;
 			}
 			else {
-				putchar (c);
+				putc (c, p->outf);
 				++(p->nc);
 			}
 			break;
@@ -108,15 +111,15 @@ process (struct processor *p, unsigned char c)
 				const char *name = control_names[c];
 				if (p->nc + 1 + strlen (name)
 				    > DEFAULT_LINE_MAX) {
-					putchar ('\n');
+					putc ('\n', p->outf);
 					p->st = ST_INIT;
 					continue;
 				}
-				fprintf (stdout, " %s", name);
+				fprintf (p->outf, " %s", name);
 				p->nc += 1 + strlen (name);
 			}
 			else {
-				putchar ('\n');
+				putc ('\n', p->outf);
 				p->st = ST_INIT;
 				continue;
 			}
@@ -130,21 +133,80 @@ void
 finish (struct processor *p)
 {
 	if (p->st == ST_TEXT)
-		putchar ('|');
+		putc ('|', p->outf);
 	if (p->st != ST_INIT)
-		putchar ('\n');
+		putc ('\n', p->outf);
+}
+
+void
+usage (int status)
+{
+	FILE *f = status == EXIT_SUCCESS? stdout : stderr;
+	fputs ("\
+eseq -h\n\
+eseq [-o out] [in]\n",
+		f);
+	exit (status);
+}
+
+FILE *
+must_fopen (const char *fname, const char *mode)
+{
+	FILE *f;
+	if (fname[0] == '-' && fname[1] == '\0') {
+		if (strchr (mode, 'w'))
+			return stdout;
+		else
+			return stdin;
+	}
+	f = fopen (fname, mode);
+	if (f) return f;
+	fprintf (stderr, "Couldn't open file %s: ", fname);
+	perror (NULL);
+	exit (EXIT_FAILURE);
+}
+
+void
+configure_processor (struct processor *p, int argc, char **argv)
+{
+	int opt;
+	while ((opt = getopt (argc, argv, ":ho:")) != -1) {
+		switch (opt) {
+			case 'h':
+				usage (EXIT_SUCCESS);
+				break;
+			case 'o':
+				p->outf = must_fopen (optarg, "w");
+				break;
+			case ':':
+				fprintf (stderr,
+				         "Option -%c requires an argument.\n\n",
+				         optopt);
+				usage (EXIT_FAILURE);
+				break;
+			default:
+				fputs ("Unrecognized option -%c.\n\n",
+				       stderr);
+				usage (EXIT_FAILURE);
+				break;
+		}
+	}
+	if (argv[optind] != NULL) {
+		p->inf = must_fopen (argv[optind], "r");
+	}
 }
 
 int
-main (void)
+main (int argc, char **argv)
 {
 	int c;
-	struct processor p = { ST_INIT, 0 };
+	struct processor p = { stdin, stdout, ST_INIT, 0 };
 
-	while ((c = getchar ()) != EOF)
+	configure_processor (&p, argc, argv);
+	while ((c = getc (p.inf)) != EOF)
 		process (&p, c);
 	finish (&p);
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 /* vim:set sts=8 sw=8 ts=8 noet: */
