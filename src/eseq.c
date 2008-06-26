@@ -29,28 +29,64 @@
 
 #include <stdio.h>
 
+#define DEFAULT_LINE_MAX	78
+
 int
 main (void) {
 	int c;
 	enum state {
 		ST_INIT,
-		ST_TEXT
+		ST_TEXT,
+		ST_CTRL
 	} st = ST_INIT;
+	int nc;
 
 	while ((c = getchar ()) != EOF) {
+		restart:
 		switch (st) {
 		case ST_INIT:
 			putchar ('|');
 			st = ST_TEXT;
+			nc = 1;
 			/* falls through */
 		case ST_TEXT:
 			if (c == '\n') {
-			 	puts("|.");
+			 	puts ("|.");
 				st = ST_INIT;
 			}
-			else
+			else if (nc == DEFAULT_LINE_MAX - 2) {
+				fputs ("|-\n-|", stdout);
 				putchar (c);
+				nc = 3;
+			}
+			else if (c == '\r') {
+				fputs ("|\n.", stdout);
+				st = ST_CTRL;
+				goto restart;
+			}
+			else {
+				putchar (c);
+				++nc;
+			}
+			break;
+		case ST_CTRL:
+			if (c == '\r') {
+				fputs (" CR", stdout);
+			}
+			else if (c == '\n') {
+				fputs (" LF", stdout);
+			}
+			else {
+				putchar ('\n');
+				st = ST_INIT;
+				goto restart;
+			}
+			break;
 		}
 	}
+	if (st == ST_TEXT)
+		putchar ('|');
+	if (st != ST_INIT)
+		putchar ('\n');
 	return 0;
 }
