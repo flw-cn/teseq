@@ -45,6 +45,10 @@ main (void) {
 		restart:
 		switch (st) {
 		case ST_INIT:
+			if (c == '\r') {
+				st = ST_CTRL;
+				goto restart;
+			}
 			putchar ('|');
 			st = ST_TEXT;
 			nc = 1;
