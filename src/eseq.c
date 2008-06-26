@@ -57,22 +57,29 @@ const char *control_names[] = {
 #define	is_ascii_cntrl(x)	((x) < 0x20)
 
 void
+init_state (struct processor *p, unsigned char c)
+{
+	if (c != '\n' && is_ascii_cntrl (c)) {
+		putchar ('.');
+		p->nc = 1;
+		p->st = ST_CTRL;
+	}
+	else {
+		putchar ('|');
+		p->nc = 1;
+		p->st = ST_TEXT;
+	}
+}
+
+void
 process (struct processor *p, unsigned char c)
 {
 	int handled = 0;
 	while (!handled) {
 		switch (p->st) {
 		case ST_INIT:
-			if (c == '\r') {
-				putchar ('.');
-				p->nc = 1;
-				p->st = ST_CTRL;
-				continue;
-			}
-			putchar ('|');
-			p->nc = 1;
-			p->st = ST_TEXT;
-			/* falls through */
+			init_state (p, c);
+			continue;
 		case ST_TEXT:
 			if (c == '\n') {
 				puts ("|.");
