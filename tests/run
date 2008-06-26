@@ -12,7 +12,7 @@ run_test()
 ########################################
 
 : ${ESEQ=cat}
-: ${ESEQ_TESTS=basic-text}
+: ${ESEQ_TESTS=empty basic-text}
 
 nt=0
 np=0
