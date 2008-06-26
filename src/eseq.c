@@ -84,6 +84,7 @@ process (struct processor *p, unsigned char c)
 			if (c == '\n') {
 				puts ("|.");
 				p->st = ST_INIT;
+				/* Handled, don't continue. */
 			}
 			else if (p->nc == DEFAULT_LINE_MAX
 			                  - 2) /* space for "|-" */ {
@@ -91,7 +92,7 @@ process (struct processor *p, unsigned char c)
 				putchar (c);
 				p->nc = 3;	/* "-|" and c */
 			}
-			else if (c == '\r') {
+			else if (is_ascii_cntrl (c)) {
 				putchar ('|');
 				putchar ('\n');
 				p->st = ST_INIT;
