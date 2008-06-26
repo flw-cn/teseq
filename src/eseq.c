@@ -42,6 +42,19 @@ struct processor {
 	size_t	   nc;	/* Number of characters in current output line. */
 };
 
+const char *control_names[] = {
+	"NUL", "SOH", "STX", "ETX",
+	"EOT", "ENQ", "ACK", "BEL",
+	"BS", "HT", "LF", "VT",
+	"FF", "CR", "SO", "SI",
+	"DLE", "DC1", "DC2", "DC3",
+	"DC4", "NAK", "SYN", "ETB",
+	"CAN", "EM", "SUB", "ESC",
+	"IS4", "IS3", "IS2", "IS1"
+};
+
+#define	is_ascii_cntrl(x)	((x) < 0x20)
+
 void
 process (struct processor *p, unsigned char c)
 {
@@ -63,7 +76,7 @@ process (struct processor *p, unsigned char c)
 				p->st = ST_INIT;
 			}
 			else if (p->nc == DEFAULT_LINE_MAX
-				       - 2) /* space for "|-" */ {
+			                  - 2) /* space for "|-" */ {
 				fputs ("|-\n-|", stdout);
 				putchar (c);
 				p->nc = 3;	/* "-|" and c */
@@ -79,11 +92,8 @@ process (struct processor *p, unsigned char c)
 			}
 			break;
 		case ST_CTRL:
-			if (c == '\r') {
-				fputs (" CR", stdout);
-			}
-			else if (c == '\n') {
-				fputs (" LF", stdout);
+			if (is_ascii_cntrl (c)) {
+				fprintf (stdout, " %s", control_names[c]);
 			}
 			else {
 				putchar ('\n');
