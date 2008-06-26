@@ -3,4 +3,6 @@ A wrapped line follows:
 Pipe: |
 Trailing spaces:   
 CRLF pair
-CR onlyMissing newline
+CR onlyBlank line follows:
+
+Missing newline

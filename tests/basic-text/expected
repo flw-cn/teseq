@@ -7,4 +7,6 @@
 . CR LF
 |CR only|
 . CR
+|Blank line follows:|.
+||.
 |Missing newline|
