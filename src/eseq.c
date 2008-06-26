@@ -45,50 +45,54 @@ struct processor {
 void
 process (struct processor *p, unsigned char c)
 {
-	switch (p->st) {
-	case ST_INIT:
-		if (c == '\r') {
-			p->st = ST_CTRL;
-			process (p, c);
+	int handled = 0;
+	while (!handled) {
+		switch (p->st) {
+		case ST_INIT:
+			if (c == '\r') {
+				p->st = ST_CTRL;
+				continue;
+			}
+			putchar ('|');
+			p->st = ST_TEXT;
+			p->nc = 1;
+			/* falls through */
+		case ST_TEXT:
+			if (c == '\n') {
+				puts ("|.");
+				p->st = ST_INIT;
+			}
+			else if (p->nc == DEFAULT_LINE_MAX
+				       - 2) /* space for "|-" */ {
+				fputs ("|-\n-|", stdout);
+				putchar (c);
+				p->nc = 3;	/* "-|" and c */
+			}
+			else if (c == '\r') {
+				fputs ("|\n.", stdout);
+				p->st = ST_CTRL;
+				continue;
+			}
+			else {
+				putchar (c);
+				++(p->nc);
+			}
+			break;
+		case ST_CTRL:
+			if (c == '\r') {
+				fputs (" CR", stdout);
+			}
+			else if (c == '\n') {
+				fputs (" LF", stdout);
+			}
+			else {
+				putchar ('\n');
+				p->st = ST_INIT;
+				continue;
+			}
+			break;
 		}
-		putchar ('|');
-		p->st = ST_TEXT;
-		p->nc = 1;
-		/* falls through */
-	case ST_TEXT:
-		if (c == '\n') {
-			puts ("|.");
-			p->st = ST_INIT;
-		}
-		else if (p->nc == DEFAULT_LINE_MAX
-			       - 2) /* space for "|-" */ {
-			fputs ("|-\n-|", stdout);
-			putchar (c);
-			p->nc = 3;	/* "-|" and c */
-		}
-		else if (c == '\r') {
-			fputs ("|\n.", stdout);
-			p->st = ST_CTRL;
-			process (p, c);
-		}
-		else {
-			putchar (c);
-			++(p->nc);
-		}
-		break;
-	case ST_CTRL:
-		if (c == '\r') {
-			fputs (" CR", stdout);
-		}
-		else if (c == '\n') {
-			fputs (" LF", stdout);
-		}
-		else {
-			putchar ('\n');
-			p->st = ST_INIT;
-			process (p, c);
-		}
-		break;
+		handled = 1;
 	}
 }
 
