@@ -5,14 +5,20 @@ set -e -u
 run_test()
 (
 	cd "$1"
-	"$ESEQ" < input > output
+	if [ -f invocation ]
+	then
+		invocation="$(cat invocation)"
+	else
+		invocation='"$ESEQ" < input > output'
+	fi
+	eval "$invocation"
 	diff -u expected output
 )
 
 ########################################
 
 : ${ESEQ=../../eseq}
-: ${ESEQ_TESTS=empty basic-text wrap}
+: ${ESEQ_TESTS=empty cmdline-in-out basic-text wrap}
 
 nt=0
 np=0
