@@ -31,66 +31,86 @@
 
 #define DEFAULT_LINE_MAX	78
 
-int
-main (void) {
-	int c;
-	enum state {
-		ST_INIT,
-		ST_TEXT,
-		ST_CTRL
-	} st = ST_INIT;
-	int nc;
+enum state {
+	ST_INIT,
+	ST_TEXT,
+	ST_CTRL
+};
 
-	while ((c = getchar ()) != EOF) {
-		restart:
-		switch (st) {
-		case ST_INIT:
-			if (c == '\r') {
-				st = ST_CTRL;
-				goto restart;
-			}
-			putchar ('|');
-			st = ST_TEXT;
-			nc = 1;
-			/* falls through */
-		case ST_TEXT:
-			if (c == '\n') {
-			 	puts ("|.");
-				st = ST_INIT;
-			}
-			else if (nc == DEFAULT_LINE_MAX - 2) {
-				fputs ("|-\n-|", stdout);
-				putchar (c);
-				nc = 3;
-			}
-			else if (c == '\r') {
-				fputs ("|\n.", stdout);
-				st = ST_CTRL;
-				goto restart;
-			}
-			else {
-				putchar (c);
-				++nc;
-			}
-			break;
-		case ST_CTRL:
-			if (c == '\r') {
-				fputs (" CR", stdout);
-			}
-			else if (c == '\n') {
-				fputs (" LF", stdout);
-			}
-			else {
-				putchar ('\n');
-				st = ST_INIT;
-				goto restart;
-			}
-			break;
+struct processor {
+	enum state st;
+	size_t	   nc;	/* Number of characters in current output line. */
+};
+
+void
+process (struct processor *p, unsigned char c)
+{
+	switch (p->st) {
+	case ST_INIT:
+		if (c == '\r') {
+			p->st = ST_CTRL;
+			process (p, c);
 		}
-	}
-	if (st == ST_TEXT)
 		putchar ('|');
-	if (st != ST_INIT)
+		p->st = ST_TEXT;
+		p->nc = 1;
+		/* falls through */
+	case ST_TEXT:
+		if (c == '\n') {
+			puts ("|.");
+			p->st = ST_INIT;
+		}
+		else if (p->nc == DEFAULT_LINE_MAX
+			       - 2) /* space for "|-" */ {
+			fputs ("|-\n-|", stdout);
+			putchar (c);
+			p->nc = 3;	/* "-|" and c */
+		}
+		else if (c == '\r') {
+			fputs ("|\n.", stdout);
+			p->st = ST_CTRL;
+			process (p, c);
+		}
+		else {
+			putchar (c);
+			++(p->nc);
+		}
+		break;
+	case ST_CTRL:
+		if (c == '\r') {
+			fputs (" CR", stdout);
+		}
+		else if (c == '\n') {
+			fputs (" LF", stdout);
+		}
+		else {
+			putchar ('\n');
+			p->st = ST_INIT;
+			process (p, c);
+		}
+		break;
+	}
+}
+
+void
+finish (struct processor *p)
+{
+	if (p->st == ST_TEXT)
+		putchar ('|');
+	if (p->st != ST_INIT)
 		putchar ('\n');
+}
+
+int
+main (void)
+{
+	int c;
+	struct processor p = { ST_INIT, 0 };
+
+	while ((c = getchar ()) != EOF)
+		process (&p, c);
+	finish (&p);
 	return 0;
 }
+
+/* vim:set sts=8 sw=8 ts=8 noet: */
