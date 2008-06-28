@@ -33,12 +33,18 @@
 
 #include "ringbuf.h"
 
+#define ADVANCE_CURSOR(rb, c) \
+	do { \
+		++(c); \
+		if ((c) == (rb)->buf + (rb)->size) \
+			(c) = (rb)->buf; \
+	} while (0)
+
 struct ringbuf {
 	size_t size;
 	unsigned char *buf;
 	unsigned char *start;
 	unsigned char *end;
-	unsigned char *cursor;
 	int full;
 };
 
@@ -57,10 +63,22 @@ ringbuf_new (size_t bufsz)
 	newbuf->buf    = buf;
 	newbuf->start  = buf;
 	newbuf->end    = buf;
-	newbuf->cursor = buf;
 	newbuf->full   = 0;
 
 	return newbuf;
+}
+
+void
+ringbuf_delete (struct ringbuf *rb)
+{
+	free (rb->buf);
+	free (rb);
+}
+
+int
+ringbuf_is_empty (struct ringbuf *rb)
+{
+	return rb->start == rb->end && !rb->full;
 }
 
 int
@@ -111,12 +129,64 @@ int
 ringbuf_get (struct ringbuf *rb)
 {
 	int ret;
-	if (rb->start == rb->end && !rb->full) return EOF;
+	if (ringbuf_is_empty (rb)) return EOF;
 	rb->full = 0;
-	ret = *rb->start++;
+	ret = *rb->start;
+	ADVANCE_CURSOR (rb, rb->start);
 	if (rb->start == rb->buf + rb->size)
 		rb->start = rb->buf;
 	return ret;
+}
+
+/* buffer iterator. */
+struct ringbuf_reader {
+	struct ringbuf *rb;
+	unsigned char *cursor;
+};
+
+struct ringbuf_reader*
+ringbuf_reader_new (struct ringbuf *rb)
+{
+	struct ringbuf_reader *reader = malloc (sizeof *reader);
+	if (!reader) return NULL;
+	reader->rb = rb;
+	if (ringbuf_is_empty (rb))
+		reader->cursor = NULL;
+	else
+		reader->cursor = rb->start;
+	return reader;
+}
+
+void
+ringbuf_reader_delete (struct ringbuf_reader *reader)
+{
+	free (reader);
+}
+
+int
+ringbuf_reader_get (struct ringbuf_reader *reader)
+{
+	int ret;
+	if (reader->cursor == NULL)
+		return EOF;
+	ret = *reader->cursor;
+	ADVANCE_CURSOR(reader->rb, reader->cursor);
+	if (reader->cursor == reader->rb->end)
+		reader->cursor = NULL;
+	return ret;
+}
+
+void
+ringbuf_reader_consume (struct ringbuf_reader *reader)
+{
+	if (reader->cursor == NULL) {
+		reader->rb->start = reader->rb->end;
+		reader->rb->full = 0;
+	}
+	else if (reader->cursor != reader->rb->start) {
+		reader->rb->start = reader->cursor;
+		reader->rb->full = 0;
+	}
 }
 
 /* vim:set sts=8 ts=8 sw=8 noet: */
