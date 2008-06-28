@@ -44,6 +44,6 @@ struct ringbuf *the_buffer;
 	fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #main-pre
-	the_buffer = ringbuf_new ();
+	the_buffer = ringbuf_new (10);
 
 /* vim:set ft=c sw=8 ts=8 sts=8 noet: */

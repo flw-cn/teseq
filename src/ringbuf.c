@@ -27,23 +27,63 @@
    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "ringbuf.h"
 
+struct ringbuf {
+	size_t size;
+	unsigned char *buf;
+	unsigned char *start;
+	unsigned char *end;
+	unsigned char *cursor;
+	int full;
+};
+
 struct ringbuf *
-ringbuf_new (void)
+ringbuf_new (size_t bufsz)
 {
-	struct ringbuf *newbuf;
+	unsigned char *buf = malloc (bufsz);
+	if (!buf) return NULL;
+	struct ringbuf *newbuf = malloc (sizeof *newbuf);
+	if (!newbuf) {
+		free (buf);
+		return NULL;
+	}
+
+	newbuf->size   = bufsz;
+	newbuf->buf    = buf;
+	newbuf->start  = buf;
+	newbuf->end    = buf;
+	newbuf->cursor = buf;
+	newbuf->full   = 0;
+
 	return newbuf;
 }
 
-void
+int
 ringbuf_put (struct ringbuf *rb, unsigned char c)
 {
+	if (rb->full) return 1;
+	*rb->end++ = c;
+	if (rb->end == rb->buf + rb->size)
+		rb->end = rb->buf;
+	if (rb->start == rb->end)
+		rb->full = 1;
+	return 0;
 }
 
 int
 ringbuf_get (struct ringbuf *rb)
 {
+	int ret;
+	if (rb->start == rb->end && !rb->full) return EOF;
+	rb->full = 0;
+	ret = *rb->start++;
+	if (rb->start == rb->buf + rb->size)
+		rb->start = rb->buf;
+	return ret;
 }
 
 /* vim:set sts=8 ts=8 sw=8 noet: */

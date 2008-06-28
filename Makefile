@@ -1,3 +1,4 @@
+CFLAGS=-Wall -g
 CHECKMK = checkmk
 ESEQ_SOURCES = src/eseq.c
 
@@ -18,8 +19,12 @@ src/test-buffer: src/ringbuf.h src/ringbuf.c src/test-ringbuf.c
 .SUFFIXES: .cm
 
 .cm.c:
-	$(CHECKMK) $< > $@
+	cd src && $(CHECKMK) $$(basename $<) > $$(basename $@)
 
 .PHONY: functionality-tests
 functionality-tests: eseq
 	cd tests && ./run
+
+.PHONY: clean
+clean:
+	rm -f eseq src/test-buffer tests/*/output

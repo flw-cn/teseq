@@ -29,8 +29,8 @@
 
 struct ringbuf;
 
-struct ringbuf *ringbuf_new (void);
-void ringbuf_put (struct ringbuf *, unsigned char);
+struct ringbuf *ringbuf_new (size_t);
+int ringbuf_put (struct ringbuf *, unsigned char);
 int ringbuf_get (struct ringbuf *);
 
 /* vim:set sts=8 ts=8 sw=8 noet: */
