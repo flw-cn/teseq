@@ -10,10 +10,10 @@ eseq: $(ESEQ_SOURCES)
 check: unit-tests functionality-tests
 
 .PHONY: unit-tests
-unit-tests: src/test-buffer
-	src/test-buffer
+unit-tests: src/test-ringbuf
+	src/test-ringbuf
 
-src/test-buffer: src/ringbuf.h src/ringbuf.c src/test-ringbuf.c
+src/test-ringbuf: src/ringbuf.h src/ringbuf.c src/test-ringbuf.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) src/ringbuf.c src/test-ringbuf.c -lcheck -o $@
 
 .SUFFIXES: .cm
@@ -27,4 +27,4 @@ functionality-tests: eseq
 
 .PHONY: clean
 clean:
-	rm -f eseq src/test-buffer tests/*/output
+	rm -f eseq src/test-ringbuf tests/*/output
