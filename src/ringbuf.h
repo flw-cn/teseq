@@ -30,6 +30,8 @@
 struct ringbuf;
 
 struct ringbuf *ringbuf_new (size_t);
+size_t ringbuf_space_avail (struct ringbuf *rb);
+int ringbuf_putmem (struct ringbuf *rb, const char *mem, size_t memsz);
 int ringbuf_put (struct ringbuf *, unsigned char);
 int ringbuf_get (struct ringbuf *);
 

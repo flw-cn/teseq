@@ -33,17 +33,32 @@
 
 struct ringbuf *the_buffer;
 
+#test empty
+	fail_unless (ringbuf_get (the_buffer) == EOF);
+
 #test read_test
-	ringbuf_put (the_buffer, 'a');
-	ringbuf_put (the_buffer, 'b');
-	ringbuf_put (the_buffer, 'c');
+	fail_unless (ringbuf_put (the_buffer, 'a') == 0);
+	fail_unless (ringbuf_put (the_buffer, 'b') == 0);
+	fail_unless (ringbuf_put (the_buffer, 'c') == 0);
 	fail_unless (ringbuf_get (the_buffer) == 'a');
 	fail_unless (ringbuf_get (the_buffer) == 'b');
 	fail_unless (ringbuf_get (the_buffer) == 'c');
 	fail_unless (ringbuf_get (the_buffer) == EOF);
 	fail_unless (ringbuf_get (the_buffer) == EOF);
 
+#test wraparound
+	fail_unless (ringbuf_putmem (the_buffer, "abc", 3) == 0);
+	fail_unless (ringbuf_get (the_buffer) == 'a');
+	fail_unless (ringbuf_putmem (the_buffer, "defg", 4) == 1);
+	fail_unless (ringbuf_putmem (the_buffer, "def", 3) == 0);
+	fail_unless (ringbuf_get (the_buffer) == 'b');
+	fail_unless (ringbuf_get (the_buffer) == 'c');
+	fail_unless (ringbuf_get (the_buffer) == 'd');
+	fail_unless (ringbuf_get (the_buffer) == 'e');
+	fail_unless (ringbuf_get (the_buffer) == 'f');
+	fail_unless (ringbuf_get (the_buffer) == EOF);
+
 #main-pre
-	the_buffer = ringbuf_new (10);
+	the_buffer = ringbuf_new (5);
 
 /* vim:set ft=c sw=8 ts=8 sts=8 noet: */

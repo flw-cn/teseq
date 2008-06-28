@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ringbuf.h"
 
@@ -71,6 +72,38 @@ ringbuf_put (struct ringbuf *rb, unsigned char c)
 		rb->end = rb->buf;
 	if (rb->start == rb->end)
 		rb->full = 1;
+	return 0;
+}
+
+size_t
+ringbuf_space_avail (struct ringbuf *rb)
+{
+	if (rb->full) return 0u;
+	if (rb->end >= rb->start)
+		return (((rb->buf + rb->size) - rb->end)
+			+ (rb->start - rb->buf));
+	return rb->start - rb->end;
+}
+
+int
+ringbuf_putmem (struct ringbuf *rb, const char *mem, size_t memsz)
+{
+	if (rb->full) return 1;
+	if (ringbuf_space_avail (rb) < memsz) return 1;
+	if (rb->end >= rb->start) {
+		size_t snip = rb->buf + rb->size - rb->end;
+		if (snip > memsz) snip = memsz;
+		memcpy (rb->end, mem, snip);
+		memsz -= snip;
+		rb->end += snip;
+		if (rb->end == rb->buf + rb->size)
+			rb->end = rb->buf;
+		if (memsz == 0) return 0;
+		mem += snip;
+	}
+	memcpy (rb->end, mem, memsz);
+	rb->end += memsz;
+	if (rb->end == rb->start) rb->full = 1;
 	return 0;
 }
 
