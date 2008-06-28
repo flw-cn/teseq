@@ -3,4 +3,6 @@ syntax:glob
 **.swp
 **~
 eseq
+src/test-ringbuf.c
+src/test-buffer
 tests/*/output
