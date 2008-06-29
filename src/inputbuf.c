@@ -35,6 +35,7 @@
 struct inputbuf {
 	FILE *file;
 	int  last;
+	int  saving;
 	struct ringbuf *rb;
 	struct ringbuf_reader *reader;
 };
@@ -76,18 +77,33 @@ inputbuf_delete (struct inputbuf *ib)
 int
 inputbuf_get (struct inputbuf *ib)
 {
-	return getc (ib->file);
+	int c;
+	if (ib->saving) {
+		c = getc (ib->file);
+		ringbuf_put (ib->rb, c);
+	} else {
+		c = ringbuf_get (ib->rb);
+		if (c == EOF)
+			c = getc (ib->file);
+		ib->last = c;
+	}
+	return c;
 }
 
 int
 inputbuf_saving (struct inputbuf *ib)
 {
+	if (ib->saving) return 1;
+	ib->saving = 1;
+	ringbuf_put (ib->rb, ib->last);
 	return 0;
 }
 
 int
 inputbuf_rewind (struct inputbuf *ib)
 {
+	if (!ib->saving) return 1;
+	ib->saving = 0;
 	return 0;
 }
 
