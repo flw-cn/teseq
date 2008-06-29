@@ -1,6 +1,6 @@
 CFLAGS=-Wall -g
 CHECKMK = checkmk
-ESEQ_SOURCES = src/eseq.c
+ESEQ_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c
 
 all: eseq
 

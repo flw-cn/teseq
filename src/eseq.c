@@ -27,6 +27,7 @@
    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <assert.h>
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,17 +37,25 @@
 
 #define DEFAULT_LINE_MAX	78
 
-enum state {
+#define CONTROL(c)	((unsigned char)((c) - 0x40))
+#define C_ESC		CONTROL('[')
+
+#define IS_FINAL_COLUMN(col)	((col) >= 4 && (col) <= 7)
+#define IS_FINAL_BYTE(c)	IS_FINAL_COLUMN(((c) & 0xf0) >> 4)
+
+enum processor_state {
 	ST_INIT,
 	ST_TEXT,
-	ST_CTRL
+	ST_CTRL,
+	ST_CTRL_NOSEQ
 };
 
 struct processor {
 	struct inputbuf *ibuf;
 	FILE *outf;
-	enum state st;
-	size_t	   nc;	/* Number of characters in current output line. */
+	enum processor_state st;
+	size_t	             nc; /* Number of characters in current
+                                    output line. */
 };
 
 const char *control_names[] = {
@@ -61,13 +70,88 @@ const char *control_names[] = {
 };
 
 #define	is_ascii_cntrl(x)	((x) < 0x20)
+#define	is_ascii_digit(x)	((x) >= 0x30 && (x) <= 0x39)
+
+void
+process_esc_sequence (struct processor *p)
+{
+	int c;
+	int last_was_digit = 0;
+
+	putc (':', p->outf);
+	c = inputbuf_get (p->ibuf);
+	assert (c == C_ESC);
+	fputs (" Esc", p->outf);
+	c = inputbuf_get (p->ibuf);
+	assert (c == '[');
+	fprintf (p->outf, " %c", c);
+	do {
+		c = inputbuf_get (p->ibuf);
+		if (is_ascii_digit (c)) {
+			if (!last_was_digit)
+				putc (' ', p->outf);
+			last_was_digit = 1;
+		}
+		else
+			putc (' ', p->outf);
+		putc (c, p->outf);
+	} while (!IS_FINAL_BYTE (c));
+	putc ('\n', p->outf);
+	p->st = ST_INIT;
+}
+
+int
+read_esc_sequence (struct processor *p)
+{
+	enum {
+		SEQ_INIT,
+		SEQ_CSI_PARAMETER,
+		SEQ_CSI_INTERMEDIATE,
+	} state = SEQ_INIT;
+	int c, col;
+
+	inputbuf_saving (p->ibuf);
+	while (1) {
+		c = inputbuf_get (p->ibuf);
+		if (c == EOF) goto noseq;
+		col = (c & 0xf0) >> 4;
+		switch (state) {
+		case SEQ_INIT:
+			if (c != '[') goto noseq;
+			state = SEQ_CSI_PARAMETER;
+			break;
+		case SEQ_CSI_PARAMETER:
+			if (col == 2) {
+				state = SEQ_CSI_INTERMEDIATE;
+				break;
+			}
+			else if (col == 3)
+				break;
+			/* Fall through */
+		case SEQ_CSI_INTERMEDIATE:
+			if (IS_FINAL_COLUMN (col)) {
+				inputbuf_rewind (p->ibuf);
+				return 1;
+			}
+			else if (col != 2) {
+				goto noseq;
+			}
+		}
+	}
+
+	abort ();
+
+noseq:
+	inputbuf_rewind (p->ibuf);
+	p->st = ST_CTRL_NOSEQ;
+	return 0;
+}
 
 void
 init_state (struct processor *p, unsigned char c)
 {
 	if (c != '\n' && is_ascii_cntrl (c)) {
-		putc ('.', p->outf);
-		p->nc = 1;
+		p->nc = 0;
 		p->st = ST_CTRL;
 	}
 	else {
@@ -109,16 +193,28 @@ process (struct processor *p, unsigned char c)
 			}
 			break;
 		case ST_CTRL:
+		case ST_CTRL_NOSEQ:
 			if (is_ascii_cntrl (c)) {
-				const char *name = control_names[c];
-				if (p->nc + 1 + strlen (name)
-				    > DEFAULT_LINE_MAX) {
-					putc ('\n', p->outf);
-					p->st = ST_INIT;
-					continue;
+				if (c != C_ESC || p->st == ST_CTRL_NOSEQ) {
+					const char *name = control_names[c];
+					if (p->nc == 0) {
+						putc ('.', p->outf);
+						p->nc = 1;
+					}
+					else if (p->nc + 1 + strlen (name)
+					         > DEFAULT_LINE_MAX) {
+						putc ('\n', p->outf);
+						p->st = ST_INIT;
+						continue;
+					}
+					fprintf (p->outf, " %s", name);
+					p->nc += 1 + strlen (name);
+					p->st = ST_CTRL;
 				}
-				fprintf (p->outf, " %s", name);
-				p->nc += 1 + strlen (name);
+				else if (read_esc_sequence (p)) {
+					if (p->nc > 0) putc ('\n', p->outf);
+					process_esc_sequence (p);
+				}
 			}
 			else {
 				putc ('\n', p->outf);
@@ -199,7 +295,7 @@ configure_processor (struct processor *p, int argc, char **argv)
 	}
 	p->ibuf = inputbuf_new (inf, 1024);
 	if (!p->ibuf) {
-		fputs ("Out of memory.\n");
+		fputs ("Out of memory.\n", stderr);
 		exit (EXIT_FAILURE);
 	}
 }
@@ -211,7 +307,7 @@ main (int argc, char **argv)
 	struct processor p = { 0, stdout, ST_INIT, 0 };
 
 	configure_processor (&p, argc, argv);
-	while ((c = inputbuf_get (p->ibuf)) != EOF)
+	while ((c = inputbuf_get (p.ibuf)) != EOF)
 		process (&p, c);
 	finish (&p);
 	return EXIT_SUCCESS;
