@@ -11,6 +11,7 @@ size_t ringbuf_space_avail (struct ringbuf *rb);
 int ringbuf_putmem (struct ringbuf *rb, const char *mem, size_t memsz);
 int ringbuf_put (struct ringbuf *, unsigned char);
 int ringbuf_get (struct ringbuf *);
+void ringbuf_clear (struct ringbuf *);
 
 /* buffer iterator. */
 struct ringbuf_reader;

@@ -1,4 +1,4 @@
-/* test-buffer.cm: tests for buffer.c. */
+/* test-ringbuf.cm: tests for ringbuf.c. */
 
 /*
    Copyright (C) 2008 Micah Cowan
@@ -76,6 +76,14 @@ struct ringbuf *the_buffer;
 	fail_unless (ringbuf_reader_get (reader2) == 'a');
 	ringbuf_reader_consume (reader1);
 	fail_unless (ringbuf_get (the_buffer) == 'e');
+
+#test clear
+	ringbuf_put (the_buffer, 'a');
+	ringbuf_put (the_buffer, 'b');
+	ringbuf_put (the_buffer, 'c');
+	fail_unless (ringbuf_get (the_buffer) == 'a');
+	ringbuf_clear (the_buffer);
+	fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #main-pre
 	the_buffer = ringbuf_new (5);

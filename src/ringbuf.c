@@ -138,6 +138,14 @@ ringbuf_get (struct ringbuf *rb)
 	return ret;
 }
 
+void
+ringbuf_clear (struct ringbuf *rb)
+{
+	rb->start = rb->end;
+	rb->full = 0;
+}
+
+
 /* buffer iterator. */
 struct ringbuf_reader {
 	struct ringbuf *rb;
