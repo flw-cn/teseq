@@ -1,4 +1,4 @@
-/* buffer.c: input read-ahead ring buffer implementation. */
+/* ringbuf.c: input read-ahead ring buffer implementation. */
 
 /*
    Copyright (C) 2008 Micah Cowan

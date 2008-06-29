@@ -5,4 +5,6 @@ syntax:glob
 eseq
 src/test-ringbuf.c
 src/test-ringbuf
+src/test-inputbuf.c
+src/test-inputbuf
 tests/*/output

@@ -10,16 +10,22 @@ eseq: $(ESEQ_SOURCES)
 check: unit-tests functionality-tests
 
 .PHONY: unit-tests
-unit-tests: src/test-ringbuf
+unit-tests: src/test-ringbuf src/test-inputbuf
 	src/test-ringbuf
+	cd src && ./test-inputbuf
 
 src/test-ringbuf: src/ringbuf.h src/ringbuf.c src/test-ringbuf.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) src/ringbuf.c src/test-ringbuf.c -lcheck -o $@
 
+src/test-inputbuf: src/inputbuf.h src/inputbuf.c src/test-inputbuf.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) src/inputbuf.c src/test-inputbuf.c \
+	    src/ringbuf.c -lcheck -o $@
+
 .SUFFIXES: .cm
 
 .cm.c:
-	cd src && $(CHECKMK) $$(basename $<) > $$(basename $@)
+	#cd src && $(CHECKMK) $$(basename $<) > $$(basename $@)
+	$(CHECKMK) $< > $@
 
 .PHONY: functionality-tests
 functionality-tests: eseq
