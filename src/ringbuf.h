@@ -7,9 +7,11 @@ struct ringbuf;
 
 struct ringbuf *ringbuf_new (size_t);
 void ringbuf_delete (struct ringbuf *);
+int ringbuf_is_empty (struct ringbuf *rb);
 size_t ringbuf_space_avail (struct ringbuf *rb);
 int ringbuf_putmem (struct ringbuf *rb, const char *mem, size_t memsz);
 int ringbuf_put (struct ringbuf *, unsigned char);
+int ringbuf_putback (struct ringbuf *, unsigned char);
 int ringbuf_get (struct ringbuf *);
 void ringbuf_clear (struct ringbuf *);
 

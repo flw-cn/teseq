@@ -40,6 +40,14 @@
 			(c) = (rb)->buf; \
 	} while (0)
 
+#define BACKUP_CURSOR(rb, c) \
+	do { \
+		if ((c) == (rb)->buf) \
+			(c) += ((rb)->size - 1u); \
+		else \
+			--(c); \
+	} while (0)
+
 struct ringbuf {
 	size_t size;
 	unsigned char *buf;
@@ -90,6 +98,15 @@ ringbuf_put (struct ringbuf *rb, unsigned char c)
 		rb->end = rb->buf;
 	if (rb->start == rb->end)
 		rb->full = 1;
+	return 0;
+}
+
+int
+ringbuf_putback (struct ringbuf *rb, unsigned char c)
+{
+	if (rb->full) return 1;
+	BACKUP_CURSOR(rb, rb->start);
+	*rb->start = c;
 	return 0;
 }
 

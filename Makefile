@@ -10,8 +10,14 @@ eseq: $(ESEQ_SOURCES)
 check: unit-tests functionality-tests
 
 .PHONY: unit-tests
-unit-tests: src/test-ringbuf src/test-inputbuf
+unit-tests:
+
+.PHONY: check-ringbuf
+check-ringbuf: src/test-ringbuf
 	src/test-ringbuf
+
+.PHONY: check-inputbuf
+check-inputbuf: src/test-inputbuf
 	cd src && ./test-inputbuf
 
 src/test-ringbuf: src/ringbuf.h src/ringbuf.c src/test-ringbuf.c

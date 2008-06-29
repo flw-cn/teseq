@@ -85,6 +85,17 @@ struct ringbuf *the_buffer;
 	ringbuf_clear (the_buffer);
 	fail_unless (ringbuf_get (the_buffer) == EOF);
 
+#test putback
+	ringbuf_put (the_buffer, 'a');
+	ringbuf_put (the_buffer, 'b');
+	fail_unless (ringbuf_putback (the_buffer, 'c') == 0);
+	fail_unless (ringbuf_get (the_buffer) == 'c');
+	fail_unless (ringbuf_get (the_buffer) == 'a');
+	fail_unless (ringbuf_putback (the_buffer, 'd') == 0);
+	fail_unless (ringbuf_get (the_buffer) == 'd');
+	fail_unless (ringbuf_get (the_buffer) == 'b');
+	fail_unless (ringbuf_get (the_buffer) == EOF);
+
 #main-pre
 	the_buffer = ringbuf_new (5);
 
