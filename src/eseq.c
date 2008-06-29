@@ -92,8 +92,10 @@ process_esc_sequence (struct processor *p)
 				putc (' ', p->outf);
 			last_was_digit = 1;
 		}
-		else
+		else {
 			putc (' ', p->outf);
+			last_was_digit = 0;
+		}
 		putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	putc ('\n', p->outf);
