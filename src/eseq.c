@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "inputbuf.h"
+
 #define DEFAULT_LINE_MAX	78
 
 enum state {
@@ -41,7 +43,7 @@ enum state {
 };
 
 struct processor {
-	FILE *inf;
+	struct inputbuf *ibuf;
 	FILE *outf;
 	enum state st;
 	size_t	   nc;	/* Number of characters in current output line. */
@@ -170,6 +172,7 @@ void
 configure_processor (struct processor *p, int argc, char **argv)
 {
 	int opt;
+	FILE *inf = stdin;
 	while ((opt = getopt (argc, argv, ":ho:")) != -1) {
 		switch (opt) {
 			case 'h':
@@ -192,7 +195,12 @@ configure_processor (struct processor *p, int argc, char **argv)
 		}
 	}
 	if (argv[optind] != NULL) {
-		p->inf = must_fopen (argv[optind], "r");
+		inf = must_fopen (argv[optind], "r");
+	}
+	p->ibuf = inputbuf_new (inf, 1024);
+	if (!p->ibuf) {
+		fputs ("Out of memory.\n");
+		exit (EXIT_FAILURE);
 	}
 }
 
@@ -200,10 +208,10 @@ int
 main (int argc, char **argv)
 {
 	int c;
-	struct processor p = { stdin, stdout, ST_INIT, 0 };
+	struct processor p = { 0, stdout, ST_INIT, 0 };
 
 	configure_processor (&p, argc, argv);
-	while ((c = getc (p.inf)) != EOF)
+	while ((c = inputbuf_get (p->ibuf)) != EOF)
 		process (&p, c);
 	finish (&p);
 	return EXIT_SUCCESS;

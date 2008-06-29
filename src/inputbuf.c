@@ -79,8 +79,11 @@ inputbuf_get (struct inputbuf *ib)
 {
 	int c;
 	if (ib->saving) {
-		c = getc (ib->file);
-		ringbuf_put (ib->rb, c);
+		c = ringbuf_reader_get (ib->reader);
+		if (c == EOF) {
+			c = getc (ib->file);
+			ringbuf_put (ib->rb, c);
+		}
 	} else {
 		c = ringbuf_get (ib->rb);
 		if (c == EOF)
@@ -95,14 +98,15 @@ inputbuf_saving (struct inputbuf *ib)
 {
 	if (ib->saving) return 1;
 	ib->saving = 1;
-	ringbuf_put (ib->rb, ib->last);
+	ringbuf_reader_reset (ib->reader);
+	ringbuf_putback (ib->rb, ib->last);
 	return 0;
 }
 
 int
 inputbuf_rewind (struct inputbuf *ib)
 {
-	if (!ib->saving) return 1;
+	ringbuf_reader_reset (ib->reader);
 	ib->saving = 0;
 	return 0;
 }
@@ -110,6 +114,7 @@ inputbuf_rewind (struct inputbuf *ib)
 int
 inputbuf_forget (struct inputbuf *ib)
 {
+	ringbuf_reader_consume (ib->reader);
 	return 0;
 }
 

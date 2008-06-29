@@ -10,7 +10,7 @@ eseq: $(ESEQ_SOURCES)
 check: unit-tests functionality-tests
 
 .PHONY: unit-tests
-unit-tests:
+unit-tests: check-ringbuf check-inputbuf
 
 .PHONY: check-ringbuf
 check-ringbuf: src/test-ringbuf

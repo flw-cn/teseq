@@ -175,10 +175,7 @@ ringbuf_reader_new (struct ringbuf *rb)
 	struct ringbuf_reader *reader = malloc (sizeof *reader);
 	if (!reader) return NULL;
 	reader->rb = rb;
-	if (ringbuf_is_empty (rb))
-		reader->cursor = NULL;
-	else
-		reader->cursor = rb->start;
+	ringbuf_reader_reset (reader);
 	return reader;
 }
 
@@ -186,6 +183,20 @@ void
 ringbuf_reader_delete (struct ringbuf_reader *reader)
 {
 	free (reader);
+}
+
+void
+ringbuf_reader_reset (struct ringbuf_reader *reader)
+{
+	if (ringbuf_is_empty (reader->rb))
+		reader->cursor = NULL;
+	else
+		reader->cursor = reader->rb->start;
+}
+
+void ringbuf_reader_to_end (struct ringbuf_reader *reader)
+{
+	reader->cursor = NULL;
 }
 
 int

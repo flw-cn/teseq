@@ -96,6 +96,19 @@ struct ringbuf *the_buffer;
 	fail_unless (ringbuf_get (the_buffer) == 'b');
 	fail_unless (ringbuf_get (the_buffer) == EOF);
 
+#test reader_reset
+	struct ringbuf_reader *reader;
+	ringbuf_putmem (the_buffer, "abcd", 4);
+	reader = ringbuf_reader_new (the_buffer);
+	fail_unless (ringbuf_reader_get (reader) == 'a');
+	fail_unless (ringbuf_reader_get (reader) == 'b');
+	ringbuf_reader_reset (reader);
+	fail_unless (ringbuf_reader_get (reader) == 'a');
+	fail_unless (ringbuf_reader_get (reader) == 'b');
+	fail_unless (ringbuf_reader_get (reader) == 'c');
+	fail_unless (ringbuf_reader_get (reader) == 'd');
+	fail_unless (ringbuf_reader_get (reader) == EOF);
+
 #main-pre
 	the_buffer = ringbuf_new (5);
 
