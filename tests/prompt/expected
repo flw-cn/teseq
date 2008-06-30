@@ -7,8 +7,7 @@
 : Esc [ 1 m
 : Esc [ 31 m
 |1|
-: Esc [ 1 m
-: Esc [ 33 m
+: Esc [ 1 ; 33 m
 |man|
 : Esc [ 1 m
 : Esc [ 34 m
