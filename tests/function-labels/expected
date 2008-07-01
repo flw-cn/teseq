@@ -1,0 +1,55 @@
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+|micah-laptop|
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+|$ |
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+|screen -xR 15295.pts-5.micah-laptop|
+. CR LF
+: Esc [ ? 1049 h
+& SM: SET MODE (private)
+: Esc [ r
+& (private function)
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+: Esc [ 2 J
+& ED: ERASE IN PAGE
+: Esc [ H
+& CUP: CURSOR POSITION
+: Esc [ ? 7 h
+& SM: SET MODE (private)
+: Esc [ ? 1 ; 4 ; 6 l
+& IL: INSERT LINE (private)
+: Esc [ 4 l
+& IL: INSERT LINE
+: Esc [ ? 1 h
+. ESC
+|=|
+: Esc [ 0 m
+: Esc [ 1 ; 52 r
+: Esc [ H
+: Esc [ 2 J
+: Esc [ 51 B
+: Esc [ 7 m
+: Esc [ 27 m
+: Esc [ 37 m
+: Esc [ 44 m
+|0- bash  |
+: Esc [ 97 m
+: Esc [ 104 m
+|1* x|
+: Esc [ 37 m
+: Esc [ 44 m
+|                                                                   |
+: Esc [ H
+: Esc [ 39 m
+: Esc [ 49 m
+: Esc [ H
+: Esc [ 2 J
+||.
