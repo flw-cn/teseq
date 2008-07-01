@@ -73,10 +73,49 @@ const char *control_names[] = {
 #define	is_ascii_digit(x)	((x) >= 0x30 && (x) <= 0x39)
 
 void
+print_sgr_param_description (struct processor *p, unsigned int param)
+{
+	const char *msg = NULL;
+	switch (param) {
+	case 0:
+		msg = "Clear graphic rendition to defaults.";
+		break;
+	case 1:
+		msg = "Set bold text.";
+		break;
+	case 31:
+		msg = "Set foreground color red.";
+		break;
+	case 33:
+		msg = "Set foreground color yellow.";
+		break;
+	case 34:
+		msg = "Set foreground color blue.";
+		break;
+	}
+	if (msg)
+		fprintf (p->outf, "\" %s\n", msg);
+}
+
+void
+interpret_sgr_params (struct processor *p, unsigned char n_params,
+                      unsigned int *params)
+{
+	unsigned char i;
+	if (n_params == 0)
+		print_sgr_param_description (p, 0u);
+	else for (i = 0; i != n_params; ++i)
+		print_sgr_param_description (p, params[i]);
+}
+
+void
 process_esc_sequence (struct processor *p)
 {
 	int c;
 	int last_was_digit = 0;
+	unsigned char n_params = 0;
+	unsigned int  cur_param;
+	unsigned int  params[255];
 
 	putc (':', p->outf);
 	c = inputbuf_get (p->ibuf);
@@ -88,17 +127,28 @@ process_esc_sequence (struct processor *p)
 	do {
 		c = inputbuf_get (p->ibuf);
 		if (is_ascii_digit (c)) {
-			if (!last_was_digit)
+			if (last_was_digit) {
+				// XXX: range check here.
+				cur_param *= 10;
+				cur_param += c - '0';
+			}
+			else {
 				putc (' ', p->outf);
+				cur_param = c - '0';
+			}
 			last_was_digit = 1;
 		}
 		else {
 			putc (' ', p->outf);
+			if (last_was_digit)
+				params[n_params++] = cur_param;
 			last_was_digit = 0;
 		}
 		putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	putc ('\n', p->outf);
+	fprintf (p->outf, "& SGR: SELECT GRAPHIC RENDITION\n");
+	interpret_sgr_params (p, n_params, params);
 	p->st = ST_INIT;
 }
 
