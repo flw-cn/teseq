@@ -75,6 +75,7 @@ const char *control_names[] = {
 
 struct {
 	int	descriptions;
+	int	labels;
 } config;
 
 #define	is_ascii_cntrl(x)	((x) < 0x20)
@@ -164,7 +165,8 @@ process_esc_sequence (struct processor *p)
 		putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	putc ('\n', p->outf);
-	print_csi_label (p, c, first_param_char);
+	if (config.labels)
+		print_csi_label (p, c, first_param_char);
 	if (c == 'm') {
 		if (config.descriptions)
 			interpret_sgr_params (p, n_params, params);
@@ -314,8 +316,9 @@ usage (int status)
 	FILE *f = status == EXIT_SUCCESS? stdout : stderr;
 	fputs ("\
 eseq -h\n\
-eseq [-D] [-o out] [in]\n\
+eseq [-LD] [-o out] [in]\n\
 \n\
+	-L	Don't print labels.\n\
 	-D	Don't print descriptions.\n",
 		f);
 	exit (status);
@@ -344,7 +347,8 @@ configure_processor (struct processor *p, int argc, char **argv)
 	int opt;
 	FILE *inf = stdin;
 	config.descriptions = 1;
-	while ((opt = getopt (argc, argv, ":ho:D")) != -1) {
+	config.labels = 1;
+	while ((opt = getopt (argc, argv, ":ho:DL")) != -1) {
 		switch (opt) {
 			case 'h':
 				usage (EXIT_SUCCESS);
@@ -354,6 +358,9 @@ configure_processor (struct processor *p, int argc, char **argv)
 				break;
 			case 'D':
 				config.descriptions = 0;
+				break;
+			case 'L':
+				config.labels = 0;
 				break;
 			case ':':
 				fprintf (stderr,
