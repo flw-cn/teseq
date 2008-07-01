@@ -18,13 +18,13 @@ run_test()
 ########################################
 
 : ${ESEQ=../../eseq}
-: ${ESEQ_TESTS='\
-		empty \
-		cmdline-in-out \
-		cmdline-- \
-		basic-text \
-		wrap \
-		prompt-descript'}
+: ${ESEQ_TESTS='
+	empty
+	cmdline-in-out
+	cmdline--
+	basic-text
+	wrap
+	prompt-descript'}
 
 nt=0
 np=0
