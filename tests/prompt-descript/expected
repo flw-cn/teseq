@@ -1,34 +1,47 @@
 : Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
 : Esc [ 34 m
-" Set the foreground color to blue.
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
 |micah-laptop|
 : Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
 : Esc [ 34 m
-" Set the foreground color to blue.
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
 |(|
 : Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
 : Esc [ 31 m
-" Set the foreground color to red.
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color red.
 |1|
 : Esc [ 1 ; 33 m
+& SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
-" Set the foreground color to yellow.
+" Set foreground color yellow.
 |man|
 : Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
 : Esc [ 34 m
-" Set the foreground color to blue.
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
 |)|
 : Esc [ m
-" Set the graphic rendition to the default settings.
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
 : Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
 : Esc [ 34 m
-" Set the foreground color to blue.
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
 |$ |
 : Esc [ m
-" Set the graphic rendition to the default settings.
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
 ||.
