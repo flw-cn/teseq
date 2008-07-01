@@ -24,7 +24,8 @@ run_test()
 	cmdline--
 	basic-text
 	wrap
-	prompt-descript'}
+	prompt-descript
+	function-labels'}
 
 nt=0
 np=0
