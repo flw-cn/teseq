@@ -76,6 +76,7 @@ const char *control_names[] = {
 struct {
 	int	descriptions;
 	int	labels;
+	int	escapes;
 } config;
 
 #define	is_ascii_cntrl(x)	((x) < 0x20)
@@ -127,19 +128,20 @@ void
 process_esc_sequence (struct processor *p)
 {
 	int c;
+	int e = config.escapes;
 	int first_param_char = EOF;
 	int last_was_digit = 0;
 	unsigned char n_params = 0;
 	unsigned int  cur_param;
 	unsigned int  params[255];
 
-	putc (':', p->outf);
+	if (e) putc (':', p->outf);
 	c = inputbuf_get (p->ibuf);
 	assert (c == C_ESC);
-	fputs (" Esc", p->outf);
+	if (e) fputs (" Esc", p->outf);
 	c = inputbuf_get (p->ibuf);
 	assert (c == '[');
-	fprintf (p->outf, " %c", c);
+	if (e) fprintf (p->outf, " %c", c);
 	do {
 		c = inputbuf_get (p->ibuf);
 		if (first_param_char == EOF)
@@ -151,20 +153,20 @@ process_esc_sequence (struct processor *p)
 				cur_param += c - '0';
 			}
 			else {
-				putc (' ', p->outf);
+				if (e) putc (' ', p->outf);
 				cur_param = c - '0';
 			}
 			last_was_digit = 1;
 		}
 		else {
-			putc (' ', p->outf);
+			if (e) putc (' ', p->outf);
 			if (last_was_digit)
 				params[n_params++] = cur_param;
 			last_was_digit = 0;
 		}
-		putc (c, p->outf);
+		if (e) putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
-	putc ('\n', p->outf);
+	if (e) putc ('\n', p->outf);
 	if (config.labels)
 		print_csi_label (p, c, first_param_char);
 	if (c == 'm') {
@@ -316,10 +318,11 @@ usage (int status)
 	FILE *f = status == EXIT_SUCCESS? stdout : stderr;
 	fputs ("\
 eseq -h\n\
-eseq [-LD] [-o out] [in]\n\
+eseq [-LDE] [-o out] [in]\n\
 \n\
 	-L	Don't print labels.\n\
-	-D	Don't print descriptions.\n",
+	-D	Don't print descriptions.\n\
+	-E	Don't print escape sequences.\n",
 		f);
 	exit (status);
 }
@@ -348,7 +351,8 @@ configure_processor (struct processor *p, int argc, char **argv)
 	FILE *inf = stdin;
 	config.descriptions = 1;
 	config.labels = 1;
-	while ((opt = getopt (argc, argv, ":ho:DL")) != -1) {
+	config.escapes = 1;
+	while ((opt = getopt (argc, argv, ":ho:DLE")) != -1) {
 		switch (opt) {
 			case 'h':
 				usage (EXIT_SUCCESS);
@@ -361,6 +365,9 @@ configure_processor (struct processor *p, int argc, char **argv)
 				break;
 			case 'L':
 				config.labels = 0;
+				break;
+			case 'E':
+				config.escapes = 0;
 				break;
 			case ':':
 				fprintf (stderr,

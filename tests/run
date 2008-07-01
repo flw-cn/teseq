@@ -32,6 +32,7 @@ run_test()
 	wrap
 	prompt
 	prompt-descript
+	prompt-descript-only
 	function-labels'}
 
 nt=0

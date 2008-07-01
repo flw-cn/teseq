@@ -1,0 +1,21 @@
+" Set bold text.
+" Set foreground color blue.
+|micah-laptop|
+" Set bold text.
+" Set foreground color blue.
+|(|
+" Set bold text.
+" Set foreground color red.
+|1|
+" Set bold text.
+" Set foreground color yellow.
+|man|
+" Set bold text.
+" Set foreground color blue.
+|)|
+" Clear graphic rendition to defaults.
+" Set bold text.
+" Set foreground color blue.
+|$ |
+" Clear graphic rendition to defaults.
+||.
