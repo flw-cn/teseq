@@ -1,0 +1,34 @@
+: Esc [ 1 m
+" Set bold text.
+: Esc [ 34 m
+" Set the foreground color to blue.
+|micah-laptop|
+: Esc [ 1 m
+" Set bold text.
+: Esc [ 34 m
+" Set the foreground color to blue.
+|(|
+: Esc [ 1 m
+" Set bold text.
+: Esc [ 31 m
+" Set the foreground color to red.
+|1|
+: Esc [ 1 ; 33 m
+" Set bold text.
+" Set the foreground color to yellow.
+|man|
+: Esc [ 1 m
+" Set bold text.
+: Esc [ 34 m
+" Set the foreground color to blue.
+|)|
+: Esc [ m
+" Set the graphic rendition to the default settings.
+: Esc [ 1 m
+" Set bold text.
+: Esc [ 34 m
+" Set the foreground color to blue.
+|$ |
+: Esc [ m
+" Set the graphic rendition to the default settings.
+||.
