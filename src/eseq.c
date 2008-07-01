@@ -42,8 +42,10 @@
 #define CONTROL(c)	((unsigned char)((c) - 0x40))
 #define C_ESC		CONTROL('[')
 
+#define GET_COLUMN(c)	(((c) & 0xf0) >> 4)
 #define IS_FINAL_COLUMN(col)	((col) >= 4 && (col) <= 7)
-#define IS_FINAL_BYTE(c)	IS_FINAL_COLUMN(((c) & 0xf0) >> 4)
+#define IS_FINAL_BYTE(c)	IS_FINAL_COLUMN (GET_COLUMN (c))
+#define IS_PRIVATE_PARAM(c)	((c) >= 0x3c && (c) <= 0x3f)
 
 enum processor_state {
 	ST_INIT,
@@ -102,15 +104,20 @@ interpret_sgr_params (struct processor *p, unsigned char n_params,
 }
 
 void
-print_csi_label (struct processor *p, unsigned int c)
+print_csi_label (struct processor *p, unsigned int c, int fpc)
 {
 	const char **label;
 	unsigned int i = c - 0x40;
 	if (i < N_ARY_ELEMS(csi_labels)) {
 		label = csi_labels[i];
+		if (label[0]) {
+			const char *privmsg = "";
+			if (fpc != EOF && IS_PRIVATE_PARAM (fpc))
+				privmsg = " (private params)";
+			fprintf (p->outf, "& %s: %s%s\n", label[0], label[1],
+				 privmsg);
+		}
 	}
-	if (label[0])
-		fprintf (p->outf, "& %s: %s\n", label[0], label[1]);
 	else
 		fputs ("& (private function)\n", p->outf);
 }
@@ -119,6 +126,7 @@ void
 process_esc_sequence (struct processor *p)
 {
 	int c;
+	int first_param_char = EOF;
 	int last_was_digit = 0;
 	unsigned char n_params = 0;
 	unsigned int  cur_param;
@@ -133,6 +141,8 @@ process_esc_sequence (struct processor *p)
 	fprintf (p->outf, " %c", c);
 	do {
 		c = inputbuf_get (p->ibuf);
+		if (first_param_char == EOF)
+			first_param_char = c;
 		if (is_ascii_digit (c)) {
 			if (last_was_digit) {
 				// XXX: range check here.
@@ -154,7 +164,7 @@ process_esc_sequence (struct processor *p)
 		putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	putc ('\n', p->outf);
-	print_csi_label (p, c);
+	print_csi_label (p, c, first_param_char);
 	if (c == 'm') {
 		if (config.descriptions)
 			interpret_sgr_params (p, n_params, params);

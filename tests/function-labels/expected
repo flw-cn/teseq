@@ -13,7 +13,7 @@
 |screen -xR 15295.pts-5.micah-laptop|
 . CR LF
 : Esc [ ? 1049 h
-& SM: SET MODE (private)
+& SM: SET MODE (private params)
 : Esc [ r
 & (private function)
 : Esc [ m
@@ -23,12 +23,13 @@
 : Esc [ H
 & CUP: CURSOR POSITION
 : Esc [ ? 7 h
-& SM: SET MODE (private)
+& SM: SET MODE (private params)
 : Esc [ ? 1 ; 4 ; 6 l
-& RM: RESET MODE (private)
+& RM: RESET MODE (private params)
 : Esc [ 4 l
 & RM: RESET MODE
 : Esc [ ? 1 h
+& SM: SET MODE (private params)
 . ESC
 |=|
 : Esc [ 0 m
