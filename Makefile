@@ -1,10 +1,11 @@
 CFLAGS=-Wall -g
 CHECKMK = checkmk
 ESEQ_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c
+ESEQ_INCLUDES = src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h
 
 all: eseq
 
-eseq: $(ESEQ_SOURCES)
+eseq: $(ESEQ_SOURCES) $(ESEQ_INCLUDES)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(ESEQ_SOURCES) -o $@
 
 check: unit-tests functionality-tests

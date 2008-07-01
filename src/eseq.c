@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "inputbuf.h"
+#include "csi.h"
 #include "sgr.h"
 
 #define DEFAULT_LINE_MAX	78
@@ -101,6 +102,20 @@ interpret_sgr_params (struct processor *p, unsigned char n_params,
 }
 
 void
+print_csi_label (struct processor *p, unsigned int c)
+{
+	const char **label;
+	unsigned int i = c - 0x40;
+	if (i < N_ARY_ELEMS(csi_labels)) {
+		label = csi_labels[i];
+	}
+	if (label[0])
+		fprintf (p->outf, "& %s: %s\n", label[0], label[1]);
+	else
+		fputs ("& (private function)\n", p->outf);
+}
+
+void
 process_esc_sequence (struct processor *p)
 {
 	int c;
@@ -139,8 +154,8 @@ process_esc_sequence (struct processor *p)
 		putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	putc ('\n', p->outf);
+	print_csi_label (p, c);
 	if (c == 'm') {
-		fprintf (p->outf, "& SGR: SELECT GRAPHIC RENDITION\n");
 		if (config.descriptions)
 			interpret_sgr_params (p, n_params, params);
 	}

@@ -71,4 +71,5 @@ const char *sgr_param_descriptions[] = {
 	"Clear ideographic underlines, overlines, or stress marks."
 };
 
+
 /* vim:set sw=8 ts=8 sts=8 noet: */
