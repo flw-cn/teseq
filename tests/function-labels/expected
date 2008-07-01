@@ -25,31 +25,49 @@
 : Esc [ ? 7 h
 & SM: SET MODE (private)
 : Esc [ ? 1 ; 4 ; 6 l
-& IL: INSERT LINE (private)
+& RM: RESET MODE (private)
 : Esc [ 4 l
-& IL: INSERT LINE
+& RM: RESET MODE
 : Esc [ ? 1 h
 . ESC
 |=|
 : Esc [ 0 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 1 ; 52 r
+& (private function)
 : Esc [ H
+& CUP: CURSOR POSITION
 : Esc [ 2 J
+& ED: ERASE IN PAGE
 : Esc [ 51 B
+& CUD: CURSOR DOWN
 : Esc [ 7 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 27 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 37 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 44 m
+& SGR: SELECT GRAPHIC RENDITION
 |0- bash  |
 : Esc [ 97 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 104 m
+& SGR: SELECT GRAPHIC RENDITION
 |1* x|
 : Esc [ 37 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 44 m
+& SGR: SELECT GRAPHIC RENDITION
 |                                                                   |
 : Esc [ H
+& CUP: CURSOR POSITION
 : Esc [ 39 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ 49 m
+& SGR: SELECT GRAPHIC RENDITION
 : Esc [ H
+& CUP: CURSOR POSITION
 : Esc [ 2 J
+& ED: ERASE IN PAGE
 ||.
