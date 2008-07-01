@@ -70,6 +70,10 @@ const char *control_names[] = {
 	"IS4", "IS3", "IS2", "IS1"
 };
 
+struct {
+	int	descriptions;
+} config;
+
 #define	is_ascii_cntrl(x)	((x) < 0x20)
 #define	is_ascii_digit(x)	((x) >= 0x30 && (x) <= 0x39)
 
@@ -137,7 +141,8 @@ process_esc_sequence (struct processor *p)
 	putc ('\n', p->outf);
 	if (c == 'm') {
 		fprintf (p->outf, "& SGR: SELECT GRAPHIC RENDITION\n");
-		interpret_sgr_params (p, n_params, params);
+		if (config.descriptions)
+			interpret_sgr_params (p, n_params, params);
 	}
 	p->st = ST_INIT;
 }
@@ -284,7 +289,9 @@ usage (int status)
 	FILE *f = status == EXIT_SUCCESS? stdout : stderr;
 	fputs ("\
 eseq -h\n\
-eseq [-o out] [in]\n",
+eseq [-D] [-o out] [in]\n\
+\n\
+	-D	Don't print descriptions.\n",
 		f);
 	exit (status);
 }
@@ -311,13 +318,17 @@ configure_processor (struct processor *p, int argc, char **argv)
 {
 	int opt;
 	FILE *inf = stdin;
-	while ((opt = getopt (argc, argv, ":ho:")) != -1) {
+	config.descriptions = 1;
+	while ((opt = getopt (argc, argv, ":ho:D")) != -1) {
 		switch (opt) {
 			case 'h':
 				usage (EXIT_SUCCESS);
 				break;
 			case 'o':
 				p->outf = must_fopen (optarg, "w");
+				break;
+			case 'D':
+				config.descriptions = 0;
 				break;
 			case ':':
 				fprintf (stderr,
