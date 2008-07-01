@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "inputbuf.h"
+#include "sgr.h"
 
 #define DEFAULT_LINE_MAX	78
 
@@ -72,27 +73,14 @@ const char *control_names[] = {
 #define	is_ascii_cntrl(x)	((x) < 0x20)
 #define	is_ascii_digit(x)	((x) >= 0x30 && (x) <= 0x39)
 
+#define N_ARY_ELEMS(ary)	(sizeof (ary) / sizeof (ary)[0])
+
 void
 print_sgr_param_description (struct processor *p, unsigned int param)
 {
 	const char *msg = NULL;
-	switch (param) {
-	case 0:
-		msg = "Clear graphic rendition to defaults.";
-		break;
-	case 1:
-		msg = "Set bold text.";
-		break;
-	case 31:
-		msg = "Set foreground color red.";
-		break;
-	case 33:
-		msg = "Set foreground color yellow.";
-		break;
-	case 34:
-		msg = "Set foreground color blue.";
-		break;
-	}
+	if (param < N_ARY_ELEMS(sgr_param_descriptions))
+		msg = sgr_param_descriptions[param];
 	if (msg)
 		fprintf (p->outf, "\" %s\n", msg);
 }
@@ -147,8 +135,10 @@ process_esc_sequence (struct processor *p)
 		putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	putc ('\n', p->outf);
-	fprintf (p->outf, "& SGR: SELECT GRAPHIC RENDITION\n");
-	interpret_sgr_params (p, n_params, params);
+	if (c == 'm') {
+		fprintf (p->outf, "& SGR: SELECT GRAPHIC RENDITION\n");
+		interpret_sgr_params (p, n_params, params);
+	}
 	p->st = ST_INIT;
 }
 
