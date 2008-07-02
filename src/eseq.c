@@ -95,12 +95,28 @@ print_sgr_param_description (struct processor *p, unsigned int param)
 }
 
 void
+print_t416_description (struct processor *p, unsigned char n_params,
+			unsigned int *params)
+{
+	const char *fore_back = "foreground";
+	if (params[0] == 48)
+		fore_back = "background";
+	if (n_params == 3 && params[1] == 5)
+		fprintf (p->outf, "\" Set %s color to index %d.\n",
+	                 fore_back, params[2]);
+	else
+		fprintf (p->outf, "\" Set %s color (unknown).\n", fore_back);
+}
+
+void
 interpret_sgr_params (struct processor *p, unsigned char n_params,
                       unsigned int *params)
 {
 	unsigned char i;
 	if (n_params == 0)
 		print_sgr_param_description (p, 0u);
+	else if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
+		print_t416_description (p, n_params, params);
 	else for (i = 0; i != n_params; ++i)
 		print_sgr_param_description (p, params[i]);
 }
