@@ -2,6 +2,10 @@ CFLAGS=-Wall -g
 CHECKMK = checkmk
 ESEQ_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c
 ESEQ_INCLUDES = src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h
+PREFIX = /usr/local
+EXEC_PREFIX = $(PREFIX)/bin
+LIBEXEC_PREFIX = $(PREFIX)/libexec/eseq
+INSTALL = install
 
 all: eseq
 
@@ -41,3 +45,18 @@ functionality-tests: eseq
 .PHONY: clean
 clean:
 	rm -f eseq src/test-ringbuf tests/*/output
+
+.PHONY: install
+install: $(EXEC_PREFIX)/eseq $(LIBEXEC_PREFIX)/post.sed
+
+$(EXEC_PREFIX):
+	mkdir -p $@
+
+$(LIBEXEC_PREFIX):
+	mkdir -p $@
+
+$(EXEC_PREFIX)/eseq: $(EXEC_PREFIX) eseq
+	$(INSTALL) eseq $@
+
+$(LIBEXEC_PREFIX)/post.sed: $(LIBEXEC_PREFIX) src/post.sed
+	$(INSTALL) src/post.sed $@
