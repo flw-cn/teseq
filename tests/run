@@ -33,7 +33,8 @@ run_test()
 	prompt
 	prompt-descript
 	prompt-descript-only
-	function-labels'}
+	function-labels
+	T.416'}
 
 nt=0
 np=0
