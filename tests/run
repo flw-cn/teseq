@@ -35,7 +35,8 @@ run_test()
 	prompt-descript-only
 	function-labels
 	T.416
-	params'}
+	params
+	iso-2022'}
 
 nt=0
 np=0
