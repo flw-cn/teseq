@@ -115,6 +115,7 @@ int
 inputbuf_forget (struct inputbuf *ib)
 {
 	ringbuf_reader_consume (ib->reader);
+	ib->saving = 0;
 	return 0;
 }
 
