@@ -46,6 +46,9 @@
 #define IS_FINAL_COLUMN(col)	((col) >= 4 && (col) <= 7)
 #define IS_FINAL_BYTE(c)	IS_FINAL_COLUMN (GET_COLUMN (c))
 
+#define IS_ECMA_INTERMEDIATE_CHAR(c)	(GET_COLUMN (c) == 2)
+#define IS_ECMA_FINAL_CHAR(c)	((c) >= 0x30 || (c) < 0x7f)
+
 /* 0x3a (:) is not actually a private parameter, but since it's not
  * used by any standard we're aware of, except ones that aren't used in
  * practice, we'll consider it private for our purposes. */
@@ -152,7 +155,7 @@ print_csi_label (struct processor *p, unsigned int c, int private)
 }
 
 void
-process_esc_sequence (struct processor *p)
+process_csi_sequence (struct processor *p)
 {
 	int c;
 	int e = config.escapes;
@@ -209,7 +212,7 @@ process_esc_sequence (struct processor *p)
 }
 
 int
-read_esc_sequence (struct processor *p)
+read_csi_sequence (struct processor *p)
 {
 	enum {
 		SEQ_INIT,
@@ -259,6 +262,33 @@ read_esc_sequence (struct processor *p)
 	abort ();
 
 noseq:
+	inputbuf_rewind (p->ibuf);
+	p->st = ST_CTRL_NOSEQ;
+	return 0;
+}
+
+int
+handle_ecma_esc_sequence (struct processor *p)
+{
+	int i;
+	int f;
+
+	/* Esc already given. */
+	inputbuf_saving (p->ibuf);
+	i = inputbuf_get (p->ibuf);
+	if (!IS_ECMA_INTERMEDIATE_CHAR (i))
+		goto nothandled;
+	f = inputbuf_get (p->ibuf);
+	if (!IS_ECMA_FINAL_CHAR (f))
+		goto nothandled;
+
+	if (p->nc > 0) putc ('\n', p->outf);
+	fprintf (p->outf, ": Esc %c %c\n", i, f);
+	p->nc = 0;
+	p->st = ST_INIT;
+	return 1;
+
+nothandled:
 	inputbuf_rewind (p->ibuf);
 	p->st = ST_CTRL_NOSEQ;
 	return 0;
@@ -328,9 +358,11 @@ process (struct processor *p, unsigned char c)
 					p->nc += 1 + strlen (name);
 					p->st = ST_CTRL;
 				}
-				else if (read_esc_sequence (p)) {
+				else if (handle_ecma_esc_sequence (p))
+					; /* handled */
+				else if (read_csi_sequence (p)) {
 					if (p->nc > 0) putc ('\n', p->outf);
-					process_esc_sequence (p);
+					process_csi_sequence (p);
 				}
 			}
 			else {
