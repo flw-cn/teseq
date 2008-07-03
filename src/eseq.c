@@ -393,7 +393,7 @@ configure_processor (struct processor *p, int argc, char **argv)
 	config.descriptions = 1;
 	config.labels = 1;
 	config.escapes = 1;
-	while ((opt = getopt (argc, argv, ":ho:DLE")) != -1) {
+	while ((opt = getopt (argc, argv, ":ho:&D\"LE")) != -1) {
 		switch (opt) {
 			case 'h':
 				usage (EXIT_SUCCESS);
@@ -401,9 +401,11 @@ configure_processor (struct processor *p, int argc, char **argv)
 			case 'o':
 				p->outf = must_fopen (optarg, "w");
 				break;
+			case '"':
 			case 'D':
 				config.descriptions = 0;
 				break;
+			case '&':
 			case 'L':
 				config.labels = 0;
 				break;
@@ -417,8 +419,8 @@ configure_processor (struct processor *p, int argc, char **argv)
 				usage (EXIT_FAILURE);
 				break;
 			default:
-				fputs ("Unrecognized option -%c.\n\n",
-				       stderr);
+				fprintf (stderr,
+					 "Unrecognized option -%c.\n\n", optopt);
 				usage (EXIT_FAILURE);
 				break;
 		}
