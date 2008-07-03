@@ -1,0 +1,26 @@
+: Esc ( B
+& GZD4: G0-DESIGNATE 94-SET
+" Designate 94-character set B (US-ASCII) to G0.
+: Esc ) A
+& G1D4: G1-DESIGNATE 94-SET
+" Designate 94-character set A (ISO646, British) to G1.
+: Esc * Z
+& G2D4: G2-DESIGNATE 94-SET
+" Designate 94-character set Z (ISO646, Spanish) to G2.
+: Esc + 5
+& G3D4: G3-DESIGNATE 94-SET
+" Designate 94-character set 5 (private) to G3.
+: Esc ( p
+& GZD4: G0-DESIGNATE 94-SET
+" Designate 94-character set p to G0.
+||.
+: Esc - A
+& G1D6: G1-DESIGNATE 96-SET
+" Designate 96-character set A (ISO-8859-1) to G1.
+: Esc . B
+& G2D6: G2-DESIGNATE 96-SET
+" Designate 96-character set B (ISO-8859-2) to G2.
+: Esc / t
+& G3D6: G3-DESIGNATE 96-SET
+" Designate 96-character set t to G2.
+||.
