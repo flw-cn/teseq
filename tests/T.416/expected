@@ -1,0 +1,18 @@
+: Esc [ 49 ; 5 ; 4 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set background color default.
+" Set slowly blinking text.
+" Set underlined text.
+: Esc [ 48 ; 7 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set background color (unknown).
+: Esc [ 48 ; 5 ; 4 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set background color to index 4.
+: Esc [ 48 ; 5 ; 4 ; 7 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set background color (unknown).
+: Esc [ 48 ; 5 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set background color (unknown).
+. CR LF

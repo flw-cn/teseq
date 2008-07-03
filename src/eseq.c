@@ -45,7 +45,14 @@
 #define GET_COLUMN(c)	(((c) & 0xf0) >> 4)
 #define IS_FINAL_COLUMN(col)	((col) >= 4 && (col) <= 7)
 #define IS_FINAL_BYTE(c)	IS_FINAL_COLUMN (GET_COLUMN (c))
-#define IS_PRIVATE_PARAM(c)	((c) >= 0x3c && (c) <= 0x3f)
+
+/* 0x3a (:) is not actually a private parameter, but since it's not
+ * used by any standard we're aware of, except ones that aren't used in
+ * practice, we'll consider it private for our purposes. */
+#define IS_PRIVATE_PARAM_CHAR(c)	(((c) >= 0x3c && (c) <= 0x3f) \
+					 || (c) == 0x3a)
+
+#define DEFAULT_PARAM	((unsigned int)-1)
 
 enum processor_state {
 	ST_INIT,
@@ -95,18 +102,38 @@ print_sgr_param_description (struct processor *p, unsigned int param)
 }
 
 void
+print_t416_description (struct processor *p, unsigned char n_params,
+			unsigned int *params)
+{
+	const char *fore_back = "foreground";
+	if (params[0] == 48)
+		fore_back = "background";
+	if (n_params == 3 && params[1] == 5)
+		fprintf (p->outf, "\" Set %s color to index %d.\n",
+	                 fore_back, params[2]);
+	else
+		fprintf (p->outf, "\" Set %s color (unknown).\n", fore_back);
+}
+
+void
 interpret_sgr_params (struct processor *p, unsigned char n_params,
                       unsigned int *params)
 {
 	unsigned char i;
 	if (n_params == 0)
 		print_sgr_param_description (p, 0u);
-	else for (i = 0; i != n_params; ++i)
-		print_sgr_param_description (p, params[i]);
+	else if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
+		print_t416_description (p, n_params, params);
+	else for (i = 0; i != n_params; ++i) {
+		unsigned int param = params[i];
+		if (param == DEFAULT_PARAM)
+			param = 0;
+		print_sgr_param_description (p, param);
+	}
 }
 
 void
-print_csi_label (struct processor *p, unsigned int c, int fpc)
+print_csi_label (struct processor *p, unsigned int c, int private)
 {
 	const char **label;
 	unsigned int i = c - 0x40;
@@ -114,7 +141,7 @@ print_csi_label (struct processor *p, unsigned int c, int fpc)
 		label = csi_labels[i];
 		if (label[0]) {
 			const char *privmsg = "";
-			if (fpc != EOF && IS_PRIVATE_PARAM (fpc))
+			if (private)
 				privmsg = " (private params)";
 			fprintf (p->outf, "& %s: %s%s\n", label[0], label[1],
 				 privmsg);
@@ -129,7 +156,8 @@ process_esc_sequence (struct processor *p)
 {
 	int c;
 	int e = config.escapes;
-	int first_param_char = EOF;
+	int first_param_char_seen = 0;
+	int private_params = 0;
 	int last_was_digit = 0;
 	unsigned char n_params = 0;
 	unsigned int  cur_param;
@@ -144,8 +172,10 @@ process_esc_sequence (struct processor *p)
 	if (e) fprintf (p->outf, " %c", c);
 	do {
 		c = inputbuf_get (p->ibuf);
-		if (first_param_char == EOF)
-			first_param_char = c;
+		if (!first_param_char_seen && !IS_FINAL_BYTE (c)) {
+			first_param_char_seen = 1;
+			private_params = IS_PRIVATE_PARAM_CHAR (c);
+		}
 		if (is_ascii_digit (c)) {
 			if (last_was_digit) {
 				// XXX: range check here.
@@ -162,15 +192,17 @@ process_esc_sequence (struct processor *p)
 			if (e) putc (' ', p->outf);
 			if (last_was_digit)
 				params[n_params++] = cur_param;
+			else
+				params[n_params++] = DEFAULT_PARAM;
 			last_was_digit = 0;
 		}
 		if (e) putc (c, p->outf);
 	} while (!IS_FINAL_BYTE (c));
 	if (e) putc ('\n', p->outf);
 	if (config.labels)
-		print_csi_label (p, c, first_param_char);
+		print_csi_label (p, c, private_params);
 	if (c == 'm') {
-		if (config.descriptions)
+		if (config.descriptions && !private_params)
 			interpret_sgr_params (p, n_params, params);
 	}
 	p->st = ST_INIT;
@@ -181,10 +213,12 @@ read_esc_sequence (struct processor *p)
 {
 	enum {
 		SEQ_INIT,
+		SEQ_CSI_PARAM_FIRST_CHAR,
 		SEQ_CSI_PARAMETER,
 		SEQ_CSI_INTERMEDIATE,
 	} state = SEQ_INIT;
 	int c, col;
+	int private_params = 0;
 
 	inputbuf_saving (p->ibuf);
 	while (1) {
@@ -194,15 +228,22 @@ read_esc_sequence (struct processor *p)
 		switch (state) {
 		case SEQ_INIT:
 			if (c != '[') goto noseq;
-			state = SEQ_CSI_PARAMETER;
+			state = SEQ_CSI_PARAM_FIRST_CHAR;
 			break;
+		case SEQ_CSI_PARAM_FIRST_CHAR:
+			state = SEQ_CSI_PARAMETER;
+			private_params = IS_PRIVATE_PARAM_CHAR (c);
 		case SEQ_CSI_PARAMETER:
 			if (col == 2) {
 				state = SEQ_CSI_INTERMEDIATE;
 				break;
 			}
-			else if (col == 3)
+			else if (col == 3) {
+				if (!private_params
+				    && IS_PRIVATE_PARAM_CHAR (c))
+					goto noseq;
 				break;
+			}
 			/* Fall through */
 		case SEQ_CSI_INTERMEDIATE:
 			if (IS_FINAL_COLUMN (col)) {

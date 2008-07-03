@@ -1,0 +1,18 @@
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ ; 2 m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+" Set dim text.
+: Esc [ 3 ; m
+& SGR: SELECT GRAPHIC RENDITION
+" Set italicized text.
+" Clear graphic rendition to defaults.
+: Esc [ ? 4 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+. ESC
+|[5?m|.
