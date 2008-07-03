@@ -283,13 +283,15 @@ handle_ecma_esc_sequence (struct processor *p)
 		goto nothandled;
 
 	if (p->nc > 0) putc ('\n', p->outf);
-	fprintf (p->outf, ": Esc %c %c\n", i, f);
+	if (config.escapes)
+		fprintf (p->outf, ": Esc %c %c\n", i, f);
 	p->nc = 0;
 	p->st = ST_INIT;
 	return 1;
 
 nothandled:
 	inputbuf_rewind (p->ibuf);
+	inputbuf_get (p->ibuf); /* Eat the ESC again, assumed by process(). */
 	p->st = ST_CTRL_NOSEQ;
 	return 0;
 }
@@ -451,6 +453,10 @@ configure_processor (struct processor *p, int argc, char **argv)
 				usage (EXIT_FAILURE);
 				break;
 			default:
+				if (optopt == ':') {
+					config.escapes = 0;
+					break;
+				}
 				fprintf (stderr,
 					 "Unrecognized option -%c.\n\n", optopt);
 				usage (EXIT_FAILURE);
