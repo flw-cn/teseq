@@ -16,11 +16,11 @@
 ||.
 : Esc - A
 & G1D6: G1-DESIGNATE 96-SET
-" Designate 96-character set A (ISO-8859-1) to G1.
+" Designate 96-character set A (ISO 8859-1) to G1.
 : Esc . B
 & G2D6: G2-DESIGNATE 96-SET
-" Designate 96-character set B (ISO-8859-2) to G2.
+" Designate 96-character set B (ISO 8859-2) to G2.
 : Esc / t
 & G3D6: G3-DESIGNATE 96-SET
-" Designate 96-character set t to G2.
+" Designate 96-character set t to G3.
 ||.

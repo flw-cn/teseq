@@ -267,6 +267,70 @@ noseq:
 	return 0;
 }
 
+#define ISO646(lang)	name = " (ISO646, " lang ")"
+#define LATIN(num)	name = " (ISO 8859-" #num ")"
+const char *
+get_set_name (int set, int final)
+{
+	const char *name = "";
+	if (GET_COLUMN (final) == 3)
+		return " (private)";
+	if (set == 4) switch (final) {
+case 0x40: name = " (ISO646/IRV:1983)"; break;
+case 0x41: ISO646 ("British"); break;
+case 0x42: name = " (US-ASCII)"; break;
+case 0x47: ISO646 ("Swedish"); break;
+case 0x48: ISO646 ("Swedish Names"); break;
+case 0x49: name = " (Katakana)"; break;
+case 0x4a: ISO646 ("Japanese"); break;
+case 0x59: ISO646 ("Italian"); break;
+case 0x4c: ISO646 ("Portuguese"); break;
+case 0x5a: ISO646 ("Spanish"); break;
+case 0x4b: ISO646 ("German"); break;
+case 0x60: ISO646 ("Norwegian"); break;
+case 0x66: ISO646 ("French"); break;
+case 0x67: ISO646 ("Portuguese 2"); break;
+case 0x68: ISO646 ("Spanish 2"); break;
+case 0x69: ISO646 ("Hungarian"); break;
+case 0x6b: name = " (Arabic)"; break;
+	}
+	else switch (final) {
+case 0x41: LATIN(1); break;
+case 0x42: LATIN(2); break;
+case 0x43: LATIN(3); break;
+case 0x44: LATIN(4); break;
+	}
+
+	return name;
+}
+
+void
+print_ecma_info (struct processor *p, int intermediate, int final)
+{
+	int designate;
+	const char *desig_strs = "Z123";
+	int set;
+
+	if (intermediate >= 0x2d && intermediate <= 0x2f) {
+		set = 6;
+		designate = intermediate - 0x2c;
+	}
+	else {
+		set = 4;
+		designate = intermediate - 0x28;
+	}
+
+	if (config.labels) {
+		fprintf (p->outf, "& G%cD%d: G%d-DESIGNATE 9%d-SET\n",
+			 desig_strs[designate], set, designate, set);
+	}
+	if (config.descriptions) {
+		fprintf (p->outf, "\" Designate 9%d-character set "
+				  "%c%s to G%d.\n",
+			 set, final, get_set_name (set, final), designate);
+	}
+}
+
 int
 handle_ecma_esc_sequence (struct processor *p)
 {
@@ -285,6 +349,7 @@ handle_ecma_esc_sequence (struct processor *p)
 	if (p->nc > 0) putc ('\n', p->outf);
 	if (config.escapes)
 		fprintf (p->outf, ": Esc %c %c\n", i, f);
+	print_ecma_info (p, i, f);
 	p->nc = 0;
 	p->st = ST_INIT;
 	return 1;
