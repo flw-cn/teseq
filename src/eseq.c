@@ -358,6 +358,7 @@ handle_ecma_esc_sequence (struct processor *p)
 	print_ecma_info (p, i, f);
 	p->nc = 0;
 	p->st = ST_INIT;
+	inputbuf_forget (p->ibuf);
 	return 1;
 
 nothandled:

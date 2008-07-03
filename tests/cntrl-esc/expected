@@ -26,3 +26,4 @@
 . CR LF
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
+. CR LF
