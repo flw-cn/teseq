@@ -37,7 +37,8 @@ run_test()
 	esc-seq-versus-not
 	T.416
 	params
-	iso-2022'}
+	iso-2022
+	cntrl-esc'}
 
 nt=0
 np=0
