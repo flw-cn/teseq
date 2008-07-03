@@ -268,7 +268,7 @@ noseq:
 }
 
 #define ISO646(lang)	name = " (ISO646, " lang ")"
-#define LATIN(num)	name = " (ISO 8859-" #num ")"
+#define ISO8859(num)	name = " (ISO 8859-" #num ")"
 const char *
 get_set_name (int set, int final)
 {
@@ -295,10 +295,16 @@ case 0x69: ISO646 ("Hungarian"); break;
 case 0x6b: name = " (Arabic)"; break;
 	}
 	else switch (final) {
-case 0x41: LATIN(1); break;
-case 0x42: LATIN(2); break;
-case 0x43: LATIN(3); break;
-case 0x44: LATIN(4); break;
+case 0x41: ISO8859(1); break;
+case 0x42: ISO8859(2); break;
+case 0x43: ISO8859(3); break;
+case 0x44: ISO8859(4); break;
+case 0x46: name = " (Greek)"; break;
+case 0x47: name = " (Arabic)"; break;
+case 0x48: name = " (Hebrew)"; break;
+case 0x40: name = " (Cyrillic)"; break;
+case 0x4d: ISO8859(9); break;
+case 0x56: ISO8859(10); break;
 	}
 
 	return name;
