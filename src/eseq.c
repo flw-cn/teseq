@@ -89,7 +89,7 @@ struct {
 	int	escapes;
 } config;
 
-#define	is_ascii_cntrl(x)	((x) < 0x20)
+#define	is_normal_text(x)	((x) >= 0x20 && (x) < 0x7f)
 #define	is_ascii_digit(x)	((x) >= 0x30 && (x) <= 0x39)
 
 #define N_ARY_ELEMS(ary)	(sizeof (ary) / sizeof (ary)[0])
@@ -371,7 +371,7 @@ nothandled:
 void
 init_state (struct processor *p, unsigned char c)
 {
-	if (c != '\n' && is_ascii_cntrl (c)) {
+	if (c != '\n' && ! is_normal_text (c)) {
 		p->nc = 0;
 		p->st = ST_CTRL;
 	}
@@ -403,7 +403,7 @@ process (struct processor *p, unsigned char c)
 				putc (c, p->outf);
 				p->nc = 3;	/* "-|" and c */
 			}
-			else if (is_ascii_cntrl (c)) {
+			else if (! is_normal_text (c)) {
 				fputs ("|\n", p->outf);
 				p->st = ST_INIT;
 				continue;
@@ -415,21 +415,30 @@ process (struct processor *p, unsigned char c)
 			break;
 		case ST_CTRL:
 		case ST_CTRL_NOSEQ:
-			if (is_ascii_cntrl (c)) {
+			if (! is_normal_text (c)) {
 				if (c != C_ESC || p->st == ST_CTRL_NOSEQ) {
 					const char *name = control_names[c];
+					int n_newchars, n_printed;
+					if (name)
+						n_newchars = 1 + strlen (name);
+					else
+						n_newchars = 4; /* " xNN" */
+
 					if (p->nc == 0) {
 						putc ('.', p->outf);
 						p->nc = 1;
 					}
-					else if (p->nc + 1 + strlen (name)
+					else if (p->nc + n_newchars
 					         > DEFAULT_LINE_MAX) {
 						putc ('\n', p->outf);
 						p->st = ST_INIT;
 						continue;
 					}
-					fprintf (p->outf, " %s", name);
-					p->nc += 1 + strlen (name);
+					if (name)
+						n_printed = fprintf (p->outf, " %s", name);
+					else
+						n_printed = fprintf (p->outf, " x%02X", (unsigned)c);
+					p->nc += n_printed;
 					p->st = ST_CTRL;
 				}
 				else if (handle_ecma_esc_sequence (p))

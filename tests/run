@@ -38,7 +38,8 @@ run_test()
 	T.416
 	params
 	iso-2022
-	cntrl-esc'}
+	cntrl-esc
+	high-val'}
 
 nt=0
 np=0
