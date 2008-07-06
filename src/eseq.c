@@ -200,18 +200,19 @@ process_csi_sequence (struct processor *p)
 				cur_param += c - '0';
 			}
 			else {
-				if (e) putter_putc (p->putr, ' ');
 				cur_param = c - '0';
 			}
 			last_was_digit = 1;
+			continue;
 		}
 		else {
-			if (e) putter_putc (p->putr, ' ');
-			if (last_was_digit)
+			if (last_was_digit) {
 				params[n_params++] = cur_param;
-			else
+				last_was_digit = 0;
+				if (e) putter_printf (p->putr, " %d", cur_param);
+			} else
 				params[n_params++] = DEFAULT_PARAM;
-			last_was_digit = 0;
+			if (e) putter_putc (p->putr, ' ');
 		}
 		if (e) putter_putc (p->putr, c);
 	} while (!IS_FINAL_BYTE (c));
