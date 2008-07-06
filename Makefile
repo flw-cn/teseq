@@ -1,7 +1,7 @@
 CFLAGS=-Wall -g
 CHECKMK = checkmk
-ESEQ_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c
-ESEQ_INCLUDES = src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h
+ESEQ_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c src/putter.c
+ESEQ_INCLUDES = src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h
 PREFIX = /usr/local
 EXEC_PREFIX = $(PREFIX)/bin
 LIBEXEC_PREFIX = $(PREFIX)/libexec/eseq

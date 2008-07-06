@@ -34,10 +34,10 @@
 #include <string.h>
 
 #include "inputbuf.h"
+#include "putter.h"
 #include "csi.h"
 #include "sgr.h"
 
-#define DEFAULT_LINE_MAX	78
 
 #define CONTROL(c)	((unsigned char)((c) - 0x40))
 #define C_ESC		CONTROL('[')
@@ -66,10 +66,9 @@ enum processor_state {
 
 struct processor {
 	struct inputbuf *ibuf;
-	FILE *outf;
+	struct putter   *putr;
 	enum processor_state st;
-	size_t	             nc; /* Number of characters in current
-                                    output line. */
+	int		print_dot;
 };
 
 const char *control_names[] = {
@@ -100,8 +99,11 @@ print_sgr_param_description (struct processor *p, unsigned int param)
 	const char *msg = NULL;
 	if (param < N_ARY_ELEMS(sgr_param_descriptions))
 		msg = sgr_param_descriptions[param];
-	if (msg)
-		fprintf (p->outf, "\" %s\n", msg);
+	if (msg) {
+		putter_start (p->putr, "", "", "");
+		putter_printf (p->putr, "\" %s", msg);
+		putter_finish (p->putr, "");
+	}
 }
 
 void
@@ -109,13 +111,19 @@ print_t416_description (struct processor *p, unsigned char n_params,
 			unsigned int *params)
 {
 	const char *fore_back = "foreground";
+	putter_start (p->putr, "", "", "");
 	if (params[0] == 48)
 		fore_back = "background";
-	if (n_params == 3 && params[1] == 5)
-		fprintf (p->outf, "\" Set %s color to index %d.\n",
-	                 fore_back, params[2]);
-	else
-		fprintf (p->outf, "\" Set %s color (unknown).\n", fore_back);
+	if (n_params == 3 && params[1] == 5) {
+		putter_printf (p->putr, "\" Set %s color to index %d.",
+			       fore_back, params[2]);
+		putter_finish (p->putr, "");
+	}
+	else {
+		putter_printf (p->putr, "\" Set %s color (unknown).",
+			       fore_back);
+		putter_finish (p->putr, "");
+	}
 }
 
 void
@@ -146,12 +154,17 @@ print_csi_label (struct processor *p, unsigned int c, int private)
 			const char *privmsg = "";
 			if (private)
 				privmsg = " (private params)";
-			fprintf (p->outf, "& %s: %s%s\n", label[0], label[1],
-				 privmsg);
+			putter_start (p->putr, "", "", "");
+			putter_printf (p->putr, "& %s: %s%s", label[0],
+				       label[1], privmsg);
+			putter_finish (p->putr, "");
 		}
 	}
-	else
-		fputs ("& (private function)\n", p->outf);
+	else {
+		putter_start (p->putr, "", "", "");
+		putter_puts (p->putr, "& (private function)");
+		putter_finish (p->putr, "");
+}
 }
 
 void
@@ -166,13 +179,14 @@ process_csi_sequence (struct processor *p)
 	unsigned int  cur_param;
 	unsigned int  params[255];
 
-	if (e) putc (':', p->outf);
+	if (e)
+		putter_start (p->putr, ":", "", ": ");
 	c = inputbuf_get (p->ibuf);
 	assert (c == C_ESC);
-	if (e) fputs (" Esc", p->outf);
+	if (e) putter_puts (p->putr, " Esc");
 	c = inputbuf_get (p->ibuf);
 	assert (c == '[');
-	if (e) fprintf (p->outf, " %c", c);
+	if (e) putter_printf (p->putr, " %c", c);
 	do {
 		c = inputbuf_get (p->ibuf);
 		if (!first_param_char_seen && !IS_FINAL_BYTE (c)) {
@@ -186,22 +200,22 @@ process_csi_sequence (struct processor *p)
 				cur_param += c - '0';
 			}
 			else {
-				if (e) putc (' ', p->outf);
+				if (e) putter_putc (p->putr, ' ');
 				cur_param = c - '0';
 			}
 			last_was_digit = 1;
 		}
 		else {
-			if (e) putc (' ', p->outf);
+			if (e) putter_putc (p->putr, ' ');
 			if (last_was_digit)
 				params[n_params++] = cur_param;
 			else
 				params[n_params++] = DEFAULT_PARAM;
 			last_was_digit = 0;
 		}
-		if (e) putc (c, p->outf);
+		if (e) putter_putc (p->putr, c);
 	} while (!IS_FINAL_BYTE (c));
-	if (e) putc ('\n', p->outf);
+	if (e) putter_finish (p->putr, "");
 	if (config.labels)
 		print_csi_label (p, c, private_params);
 	if (c == 'm') {
@@ -327,13 +341,17 @@ print_ecma_info (struct processor *p, int intermediate, int final)
 	}
 
 	if (config.labels) {
-		fprintf (p->outf, "& G%cD%d: G%d-DESIGNATE 9%d-SET\n",
+		putter_start (p->putr, "", "", "");
+		putter_printf (p->putr, "& G%cD%d: G%d-DESIGNATE 9%d-SET",
 			 desig_strs[designate], set, designate, set);
+		putter_finish (p->putr, "");
 	}
 	if (config.descriptions) {
-		fprintf (p->outf, "\" Designate 9%d-character set "
-				  "%c%s to G%d.\n",
+		putter_start (p->putr, "", "", "");
+		putter_printf (p->putr, "\" Designate 9%d-character set "
+				  "%c%s to G%d.",
 			 set, final, get_set_name (set, final), designate);
+		putter_finish (p->putr, "");
 	}
 }
 
@@ -352,32 +370,31 @@ handle_ecma_esc_sequence (struct processor *p)
 	if (!IS_ECMA_FINAL_CHAR (f))
 		goto nothandled;
 
-	if (p->nc > 0) putc ('\n', p->outf);
-	if (config.escapes)
-		fprintf (p->outf, ": Esc %c %c\n", i, f);
+	if (config.escapes) {
+		putter_printf (p->putr, ": Esc %c %c", i, f);
+		putter_finish (p->putr, "");
+	}
 	print_ecma_info (p, i, f);
-	p->nc = 0;
 	p->st = ST_INIT;
 	inputbuf_forget (p->ibuf);
 	return 1;
 
 nothandled:
+	p->st = ST_CTRL_NOSEQ;
 	inputbuf_rewind (p->ibuf);
 	inputbuf_get (p->ibuf); /* Eat the ESC again, assumed by process(). */
-	p->st = ST_CTRL_NOSEQ;
 	return 0;
 }
 
 void
 init_state (struct processor *p, unsigned char c)
 {
+	p->print_dot = 1;
 	if (c != '\n' && ! is_normal_text (c)) {
-		p->nc = 0;
 		p->st = ST_CTRL;
 	}
 	else {
-		putc ('|', p->outf);
-		p->nc = 1;
+		putter_start (p->putr, "|", "|-", "-|");
 		p->st = ST_TEXT;
 	}
 }
@@ -393,63 +410,40 @@ process (struct processor *p, unsigned char c)
 			continue;
 		case ST_TEXT:
 			if (c == '\n') {
-				fputs ("|.\n", p->outf);
+				putter_finish (p->putr, "|.");
 				p->st = ST_INIT;
 				/* Handled, don't continue. */
 			}
-			else if (p->nc == DEFAULT_LINE_MAX
-			                  - 2) /* space for "|-" */ {
-				fputs ("|-\n-|", p->outf);
-				putc (c, p->outf);
-				p->nc = 3;	/* "-|" and c */
-			}
 			else if (! is_normal_text (c)) {
-				fputs ("|\n", p->outf);
+				putter_finish (p->putr, "|");
 				p->st = ST_INIT;
 				continue;
 			}
 			else {
-				putc (c, p->outf);
-				++(p->nc);
+				putter_putc (p->putr, c);
 			}
 			break;
 		case ST_CTRL:
 		case ST_CTRL_NOSEQ:
 			if (! is_normal_text (c)) {
 				if (c != C_ESC || p->st == ST_CTRL_NOSEQ) {
-					const char *name = control_names[c];
-					int n_newchars, n_printed;
-					if (name)
-						n_newchars = 1 + strlen (name);
-					else
-						n_newchars = 4; /* " xNN" */
-
-					if (p->nc == 0) {
-						putc ('.', p->outf);
-						p->nc = 1;
+					if (p->print_dot) {
+						p->print_dot = 0;
+						putter_start (p->putr, ".", "", ".");
 					}
-					else if (p->nc + n_newchars
-					         > DEFAULT_LINE_MAX) {
-						putc ('\n', p->outf);
-						p->st = ST_INIT;
-						continue;
-					}
-					if (name)
-						n_printed = fprintf (p->outf, " %s", name);
+					if (c < 0x20)
+						putter_printf (p->putr, " %s", control_names[c]);
 					else
-						n_printed = fprintf (p->outf, " x%02X", (unsigned)c);
-					p->nc += n_printed;
+						putter_printf (p->putr, " x%02X", (unsigned)c);
 					p->st = ST_CTRL;
 				}
 				else if (handle_ecma_esc_sequence (p))
 					; /* handled */
-				else if (read_csi_sequence (p)) {
-					if (p->nc > 0) putc ('\n', p->outf);
+				else if (read_csi_sequence (p))
 					process_csi_sequence (p);
-				}
 			}
 			else {
-				putc ('\n', p->outf);
+				putter_finish (p->putr, "");
 				p->st = ST_INIT;
 				continue;
 			}
@@ -463,9 +457,9 @@ void
 finish (struct processor *p)
 {
 	if (p->st == ST_TEXT)
-		putc ('|', p->outf);
-	if (p->st != ST_INIT)
-		putc ('\n', p->outf);
+		putter_finish (p->putr, "|");
+	else if (p->st != ST_INIT)
+		putter_finish (p->putr, "");
 }
 
 void
@@ -505,6 +499,7 @@ configure_processor (struct processor *p, int argc, char **argv)
 {
 	int opt;
 	FILE *inf = stdin;
+	FILE *outf = stdout;
 	config.descriptions = 1;
 	config.labels = 1;
 	config.escapes = 1;
@@ -514,7 +509,7 @@ configure_processor (struct processor *p, int argc, char **argv)
 				usage (EXIT_SUCCESS);
 				break;
 			case 'o':
-				p->outf = must_fopen (optarg, "w");
+				outf = must_fopen (optarg, "w");
 				break;
 			case '"':
 			case 'D':
@@ -548,7 +543,8 @@ configure_processor (struct processor *p, int argc, char **argv)
 		inf = must_fopen (argv[optind], "r");
 	}
 	p->ibuf = inputbuf_new (inf, 1024);
-	if (!p->ibuf) {
+	p->putr = putter_new (outf);
+	if (!p->ibuf || !p->putr) {
 		fputs ("Out of memory.\n", stderr);
 		exit (EXIT_FAILURE);
 	}
@@ -558,7 +554,7 @@ int
 main (int argc, char **argv)
 {
 	int c;
-	struct processor p = { 0, stdout, ST_INIT, 0 };
+	struct processor p = { 0, 0, ST_INIT };
 
 	configure_processor (&p, argc, argv);
 	while ((c = inputbuf_get (p.ibuf)) != EOF)
