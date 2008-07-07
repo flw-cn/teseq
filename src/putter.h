@@ -14,5 +14,6 @@ int putter_finish (struct putter *, const char *);
 int putter_putc (struct putter *, unsigned char);
 int putter_puts (struct putter *, const char *);
 int putter_printf (struct putter *, const char *, ...);
+int putter_single (struct putter *, const char *, ...);
 
 #endif

@@ -128,4 +128,27 @@ int putter_printf (struct putter *p, const char *fmt, ...)
 	return ret;
 }
 
+/* Combines:
+ *	putter_start (p, "", "", "");
+ *	putter_printf (p, fmt, ...);
+ *	putter_finish (p, ""); */
+int putter_single (struct putter *p, const char *fmt, ...)
+{
+	va_list ap;
+	int ret, e;
+
+	va_start (ap, fmt);
+	ret = vfprintf (p->file, fmt, ap);
+	va_end (ap);
+	p->presep = "";
+	p->postsep = "";
+	p->presz = 0;
+	p->postsz = 0;
+	p->nc = 0;
+	e = putc ('\n', p->file);
+	if (e == -1) return -1;
+
+	return ret+1;
+}
+
 /* vim:set sts=8 sw=8 ts=8 noet: */

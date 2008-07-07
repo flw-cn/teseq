@@ -100,9 +100,7 @@ print_sgr_param_description (struct processor *p, unsigned int param)
 	if (param < N_ARY_ELEMS(sgr_param_descriptions))
 		msg = sgr_param_descriptions[param];
 	if (msg) {
-		putter_start (p->putr, "", "", "");
-		putter_printf (p->putr, "\" %s", msg);
-		putter_finish (p->putr, "");
+		putter_single (p->putr, "\" %s", msg);
 	}
 }
 
@@ -111,18 +109,15 @@ print_t416_description (struct processor *p, unsigned char n_params,
 			unsigned int *params)
 {
 	const char *fore_back = "foreground";
-	putter_start (p->putr, "", "", "");
 	if (params[0] == 48)
 		fore_back = "background";
 	if (n_params == 3 && params[1] == 5) {
-		putter_printf (p->putr, "\" Set %s color to index %d.",
+		putter_single (p->putr, "\" Set %s color to index %d.",
 			       fore_back, params[2]);
-		putter_finish (p->putr, "");
 	}
 	else {
-		putter_printf (p->putr, "\" Set %s color (unknown).",
+		putter_single (p->putr, "\" Set %s color (unknown).",
 			       fore_back);
-		putter_finish (p->putr, "");
 	}
 }
 
@@ -154,17 +149,13 @@ print_csi_label (struct processor *p, unsigned int c, int private)
 			const char *privmsg = "";
 			if (private)
 				privmsg = " (private params)";
-			putter_start (p->putr, "", "", "");
-			putter_printf (p->putr, "& %s: %s%s", label[0],
+			putter_single (p->putr, "& %s: %s%s", label[0],
 				       label[1], privmsg);
-			putter_finish (p->putr, "");
 		}
 	}
 	else {
-		putter_start (p->putr, "", "", "");
-		putter_puts (p->putr, "& (private function)");
-		putter_finish (p->putr, "");
-}
+		putter_single (p->putr, "%s", "& (private function)");
+	}
 }
 
 void
@@ -342,17 +333,13 @@ print_ecma_info (struct processor *p, int intermediate, int final)
 	}
 
 	if (config.labels) {
-		putter_start (p->putr, "", "", "");
-		putter_printf (p->putr, "& G%cD%d: G%d-DESIGNATE 9%d-SET",
+		putter_single (p->putr, "& G%cD%d: G%d-DESIGNATE 9%d-SET",
 			 desig_strs[designate], set, designate, set);
-		putter_finish (p->putr, "");
 	}
 	if (config.descriptions) {
-		putter_start (p->putr, "", "", "");
-		putter_printf (p->putr, "\" Designate 9%d-character set "
+		putter_single (p->putr, "\" Designate 9%d-character set "
 				  "%c%s to G%d.",
 			 set, final, get_set_name (set, final), designate);
-		putter_finish (p->putr, "");
 	}
 }
 
@@ -372,8 +359,7 @@ handle_ecma_esc_sequence (struct processor *p)
 		goto nothandled;
 
 	if (config.escapes) {
-		putter_printf (p->putr, ": Esc %c %c", i, f);
-		putter_finish (p->putr, "");
+		putter_single (p->putr, ": Esc %c %c", i, f);
 	}
 	print_ecma_info (p, i, f);
 	p->st = ST_INIT;
