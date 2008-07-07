@@ -400,6 +400,21 @@ init_state (struct processor *p, unsigned char c)
 	}
 }
 
+int
+print_control (struct processor *p, unsigned char c)
+{
+	if (p->print_dot) {
+		p->print_dot = 0;
+		putter_start (p->putr, ".", "", ".");
+	}
+	if (c < 0x20)
+		putter_printf (p->putr, " %s", control_names[c]);
+	else
+		putter_printf (p->putr, " x%02X", (unsigned int)c);
+	p->st = ST_CTRL;
+	return 0;
+}
+
 void
 process (struct processor *p, unsigned char c)
 {
@@ -426,28 +441,18 @@ process (struct processor *p, unsigned char c)
 			break;
 		case ST_CTRL:
 		case ST_CTRL_NOSEQ:
-			if (! is_normal_text (c)) {
-				if (c != C_ESC || p->st == ST_CTRL_NOSEQ) {
-					if (p->print_dot) {
-						p->print_dot = 0;
-						putter_start (p->putr, ".", "", ".");
-					}
-					if (c < 0x20)
-						putter_printf (p->putr, " %s", control_names[c]);
-					else
-						putter_printf (p->putr, " x%02X", (unsigned)c);
-					p->st = ST_CTRL;
-				}
-				else if (handle_ecma_esc_sequence (p))
-					; /* handled */
-				else if (read_csi_sequence (p))
-					process_csi_sequence (p);
-			}
-			else {
+			if (is_normal_text (c)) {
 				putter_finish (p->putr, "");
 				p->st = ST_INIT;
 				continue;
 			}
+			else if (c != C_ESC || p->st == ST_CTRL_NOSEQ) {
+				print_control (p, c);
+			}
+			else if (handle_ecma_esc_sequence (p))
+				; /* handled */
+			else if (read_csi_sequence (p))
+				process_csi_sequence (p);
 			break;
 		}
 		handled = 1;
