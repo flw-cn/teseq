@@ -233,7 +233,7 @@ read_csi_sequence (struct processor *p)
 	while (1) {
 		c = inputbuf_get (p->ibuf);
 		if (c == EOF) goto noseq;
-		col = (c & 0xf0) >> 4;
+		col = GET_COLUMN (c);
 		switch (state) {
 		case SEQ_INIT:
 			if (c != '[') goto noseq;
