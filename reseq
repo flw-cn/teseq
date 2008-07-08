@@ -20,7 +20,22 @@ $controls{$controls[$_]} = chr($_) for (0 .. $#controls);
 
 sub process_control {
     my $control = shift;
-    print $controls{$control};
+    if ($control =~ /^x([[:xdigit:]]{2})/) {
+        print chr (hex ($1));
+    }
+    else {
+        print $controls{$control};
+    }
+}
+
+sub process_sequence {
+    my $stuff = shift;
+    if ($stuff eq 'Esc') {
+        print $outf "\033";
+    }
+    else {
+        print $outf "$stuff";
+    }
 }
 
 sub process_line {
@@ -31,6 +46,9 @@ sub process_line {
     }
     elsif (/^\./g) {
         &process_control ($1) while /\G\s*(\S+)/g;
+    }
+    elsif (/^:/g) {
+        &process_sequence ($1) while /\G\s*(\S+)/g;
     }
 }
 

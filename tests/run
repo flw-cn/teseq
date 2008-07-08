@@ -13,6 +13,7 @@ get_vars()
 	r_output=r-output
 	r_invocation=''
 	r_diffcmd=''
+	run_reseq=true
 	if [ -f vars ]
 	then
 		. ./vars
@@ -34,6 +35,10 @@ then
 		cd "$1"
 		rm -f r-output
 		get_vars
+		if ! $run_reseq
+		then
+			return 0
+		fi
 		eval "$r_invocation"
 		result="$?"
 		if [ "$result" -ne 0 ]
