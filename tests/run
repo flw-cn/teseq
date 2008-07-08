@@ -2,6 +2,25 @@
 
 set -e
 
+get_vars()
+{
+		eseq_options=''
+		invocation=''
+		r_invocation=''
+		if [ -f vars ]
+		then
+			. ./vars
+		fi
+		if [ -z "$invocation" ]
+		then
+			invocation='"$ESEQ" $eseq_options < input > output'
+		fi
+		if [ -z "$r_invocation" ]
+		then
+			r_invocation='"$RESEQ" < expected > r-output'
+		fi
+}
+
 if [ "$#" -ge 1 -a "${1}" = "-r" ]
 then
 	# Test reseq
@@ -9,13 +28,8 @@ then
 	(
 		cd "$1"
 		rm -f r-output
-		if [ -f r-invocation ]
-		then
-			invocation="$(cat r-invocation)"
-		else
-			invocation='"$RESEQ" < expected > r-output'
-		fi
-		eval "$invocation"
+		get_vars
+		eval "$r_invocation"
 		result="$?"
 		if [ "$result" -ne 0 ]
 		then
@@ -30,12 +44,7 @@ else
 	(
 		cd "$1"
 		rm -f output
-		if [ -f invocation ]
-		then
-			invocation="$(cat invocation)"
-		else
-			invocation='"$ESEQ" < input > output'
-		fi
+		get_vars
 		eval "$invocation"
 		result="$?"
 		if [ "$result" -ne 0 ]
