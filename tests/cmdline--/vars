@@ -1,1 +1,3 @@
+input='-o'
+r_diffcmd='cmp -- -o r-output'
 invocation='"$ESEQ" -- -o > output'

@@ -4,21 +4,26 @@ set -e
 
 get_vars()
 {
-		eseq_options=''
-		invocation=''
-		r_invocation=''
-		if [ -f vars ]
-		then
-			. ./vars
-		fi
-		if [ -z "$invocation" ]
-		then
-			invocation='"$ESEQ" $eseq_options < input > output'
-		fi
-		if [ -z "$r_invocation" ]
-		then
-			r_invocation='"$RESEQ" < expected > r-output'
-		fi
+	eseq_options=''
+	input=input
+	output=output
+	expected=expected
+	invocation=''
+	diffcmd=''
+	r_output=r-output
+	r_invocation=''
+	r_diffcmd=''
+	if [ -f vars ]
+	then
+		. ./vars
+	fi
+	invocation=${invocation:-'"$ESEQ" $eseq_options < "$input" \
+			    > "$output"'}
+	diffcmd=${diffcmd:-'diff -u "$expected" "$output"'}
+	r_invocation=${r_invocation:-'"$RESEQ" < "$r_input" > "$r_output"'}
+	r_diffcmd=${r_diffcmd:-'cmp -- "$r_expected" "$r_output"'}
+	r_input="${r_input:-$expected}"
+	r_expected="${r_expected:-$input}"
 }
 
 if [ "$#" -ge 1 -a "${1}" = "-r" ]
@@ -35,7 +40,7 @@ then
 		then
 			return "$result"
 		fi
-		cmp input r-output
+		eval "$r_diffcmd"
 		return $?
 	)
 else
@@ -51,7 +56,7 @@ else
 		then
 			return "$result"
 		fi
-		diff -u expected output
+		eval "$diffcmd"
 		return $?
 	)
 fi
@@ -80,6 +85,7 @@ fi
 nt=0
 np=0
 nf=0
+ft=''
 for t in $ESEQ_TESTS
 do
 	echo $t
@@ -91,6 +97,7 @@ do
 		echo
 		echo FAILED: $t
 		echo
+		ft="$ft $t"
 	fi
 	nt=$((nt+1))
 done
@@ -112,5 +119,7 @@ else
 fi
 echo "Passed: $np"
 echo "Failed: $nf"
+echo
+echo "$ft"
 
 # vim:sw=8 sts=8 ts=8 noet
