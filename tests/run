@@ -1,29 +1,56 @@
 #!/bin/sh
 
-set -e -u
+set -e
 
-run_test()
-(
-	cd "$1"
-	rm -f output
-	if [ -f invocation ]
-	then
-		invocation="$(cat invocation)"
-	else
-		invocation='"$ESEQ" < input > output'
-	fi
-	eval "$invocation"
-	result="$?"
-	if [ "$result" -ne 0 ]
-	then
-		return "$result"
-	fi
-	diff -u expected output
-)
+if [ "$#" -ge 1 -a "${1}" = "-r" ]
+then
+	# Test reseq
+	run_test()
+	(
+		cd "$1"
+		rm -f r-output
+		if [ -f r-invocation ]
+		then
+			invocation="$(cat r-invocation)"
+		else
+			invocation='"$RESEQ" < expected > r-output'
+		fi
+		eval "$invocation"
+		result="$?"
+		if [ "$result" -ne 0 ]
+		then
+			return "$result"
+		fi
+		cmp input r-output
+		return $?
+	)
+else
+	# Test eseq
+	run_test()
+	(
+		cd "$1"
+		rm -f output
+		if [ -f invocation ]
+		then
+			invocation="$(cat invocation)"
+		else
+			invocation='"$ESEQ" < input > output'
+		fi
+		eval "$invocation"
+		result="$?"
+		if [ "$result" -ne 0 ]
+		then
+			return "$result"
+		fi
+		diff -u expected output
+		return $?
+	)
+fi
 
 ########################################
 
 : ${ESEQ=../../eseq}
+: ${RESEQ=../../reseq}
 : ${ESEQ_TESTS='
 	empty
 	cmdline-in-out

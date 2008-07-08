@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+our $inf = \*ARGV;
+our $outf = \*STDOUT;
+
+our @controls = (
+	"NUL", "SOH", "STX", "ETX",
+	"EOT", "ENQ", "ACK", "BEL",
+	"BS", "HT", "LF", "VT",
+	"FF", "CR", "SO", "SI",
+	"DLE", "DC1", "DC2", "DC3",
+	"DC4", "NAK", "SYN", "ETB",
+	"CAN", "EM", "SUB", "ESC",
+	"IS4", "IS3", "IS2", "IS1"
+);
+our %controls;
+$controls{$controls[$_]} = chr($_) for (0 .. $#controls);
+
+sub process_control {
+    my $control = shift;
+    print $controls{$control};
+}
+
+sub process_line {
+    local $_ = shift;
+    if (/^-?\|(.*)\|([-.]?)$/) {
+        print $outf "$1";
+        print $outf "\n" if $2 eq '.';
+    }
+    elsif (/^\./g) {
+        &process_control ($1) while /\G\s*(\S+)/g;
+    }
+}
+
+my $line;
+while (defined ($line = <$inf>)) {
+    &process_line ("$line");
+}

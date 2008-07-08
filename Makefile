@@ -12,7 +12,7 @@ all: eseq
 eseq: $(ESEQ_SOURCES) $(ESEQ_INCLUDES)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(ESEQ_SOURCES) -o $@
 
-check: unit-tests functionality-tests
+check: unit-tests functionality-tests reseq-tests
 
 .PHONY: unit-tests
 unit-tests: check-ringbuf check-inputbuf
@@ -41,6 +41,10 @@ src/test-inputbuf: src/inputbuf.h src/inputbuf.c src/test-inputbuf.c
 .PHONY: functionality-tests
 functionality-tests: eseq
 	cd tests && ./run
+
+.PHONY: reseq-tests
+reseq-tests:
+	cd tests && ./run -r
 
 .PHONY: clean
 clean:
