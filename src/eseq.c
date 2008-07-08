@@ -534,6 +534,8 @@ configure_processor (struct processor *p, int argc, char **argv)
 	if (argv[optind] != NULL) {
 		inf = must_fopen (argv[optind], "r");
 	}
+	setvbuf (inf, NULL, _IONBF, 0);
+	setvbuf (outf, NULL, _IOLBF, BUFSIZ);
 	p->ibuf = inputbuf_new (inf, 1024);
 	p->putr = putter_new (outf);
 	if (!p->ibuf || !p->putr) {
