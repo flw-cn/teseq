@@ -51,7 +51,7 @@ clean:
 	rm -f eseq src/test-ringbuf tests/*/output
 
 .PHONY: install
-install: $(EXEC_PREFIX)/eseq $(LIBEXEC_PREFIX)/post.sed
+install: $(EXEC_PREFIX)/eseq $(LIBEXEC_PREFIX)/post.sed $(EXEC_PREFIX)/reseq
 
 $(EXEC_PREFIX):
 	mkdir -p $@
@@ -61,6 +61,9 @@ $(LIBEXEC_PREFIX):
 
 $(EXEC_PREFIX)/eseq: $(EXEC_PREFIX) eseq
 	$(INSTALL) eseq $@
+
+$(EXEC_PREFIX)/reseq: $(EXEC_PREFIX) reseq
+	$(INSTALL) reseq $@
 
 $(LIBEXEC_PREFIX)/post.sed: $(LIBEXEC_PREFIX) src/post.sed
 	$(INSTALL) src/post.sed $@
