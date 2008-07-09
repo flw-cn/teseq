@@ -406,12 +406,8 @@ handle_escape_sequence (struct processor *p)
 	inputbuf_saving (p->ibuf);
 
 	c = inputbuf_get (p->ibuf);
-	if (c == EOF || GET_COLUMN (c) == 0 || GET_COLUMN (c) > 7) {
-		inputbuf_rewind (p->ibuf);
-		return 0;
-	}
 
-	switch (GET_COLUMN (c)) {
+	if (c != EOF) switch (GET_COLUMN (c)) {
 	case 2:
 		handled = handle_nF (p, c);
 		break;
