@@ -137,6 +137,7 @@ int putter_single (struct putter *p, const char *fmt, ...)
 	va_list ap;
 	int ret, e;
 
+	if (p->nc > 0) fputc ('\n', p->file);
 	va_start (ap, fmt);
 	ret = vfprintf (p->file, fmt, ap);
 	va_end (ap);

@@ -199,7 +199,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -212,7 +212,7 @@
 " Set italicized text.
 |0 bar                                                                      |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -224,7 +224,7 @@
 " Set italicized text.
 |0 bar                                                                      |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -242,7 +242,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -255,7 +255,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -270,7 +270,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -283,7 +283,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -298,7 +298,7 @@
 " Set italicized text.
 |0 baz                                                                      |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -311,7 +311,7 @@
 " Set italicized text.
 |0 baz                                                                      |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -325,7 +325,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m
@@ -338,7 +338,7 @@
 " Set italicized text.
 |0 x                                                                        |-
 -|     |
-. CR 
+. CR
 : Esc M
 & RI: REVERSE LINE FEED
 : Esc [ 23 m

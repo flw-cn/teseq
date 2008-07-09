@@ -360,6 +360,13 @@ handle_c1 (struct processor *p, unsigned char c)
 			return 1;
 		}
 	}
+	else if (c == 'M') {
+		if (config.escapes)
+			putter_single (p->putr, ": Esc M");
+		if (config.labels)
+			putter_single (p->putr, "& RI: REVERSE LINE FEED");
+		return 1;
+	}
 	return 0;
 }
 
