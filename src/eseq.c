@@ -211,7 +211,6 @@ process_csi_sequence (struct processor *p)
 		if (config.descriptions && !private_params)
 			interpret_sgr_params (p, n_params, params);
 	}
-	p->st = ST_INIT;
 }
 
 int
@@ -227,7 +226,7 @@ read_csi_sequence (struct processor *p)
 
 	while (1) {
 		c = inputbuf_get (p->ibuf);
-		if (c == EOF) goto noseq;
+		if (c == EOF) return 0;
 		col = GET_COLUMN (c);
 		switch (state) {
 		case SEQ_CSI_PARAM_FIRST_CHAR:
@@ -241,7 +240,7 @@ read_csi_sequence (struct processor *p)
 			else if (col == 3) {
 				if (!private_params
 				    && IS_PRIVATE_PARAM_CHAR (c))
-					goto noseq;
+					return 0;
 				break;
 			}
 			/* Fall through */
@@ -251,16 +250,13 @@ read_csi_sequence (struct processor *p)
 				return 1;
 			}
 			else if (col != 2) {
-				goto noseq;
+				return 0;
 			}
 		}
 	}
 
 	abort ();
 
-noseq:
-	inputbuf_rewind (p->ibuf);
-	return 0;
 }
 
 #define ISO646(lang)	name = " (ISO646, " lang ")"
@@ -349,12 +345,9 @@ handle_nF (struct processor *p, unsigned char i)
 		putter_single (p->putr, ": Esc %c %c", i, f);
 	}
 	print_ecma_info (p, i, f);
-	p->st = ST_INIT;
-	inputbuf_forget (p->ibuf);
 	return 1;
 
 nothandled:
-	inputbuf_rewind (p->ibuf);
 	return 0;
 }
 
@@ -367,18 +360,15 @@ handle_c1 (struct processor *p, unsigned char c)
 			return 1;
 		}
 	}
-	inputbuf_rewind (p->ibuf);
 	return 0;
 }
 
 int handle_Fp (struct processor *p, unsigned char c)
 {
-	inputbuf_forget (p->ibuf);
 	if (config.escapes)
 		putter_single (p->putr, ": Esc %c", c);
 	if (config.labels)
 		putter_single (p->putr, "%s", "& (private function [Fp])");
-	p->st = ST_INIT;
 	return 1;
 }
 
@@ -386,6 +376,7 @@ int
 handle_escape_sequence (struct processor *p)
 {
 	int c;
+	int handled = 0;
 
 	inputbuf_saving (p->ibuf);
 
@@ -397,17 +388,25 @@ handle_escape_sequence (struct processor *p)
 
 	switch (GET_COLUMN (c)) {
 	case 2:
-		return handle_nF (p, c);
+		handled = handle_nF (p, c);
+		break;
 	case 3:
-		return handle_Fp (p, c);
+		handled = handle_Fp (p, c);
+		break;
 	case 4:
 	case 5:
-		return handle_c1 (p, c);
-	default:
-		inputbuf_rewind (p->ibuf);
+		handled = handle_c1 (p, c);
+		break;
 	}
 
-	return 0;
+	if (handled) {
+		inputbuf_forget (p->ibuf);
+		p->st = ST_INIT;
+	}
+	else
+		inputbuf_rewind (p->ibuf);
+
+	return handled;
 }
 
 int
