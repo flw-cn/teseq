@@ -24,3 +24,8 @@
 & G3D6: G3-DESIGNATE 96-SET
 " Designate 96-character set t to G3.
 ||.
+: Esc =
+& (private ISO-2022 function)
+: Esc >
+& (private ISO-2022 function)
+||.
