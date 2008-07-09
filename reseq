@@ -17,6 +17,7 @@ our @controls = (
 );
 our %controls;
 $controls{$controls[$_]} = chr($_) for (0 .. $#controls);
+$controls{'DEL'} = chr(0x7f);
 
 sub process_control {
     my $control = shift;

@@ -418,6 +418,8 @@ print_control (struct processor *p, unsigned char c)
 	}
 	if (c < 0x20)
 		putter_printf (p->putr, " %s", control_names[c]);
+	else if (c == 0x7f)
+		putter_printf (p->putr, " %s", "DEL");
 	else
 		putter_printf (p->putr, " x%02X", (unsigned int)c);
 	p->st = ST_CTRL;

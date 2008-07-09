@@ -1,7 +1,7 @@
 |Script started on Tue 24 Jun 2008 09:21:38 PM PDT|
 . CR LF ESC
 |]0;micah@micah-laptop: ~|
-. BEL
+. BEL DEL
 : Esc [ 1 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
