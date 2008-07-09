@@ -45,7 +45,6 @@ struct inputbuf *the_buffer;
 	fail_unless (inputbuf_get (the_buffer) == 'e');
 	fail_unless (inputbuf_rewind (the_buffer) == 0);
 	/* Consuming the buffer. */
-	fail_unless (inputbuf_get (the_buffer) == 'b');
 	fail_unless (inputbuf_get (the_buffer) == 'c');
 	fail_unless (inputbuf_get (the_buffer) == 'd');
 	fail_unless (inputbuf_saving (the_buffer) == 0);

@@ -61,7 +61,6 @@ enum processor_state {
 	ST_INIT,
 	ST_TEXT,
 	ST_CTRL,
-	ST_CTRL_NOSEQ
 };
 
 struct processor {
@@ -172,8 +171,6 @@ process_csi_sequence (struct processor *p)
 
 	if (e)
 		putter_start (p->putr, ":", "", ": ");
-	c = inputbuf_get (p->ibuf);
-	assert (c == C_ESC);
 	if (e) putter_puts (p->putr, " Esc");
 	c = inputbuf_get (p->ibuf);
 	assert (c == '[');
@@ -269,7 +266,6 @@ read_csi_sequence (struct processor *p)
 
 noseq:
 	inputbuf_rewind (p->ibuf);
-	p->st = ST_CTRL_NOSEQ;
 	return 0;
 }
 
@@ -367,9 +363,7 @@ handle_ecma_esc_sequence (struct processor *p)
 	return 1;
 
 nothandled:
-	p->st = ST_CTRL_NOSEQ;
 	inputbuf_rewind (p->ibuf);
-	inputbuf_get (p->ibuf); /* Eat the ESC again, assumed by process(). */
 	return 0;
 }
 
@@ -401,6 +395,18 @@ print_control (struct processor *p, unsigned char c)
 	return 0;
 }
 
+int
+handle_escape_sequence (struct processor *p)
+{
+	if (handle_ecma_esc_sequence (p))
+		; /* handled */
+	else if (read_csi_sequence (p))
+		process_csi_sequence (p);
+	else
+		return 0;
+	return 1;
+}
+
 void
 process (struct processor *p, unsigned char c)
 {
@@ -426,19 +432,13 @@ process (struct processor *p, unsigned char c)
 			}
 			break;
 		case ST_CTRL:
-		case ST_CTRL_NOSEQ:
 			if (is_normal_text (c)) {
 				putter_finish (p->putr, "");
 				p->st = ST_INIT;
 				continue;
 			}
-			else if (c != C_ESC || p->st == ST_CTRL_NOSEQ) {
+			else if (c != C_ESC || !handle_escape_sequence (p))
 				print_control (p, c);
-			}
-			else if (handle_ecma_esc_sequence (p))
-				; /* handled */
-			else if (read_csi_sequence (p))
-				process_csi_sequence (p);
 			break;
 		}
 		handled = 1;

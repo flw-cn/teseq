@@ -99,7 +99,6 @@ inputbuf_saving (struct inputbuf *ib)
 	if (ib->saving) return 1;
 	ib->saving = 1;
 	ringbuf_reader_reset (ib->reader);
-	ringbuf_putback (ib->rb, ib->last);
 	return 0;
 }
 
