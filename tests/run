@@ -87,6 +87,7 @@ fi
 	cntrl-esc
 	high-val
 	hardstatus
+	controls
 '}
 
 nt=0
