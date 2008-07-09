@@ -85,7 +85,9 @@ fi
 	params
 	iso-2022
 	cntrl-esc
-	high-val'}
+	high-val
+	hardstatus
+'}
 
 nt=0
 np=0
