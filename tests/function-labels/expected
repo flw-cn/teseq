@@ -15,7 +15,7 @@
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
 : Esc [ r
-& (private function)
+& (private function [CSI])
 : Esc [ m
 & SGR: SELECT GRAPHIC RENDITION
 : Esc [ 2 J
@@ -30,12 +30,12 @@
 & RM: RESET MODE
 : Esc [ ? 1 h
 & SM: SET MODE (private params)
-. ESC
-|=|
+: Esc =
+& (private function [Fp])
 : Esc [ 0 m
 & SGR: SELECT GRAPHIC RENDITION
 : Esc [ 1 ; 52 r
-& (private function)
+& (private function [CSI])
 : Esc [ H
 & CUP: CURSOR POSITION
 : Esc [ 2 J

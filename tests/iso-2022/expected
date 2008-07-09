@@ -25,7 +25,7 @@
 " Designate 96-character set t to G3.
 ||.
 : Esc =
-& (private ISO-2022 function)
+& (private function [Fp])
 : Esc >
-& (private ISO-2022 function)
+& (private function [Fp])
 ||.

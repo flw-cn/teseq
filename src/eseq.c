@@ -46,8 +46,8 @@
 #define IS_FINAL_COLUMN(col)	((col) >= 4 && (col) <= 7)
 #define IS_FINAL_BYTE(c)	IS_FINAL_COLUMN (GET_COLUMN (c))
 
-#define IS_ECMA_INTERMEDIATE_CHAR(c)	(GET_COLUMN (c) == 2)
-#define IS_ECMA_FINAL_CHAR(c)	((c) >= 0x30 || (c) < 0x7f)
+#define IS_nF_INTERMEDIATE_CHAR(c)	(GET_COLUMN (c) == 2)
+#define IS_nF_FINAL_CHAR(c)	((c) >= 0x30 || (c) < 0x7f)
 
 /* 0x3a (:) is not actually a private parameter, but since it's not
  * used by any standard we're aware of, except ones that aren't used in
@@ -153,7 +153,7 @@ print_csi_label (struct processor *p, unsigned int c, int private)
 		}
 	}
 	else {
-		putter_single (p->putr, "%s", "& (private function)");
+		putter_single (p->putr, "%s", "& (private function [CSI])");
 	}
 }
 
@@ -334,15 +334,15 @@ print_ecma_info (struct processor *p, int intermediate, int final)
 }
 
 int
-handle_ecma_esc_sequence (struct processor *p, unsigned char i)
+handle_nF (struct processor *p, unsigned char i)
 {
 	int f;
 
 	/* Esc already given. */
-	if (!IS_ECMA_INTERMEDIATE_CHAR (i))
+	if (!IS_nF_INTERMEDIATE_CHAR (i))
 		goto nothandled;
 	f = inputbuf_get (p->ibuf);
-	if (!IS_ECMA_FINAL_CHAR (f))
+	if (!IS_nF_FINAL_CHAR (f))
 		goto nothandled;
 
 	if (config.escapes) {
@@ -358,34 +358,6 @@ nothandled:
 	return 0;
 }
 
-void
-init_state (struct processor *p, unsigned char c)
-{
-	p->print_dot = 1;
-	if (c != '\n' && ! is_normal_text (c)) {
-		p->st = ST_CTRL;
-	}
-	else {
-		putter_start (p->putr, "|", "|-", "-|");
-		p->st = ST_TEXT;
-	}
-}
-
-int
-print_control (struct processor *p, unsigned char c)
-{
-	if (p->print_dot) {
-		p->print_dot = 0;
-		putter_start (p->putr, ".", "", ".");
-	}
-	if (c < 0x20)
-		putter_printf (p->putr, " %s", control_names[c]);
-	else
-		putter_printf (p->putr, " x%02X", (unsigned int)c);
-	p->st = ST_CTRL;
-	return 0;
-}
-
 int
 handle_c1 (struct processor *p, unsigned char c)
 {
@@ -397,6 +369,17 @@ handle_c1 (struct processor *p, unsigned char c)
 	}
 	inputbuf_rewind (p->ibuf);
 	return 0;
+}
+
+int handle_Fp (struct processor *p, unsigned char c)
+{
+	inputbuf_forget (p->ibuf);
+	if (config.escapes)
+		putter_single (p->putr, ": Esc %c", c);
+	if (config.labels)
+		putter_single (p->putr, "%s", "& (private function [Fp])");
+	p->st = ST_INIT;
+	return 1;
 }
 
 int
@@ -414,7 +397,9 @@ handle_escape_sequence (struct processor *p)
 
 	switch (GET_COLUMN (c)) {
 	case 2:
-		return handle_ecma_esc_sequence (p, c);
+		return handle_nF (p, c);
+	case 3:
+		return handle_Fp (p, c);
 	case 4:
 	case 5:
 		return handle_c1 (p, c);
@@ -423,6 +408,34 @@ handle_escape_sequence (struct processor *p)
 	}
 
 	return 0;
+}
+
+int
+print_control (struct processor *p, unsigned char c)
+{
+	if (p->print_dot) {
+		p->print_dot = 0;
+		putter_start (p->putr, ".", "", ".");
+	}
+	if (c < 0x20)
+		putter_printf (p->putr, " %s", control_names[c]);
+	else
+		putter_printf (p->putr, " x%02X", (unsigned int)c);
+	p->st = ST_CTRL;
+	return 0;
+}
+
+void
+init_state (struct processor *p, unsigned char c)
+{
+	p->print_dot = 1;
+	if (c != '\n' && ! is_normal_text (c)) {
+		p->st = ST_CTRL;
+	}
+	else {
+		putter_start (p->putr, "|", "|-", "-|");
+		p->st = ST_TEXT;
+	}
 }
 
 void
