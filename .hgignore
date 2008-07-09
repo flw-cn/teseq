@@ -2,6 +2,9 @@ syntax:glob
 
 **.swp
 **~
+**/tags
+**/TAGS
+**/cscope.out
 eseq
 src/test-ringbuf.c
 src/test-ringbuf
