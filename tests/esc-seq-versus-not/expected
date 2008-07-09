@@ -1,5 +1,5 @@
 : Esc [ 1 ; 4 ; 7 m
-. ESC
+. ESC/^[
 |[1;4;7?m|
 : Esc [ ? 1 ; 4 ; 7 m
-. CR LF
+. CR/^M LF/^J

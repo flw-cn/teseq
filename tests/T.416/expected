@@ -15,4 +15,4 @@
 : Esc [ 48 ; 5 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set background color (unknown).
-. CR LF
+. CR/^M LF/^J

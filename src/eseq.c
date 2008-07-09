@@ -83,6 +83,7 @@ const char *control_names[] = {
 };
 
 struct {
+	int	control_hats;
 	int	descriptions;
 	int	labels;
 	int	escapes;
@@ -424,9 +425,15 @@ print_control (struct processor *p, unsigned char c)
 		p->print_dot = 0;
 		putter_start (p->putr, ".", "", ".");
 	}
-	if (c < 0x20)
-		putter_printf (p->putr, " %s/^%c", control_names[c],
-			       UNCONTROL (c));
+	if (c < 0x20 || c == 0x7f) {
+		const char *name = "DEL";
+		if (c < 0x20) name = control_names[c];
+		if (config.control_hats)
+			putter_printf (p->putr, " %s/^%c", name,
+				       UNCONTROL (c));
+		else
+			putter_printf (p->putr, " %s", name);
+	}
 	else if (c == 0x7f)
 		putter_printf (p->putr, " %s/^?", "DEL");
 	else
@@ -503,6 +510,7 @@ usage (int status)
 eseq -h\n\
 eseq [-LDE] [-o out] [in]\n\
 \n\
+	-C	Don't print ^X for C0 controls.\n\
 	-L	Don't print labels.\n\
 	-D	Don't print descriptions.\n\
 	-E	Don't print escape sequences.\n",
@@ -533,16 +541,21 @@ configure_processor (struct processor *p, int argc, char **argv)
 	int opt;
 	FILE *inf = stdin;
 	FILE *outf = stdout;
+	config.control_hats = 1;
 	config.descriptions = 1;
 	config.labels = 1;
 	config.escapes = 1;
-	while ((opt = getopt (argc, argv, ":ho:&D\"LE")) != -1) {
+	while ((opt = getopt (argc, argv, ":ho:C^&D\"LE")) != -1) {
 		switch (opt) {
 			case 'h':
 				usage (EXIT_SUCCESS);
 				break;
 			case 'o':
 				outf = must_fopen (optarg, "w");
+				break;
+			case '^':
+			case 'C':
+				config.control_hats = 0;
 				break;
 			case '"':
 			case 'D':

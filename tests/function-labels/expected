@@ -11,7 +11,7 @@
 : Esc [ m
 & SGR: SELECT GRAPHIC RENDITION
 |screen -xR 15295.pts-5.micah-laptop|
-. CR LF
+. CR/^M LF/^J
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
 : Esc [ r

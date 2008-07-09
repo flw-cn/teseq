@@ -4,9 +4,9 @@
 |Pipe: ||.
 |Trailing spaces:   |.
 |CRLF pair|
-. CR LF
+. CR/^M LF/^J
 |CR only|
-. CR
+. CR/^M
 |Blank line follows:|.
 ||.
 |Missing newline|

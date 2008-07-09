@@ -14,5 +14,5 @@
 " Clear graphic rendition to defaults.
 : Esc [ ? 4 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
-. ESC
+. ESC/^[
 |[5?m|.

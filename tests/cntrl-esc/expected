@@ -1,7 +1,7 @@
 |Script started on Tue 24 Jun 2008 09:21:38 PM PDT|
-. CR LF ESC
+. CR/^M LF/^J ESC/^[
 |]0;micah@micah-laptop: ~|
-. BEL DEL
+. BEL/^G DEL/^?
 : Esc [ 1 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set bold text.
@@ -23,7 +23,7 @@
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
 |screen -xR 15295.pts-5.micah-laptop|
-. CR LF
+. CR/^M LF/^J
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
-. CR LF
+. CR/^M LF/^J

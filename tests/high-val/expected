@@ -1,1 +1,1 @@
-. ESC xE5 xF7 CR LF
+. ESC/^[ xE5 xF7 CR/^M LF/^J
