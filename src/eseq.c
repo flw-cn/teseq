@@ -422,7 +422,8 @@ handle_escape_sequence (struct processor *p)
 
 	if (handled) {
 		inputbuf_forget (p->ibuf);
-		p->st = ST_INIT;
+		/* p->st = ST_INIT; */
+		p->print_dot = 1;
 	}
 	else
 		inputbuf_rewind (p->ibuf);

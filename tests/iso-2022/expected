@@ -13,7 +13,7 @@
 : Esc ( p
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set p to G0.
-||.
+. LF/^J
 : Esc - A
 & G1D6: G1-DESIGNATE 96-SET
 " Designate 96-character set A (ISO 8859-1) to G1.
@@ -23,9 +23,9 @@
 : Esc / t
 & G3D6: G3-DESIGNATE 96-SET
 " Designate 96-character set t to G3.
-||.
+. LF/^J
 : Esc =
 & (private function [Fp])
 : Esc >
 & (private function [Fp])
-||.
+. LF/^J

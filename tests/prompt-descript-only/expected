@@ -18,4 +18,4 @@
 " Set foreground color blue.
 |$ |
 " Clear graphic rendition to defaults.
-||.
+. LF/^J

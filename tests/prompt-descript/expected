@@ -44,4 +44,4 @@
 : Esc [ m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear graphic rendition to defaults.
-||.
+. LF/^J

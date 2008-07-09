@@ -152,7 +152,7 @@
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
-||.
+. LF
 : Esc [ 49 B
 & CUD: CURSOR DOWN
 : Esc [ 3 m
@@ -181,7 +181,7 @@
 . CR
 : Esc [ 48 B
 & CUD: CURSOR DOWN
-||.
+. LF
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -193,7 +193,7 @@
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
-||.
+. LF
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -218,7 +218,7 @@
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
-||.
+. LF
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -234,7 +234,7 @@
 & (private function [CSI])
 : Esc [ 50 ; 1 H
 & CUP: CURSOR POSITION
-||.
+. LF
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
 : Esc [ 3 m
@@ -317,7 +317,7 @@
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
-||.
+. LF
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
 : Esc [ 3 m

@@ -94,6 +94,7 @@ int putter_finish (struct putter *p, const char *s)
 	p->presz = 0;
 	p->postsz = 0;
 
+	if (p->nc == 0) return 0;
 	if (p->nc + strlen (s) > p->linemax)
 		fprintf (p->file, "%s\n", p->presep);
 	p->nc = 0;

@@ -71,4 +71,4 @@
 & CUP: CURSOR POSITION
 : Esc [ 2 J
 & ED: ERASE IN PAGE
-||.
+. LF/^J
