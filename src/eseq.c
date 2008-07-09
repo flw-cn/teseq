@@ -174,7 +174,7 @@ process_csi_sequence (struct processor *p)
 	if (e) putter_puts (p->putr, " Esc");
 	c = inputbuf_get (p->ibuf);
 	assert (c == '[');
-	if (e) putter_printf (p->putr, " %c", c);
+	if (e) putter_printf (p->putr, " [", c);
 	do {
 		c = inputbuf_get (p->ibuf);
 		if (!first_param_char_seen && !IS_FINAL_BYTE (c)) {
@@ -218,24 +218,18 @@ int
 read_csi_sequence (struct processor *p)
 {
 	enum {
-		SEQ_INIT,
 		SEQ_CSI_PARAM_FIRST_CHAR,
 		SEQ_CSI_PARAMETER,
 		SEQ_CSI_INTERMEDIATE,
-	} state = SEQ_INIT;
+	} state = SEQ_CSI_PARAM_FIRST_CHAR;
 	int c, col;
 	int private_params = 0;
 
-	inputbuf_saving (p->ibuf);
 	while (1) {
 		c = inputbuf_get (p->ibuf);
 		if (c == EOF) goto noseq;
 		col = GET_COLUMN (c);
 		switch (state) {
-		case SEQ_INIT:
-			if (c != '[') goto noseq;
-			state = SEQ_CSI_PARAM_FIRST_CHAR;
-			break;
 		case SEQ_CSI_PARAM_FIRST_CHAR:
 			state = SEQ_CSI_PARAMETER;
 			private_params = IS_PRIVATE_PARAM_CHAR (c);
@@ -340,14 +334,11 @@ print_ecma_info (struct processor *p, int intermediate, int final)
 }
 
 int
-handle_ecma_esc_sequence (struct processor *p)
+handle_ecma_esc_sequence (struct processor *p, unsigned char i)
 {
-	int i;
 	int f;
 
 	/* Esc already given. */
-	inputbuf_saving (p->ibuf);
-	i = inputbuf_get (p->ibuf);
 	if (!IS_ECMA_INTERMEDIATE_CHAR (i))
 		goto nothandled;
 	f = inputbuf_get (p->ibuf);
@@ -396,15 +387,42 @@ print_control (struct processor *p, unsigned char c)
 }
 
 int
+handle_c1 (struct processor *p, unsigned char c)
+{
+	if (c == '[') {
+		if (read_csi_sequence (p)) {
+			process_csi_sequence (p);
+			return 1;
+		}
+	}
+	inputbuf_rewind (p->ibuf);
+	return 0;
+}
+
+int
 handle_escape_sequence (struct processor *p)
 {
-	if (handle_ecma_esc_sequence (p))
-		; /* handled */
-	else if (read_csi_sequence (p))
-		process_csi_sequence (p);
-	else
+	int c;
+
+	inputbuf_saving (p->ibuf);
+
+	c = inputbuf_get (p->ibuf);
+	if (c == EOF || GET_COLUMN (c) == 0 || GET_COLUMN (c) > 7) {
+		inputbuf_rewind (p->ibuf);
 		return 0;
-	return 1;
+	}
+
+	switch (GET_COLUMN (c)) {
+	case 2:
+		return handle_ecma_esc_sequence (p, c);
+	case 4:
+	case 5:
+		return handle_c1 (p, c);
+	default:
+		inputbuf_rewind (p->ibuf);
+	}
+
+	return 0;
 }
 
 void

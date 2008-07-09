@@ -113,6 +113,7 @@ inputbuf_rewind (struct inputbuf *ib)
 int
 inputbuf_forget (struct inputbuf *ib)
 {
+	if (!ib->saving) return 1;
 	ringbuf_reader_consume (ib->reader);
 	ib->saving = 0;
 	return 0;
