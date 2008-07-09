@@ -14,5 +14,6 @@
 " Clear graphic rendition to defaults.
 : Esc [ ? 4 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
-. ESC/^[
-|[5?m|.
+: Esc [
+& CSI: CONTROL SEQUENCE INTRODUCER
+|5?m|.

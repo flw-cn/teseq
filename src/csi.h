@@ -1,7 +1,5 @@
 /* csi.h */
 
-#include <stddef.h>
-
 const char *csi_labels[][2] = {
 	{"ICH", "INSERT CHARACTER"}, /* x40 */
 	{"CUU", "CURSOR UP"},

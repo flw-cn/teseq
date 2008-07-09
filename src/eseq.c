@@ -35,7 +35,10 @@
 
 #include "inputbuf.h"
 #include "putter.h"
+
+/* label/description maps. */
 #include "csi.h"
+#include "c1.h"
 #include "sgr.h"
 
 
@@ -140,10 +143,10 @@ interpret_sgr_params (struct processor *p, unsigned char n_params,
 }
 
 void
-print_csi_label (struct processor *p, unsigned int c, int private)
+print_csi_label (struct processor *p, unsigned char c, int private)
 {
 	const char **label;
-	unsigned int i = c - 0x40;
+	unsigned char i = c - 0x40;
 	if (i < N_ARY_ELEMS(csi_labels)) {
 		label = csi_labels[i];
 		if (label[0]) {
@@ -157,6 +160,17 @@ print_csi_label (struct processor *p, unsigned int c, int private)
 	else {
 		putter_single (p->putr, "%s", "& (private function [CSI])");
 	}
+}
+
+void
+print_c1_label (struct processor *p, unsigned char c)
+{
+	unsigned char i = c - 0x40;
+	const char **label = c1_labels[i];
+	if (label[0])
+		putter_single (p->putr, "& %s: %s", label[0], label[1]);
+	else
+		putter_single (p->putr, "& (unknown function)");
 }
 
 void
@@ -361,15 +375,17 @@ handle_c1 (struct processor *p, unsigned char c)
 			process_csi_sequence (p);
 			return 1;
 		}
+		else {
+			inputbuf_rewind (p->ibuf);
+			inputbuf_get (p->ibuf); /* Throw away '[' */
+		}
 	}
-	else if (c == 'M') {
-		if (config.escapes)
-			putter_single (p->putr, ": Esc M");
-		if (config.labels)
-			putter_single (p->putr, "& RI: REVERSE LINE FEED");
-		return 1;
-	}
-	return 0;
+
+	if (config.escapes)
+		putter_single (p->putr, ": Esc %c", c);
+	if (config.labels)
+		print_c1_label (p, c);
+	return 1;
 }
 
 int handle_Fp (struct processor *p, unsigned char c)

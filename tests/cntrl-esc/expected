@@ -1,6 +1,8 @@
 |Script started on Tue 24 Jun 2008 09:21:38 PM PDT|
-. CR/^M LF/^J ESC/^[
-|]0;micah@micah-laptop: ~|
+. CR/^M LF/^J
+: Esc ]
+& OSC: OPERATING SYSTEM COMMAND
+|0;micah@micah-laptop: ~|
 . BEL/^G DEL/^?
 : Esc [ 1 m
 & SGR: SELECT GRAPHIC RENDITION
