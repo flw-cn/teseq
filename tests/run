@@ -29,6 +29,9 @@ get_vars()
 
 if [ "$#" -ge 1 -a "${1}" = "-r" ]
 then
+	echo
+	echo "RUNNING RESEQ TESTS"
+	echo
 	# Test reseq
 	run_test()
 	(
@@ -49,6 +52,9 @@ then
 		return $?
 	)
 else
+	echo
+	echo "RUNNING RESEQ TESTS"
+	echo
 	# Test eseq
 	run_test()
 	(
