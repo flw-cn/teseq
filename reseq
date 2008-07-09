@@ -25,6 +25,7 @@ sub process_control {
         print chr (hex ($1));
     }
     else {
+        $control =~ s#/.*$##;
         print $controls{$control};
     }
 }

@@ -40,6 +40,7 @@
 
 
 #define CONTROL(c)	((unsigned char)((c) - 0x40))
+#define UNCONTROL(c)	((c) == '\x7f' ? '?' : (unsigned char)(c) | 0x40)
 #define C_ESC		CONTROL('[')
 
 #define GET_COLUMN(c)	(((c) & 0xf0) >> 4)
@@ -424,9 +425,10 @@ print_control (struct processor *p, unsigned char c)
 		putter_start (p->putr, ".", "", ".");
 	}
 	if (c < 0x20)
-		putter_printf (p->putr, " %s", control_names[c]);
+		putter_printf (p->putr, " %s/^%c", control_names[c],
+			       UNCONTROL (c));
 	else if (c == 0x7f)
-		putter_printf (p->putr, " %s", "DEL");
+		putter_printf (p->putr, " %s/^?", "DEL");
 	else
 		putter_printf (p->putr, " x%02X", (unsigned int)c);
 	p->st = ST_CTRL;
