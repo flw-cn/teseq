@@ -34,4 +34,8 @@ check-reseq:
 EXTRA_DIST=src/test-inputbuf.inf
 
 dist-hook:
-	cp -R -- `find $(srcdir)/tests -type d` $(distdir)/tests
+	cp -R -- `find $(srcdir)/tests -type d ! -name tests` $(distdir)/tests
+
+clean-local:
+	find tests -name r-output -o -name output | xargs rm -f
+	rm -f tests/cmdline--/-o
