@@ -287,6 +287,8 @@ get_set_name (int set, int final)
 case 0x40: name = " (ISO646/IRV:1983)"; break;
 case 0x41: ISO646 ("British"); break;
 case 0x42: name = " (US-ASCII)"; break;
+case 0x43: name = " (Finnish)"; break;
+case 0x45: name = " (Norwegian/Danish)"; break;
 case 0x47: ISO646 ("Swedish"); break;
 case 0x48: ISO646 ("Swedish Names"); break;
 case 0x49: name = " (Katakana)"; break;
@@ -297,8 +299,8 @@ case 0x5a: ISO646 ("Spanish"); break;
 case 0x4b: ISO646 ("German"); break;
 case 0x60: ISO646 ("Norwegian"); break;
 case 0x66: ISO646 ("French"); break;
-case 0x67: ISO646 ("Portuguese 2"); break;
-case 0x68: ISO646 ("Spanish 2"); break;
+case 0x67: ISO646 ("Portuguese"); break;
+case 0x68: ISO646 ("Spanish"); break;
 case 0x69: ISO646 ("Hungarian"); break;
 case 0x6b: name = " (Arabic)"; break;
 	}
