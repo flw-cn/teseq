@@ -7,7 +7,8 @@ bin_SCRIPTS  = reseq
 libexec_SCRIPTS = src/post.sed
 
 eseq_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c src/putter.c \
-               src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h
+               src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h \
+               src/c1.h src/eseq.h
 
 check_PROGRAMS = src/test-ringbuf src/test-inputbuf
 check_DATA = src/test-inputbuf.inf
