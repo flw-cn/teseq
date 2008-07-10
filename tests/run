@@ -53,7 +53,7 @@ then
 	)
 else
 	echo
-	echo "RUNNING RESEQ TESTS"
+	echo "RUNNING ESEQ TESTS"
 	echo
 	# Test eseq
 	run_test()
