@@ -17,6 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "eseq.h"
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -116,15 +118,14 @@ putter_printf (struct putter *p, const char *fmt, ...)
 {
   int len, ret;
   va_list ap;
-  va_list cp;
 
   va_start (ap, fmt);
-  va_copy (cp, ap);
   len = vsnprintf (NULL, 0, fmt, ap);
   va_end (ap);
   ensure_space (p, len);
-  ret = vfprintf (p->file, fmt, cp);
-  va_end (cp);
+  va_start (ap, fmt);
+  ret = vfprintf (p->file, fmt, ap);
+  va_end (ap);
   return ret;
 }
 

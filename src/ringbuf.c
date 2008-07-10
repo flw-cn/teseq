@@ -17,6 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "eseq.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,9 +53,10 @@ struct ringbuf *
 ringbuf_new (size_t bufsz)
 {
   unsigned char *buf = malloc (bufsz);
+  struct ringbuf *newbuf;
   if (!buf)
     return NULL;
-  struct ringbuf *newbuf = malloc (sizeof *newbuf);
+  newbuf = malloc (sizeof *newbuf);
   if (!newbuf)
     {
       free (buf);

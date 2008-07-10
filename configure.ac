@@ -12,8 +12,7 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lcheck':
-AC_CHECK_LIB([check], [main])
+AC_CHECK_LIB([check], tcase_add_test)
 
 # Checks for header files.
 AC_HEADER_STDC

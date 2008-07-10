@@ -17,6 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "eseq.h"
+
 #include <assert.h>
 #include <getopt.h>
 #include <stdio.h>
@@ -55,7 +57,7 @@ enum processor_state
 {
   ST_INIT,
   ST_TEXT,
-  ST_CTRL,
+  ST_CTRL
 };
 
 struct processor
@@ -204,7 +206,7 @@ process_csi_sequence (struct processor *p)
         {
           if (last_was_digit)
             {
-              // XXX: range check here.
+              /* XXX: range check here. */
               cur_param *= 10;
               cur_param += c - '0';
             }
@@ -251,7 +253,7 @@ read_csi_sequence (struct processor *p)
   {
     SEQ_CSI_PARAM_FIRST_CHAR,
     SEQ_CSI_PARAMETER,
-    SEQ_CSI_INTERMEDIATE,
+    SEQ_CSI_INTERMEDIATE
   } state = SEQ_CSI_PARAM_FIRST_CHAR;
   int c, col;
   int private_params = 0;

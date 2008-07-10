@@ -5,6 +5,7 @@ syntax:glob
 **/tags
 **/TAGS
 **/cscope.out
+**.o
 
 eseq
 
@@ -16,9 +17,13 @@ aclocal.m4
 autom4te.cache
 config.h.in
 config.h
+config.log
+config.status
 depcomp
+.deps
 install-sh
 missing
+stamp-h1
 
 src/test-ringbuf.c
 src/test-ringbuf
