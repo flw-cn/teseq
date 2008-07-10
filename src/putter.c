@@ -33,124 +33,134 @@
 
 #include "putter.h"
 
-#define DEFAULT_LINE_MAX	78
+#define DEFAULT_LINE_MAX        78
 
-struct putter {
-	FILE  *file;
-	size_t nc;
-	const char *presep;
-	size_t presz;
-	const char *postsep;
-	size_t postsz;
-	size_t linemax;
+struct putter
+{
+  FILE *file;
+  size_t nc;
+  const char *presep;
+  size_t presz;
+  const char *postsep;
+  size_t postsz;
+  size_t linemax;
 };
 
 struct putter *
-putter_new (FILE *file)
+putter_new (FILE * file)
 {
-	struct putter *p = malloc (sizeof *p);
-	p->file = file;
-	p->nc = 0;
-	p->linemax = DEFAULT_LINE_MAX;
-	p->presep = p->postsep = "";
-	p->presz = 0;
-	p->postsz = 0;
-	return p;
+  struct putter *p = malloc (sizeof *p);
+  p->file = file;
+  p->nc = 0;
+  p->linemax = DEFAULT_LINE_MAX;
+  p->presep = p->postsep = "";
+  p->presz = 0;
+  p->postsz = 0;
+  return p;
 }
 
-void putter_delete (struct putter *p)
+void
+putter_delete (struct putter *p)
 {
-	free (p);
+  free (p);
 }
 
 static void
 ensure_space (struct putter *p, size_t addition)
 {
-	if (p->nc + addition > p->linemax
-	    || p->nc + p->presz == p->linemax) {
-		fprintf (p->file, "%s\n%s", p->presep, p->postsep);
-		p->nc = p->postsz;
-	}
-	p->nc += addition;
+  if (p->nc + addition > p->linemax || p->nc + p->presz == p->linemax)
+    {
+      fprintf (p->file, "%s\n%s", p->presep, p->postsep);
+      p->nc = p->postsz;
+    }
+  p->nc += addition;
 }
 
-int putter_start (struct putter *p, const char *s,
-		  const char *pre, const char *post)
+int
+putter_start (struct putter *p, const char *s,
+              const char *pre, const char *post)
 {
-	p->presep = pre;
-	p->postsep = post;
-	p->presz = strlen (pre);
-	p->postsz = strlen (post);
+  p->presep = pre;
+  p->postsep = post;
+  p->presz = strlen (pre);
+  p->postsz = strlen (post);
 
-	if (p->nc > 0) fputc ('\n', p->file);
-	p->nc = strlen (s);
-	return fputs (s, p->file);
+  if (p->nc > 0)
+    fputc ('\n', p->file);
+  p->nc = strlen (s);
+  return fputs (s, p->file);
 }
 
-int putter_finish (struct putter *p, const char *s)
+int
+putter_finish (struct putter *p, const char *s)
 {
-	p->presep = "";
-	p->postsep = "";
-	p->presz = 0;
-	p->postsz = 0;
+  p->presep = "";
+  p->postsep = "";
+  p->presz = 0;
+  p->postsz = 0;
 
-	if (p->nc == 0) return 0;
-	if (p->nc + strlen (s) > p->linemax)
-		fprintf (p->file, "%s\n", p->presep);
-	p->nc = 0;
-	return fprintf (p->file, "%s\n", s);
+  if (p->nc == 0)
+    return 0;
+  if (p->nc + strlen (s) > p->linemax)
+    fprintf (p->file, "%s\n", p->presep);
+  p->nc = 0;
+  return fprintf (p->file, "%s\n", s);
 }
 
-int putter_putc (struct putter *p, unsigned char c)
+int
+putter_putc (struct putter *p, unsigned char c)
 {
-	ensure_space (p, 1);
-	return putc (c, p->file);
-}
-	
-int putter_puts (struct putter *p, const char *s)
-{
-	ensure_space (p, strlen (s));
-	return fputs (s, p->file);
+  ensure_space (p, 1);
+  return putc (c, p->file);
 }
 
-int putter_printf (struct putter *p, const char *fmt, ...)
+int
+putter_puts (struct putter *p, const char *s)
 {
-	int len, ret;
-	va_list ap;
-	va_list cp;
+  ensure_space (p, strlen (s));
+  return fputs (s, p->file);
+}
 
-	va_start (ap, fmt);
-	va_copy  (cp, ap);
-	len = vsnprintf (NULL, 0, fmt, ap);
-	va_end (ap);
-	ensure_space (p, len);
-	ret = vfprintf (p->file, fmt, cp);
-	va_end (cp);
-	return ret;
+int
+putter_printf (struct putter *p, const char *fmt, ...)
+{
+  int len, ret;
+  va_list ap;
+  va_list cp;
+
+  va_start (ap, fmt);
+  va_copy (cp, ap);
+  len = vsnprintf (NULL, 0, fmt, ap);
+  va_end (ap);
+  ensure_space (p, len);
+  ret = vfprintf (p->file, fmt, cp);
+  va_end (cp);
+  return ret;
 }
 
 /* Combines:
- *	putter_start (p, "", "", "");
- *	putter_printf (p, fmt, ...);
- *	putter_finish (p, ""); */
-int putter_single (struct putter *p, const char *fmt, ...)
+ *      putter_start (p, "", "", "");
+ *      putter_printf (p, fmt, ...);
+ *      putter_finish (p, ""); */
+int
+putter_single (struct putter *p, const char *fmt, ...)
 {
-	va_list ap;
-	int ret, e;
+  va_list ap;
+  int ret, e;
 
-	if (p->nc > 0) fputc ('\n', p->file);
-	va_start (ap, fmt);
-	ret = vfprintf (p->file, fmt, ap);
-	va_end (ap);
-	p->presep = "";
-	p->postsep = "";
-	p->presz = 0;
-	p->postsz = 0;
-	p->nc = 0;
-	e = putc ('\n', p->file);
-	if (e == -1) return -1;
+  if (p->nc > 0)
+    fputc ('\n', p->file);
+  va_start (ap, fmt);
+  ret = vfprintf (p->file, fmt, ap);
+  va_end (ap);
+  p->presep = "";
+  p->postsep = "";
+  p->presz = 0;
+  p->postsz = 0;
+  p->nc = 0;
+  e = putc ('\n', p->file);
+  if (e == -1)
+    return -1;
 
-	return ret+1;
+  return ret + 1;
 }
-
-/* vim:set sts=8 sw=8 ts=8 noet: */

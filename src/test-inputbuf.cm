@@ -35,34 +35,33 @@
 struct inputbuf *the_buffer;
 
 #test basic
-	/* Reading from the file. */
-	fail_unless (inputbuf_get (the_buffer) == 'a');
-	fail_unless (inputbuf_get (the_buffer) == 'b');
-	fail_unless (inputbuf_saving (the_buffer) == 0);
-	/* Reading from the file, and filling the buffer. */
-	fail_unless (inputbuf_get (the_buffer) == 'c');
-	fail_unless (inputbuf_get (the_buffer) == 'd');
-	fail_unless (inputbuf_get (the_buffer) == 'e');
-	fail_unless (inputbuf_rewind (the_buffer) == 0);
-	/* Consuming the buffer. */
-	fail_unless (inputbuf_get (the_buffer) == 'c');
-	fail_unless (inputbuf_get (the_buffer) == 'd');
-	fail_unless (inputbuf_saving (the_buffer) == 0);
-	/* Reading from the buffer, but not consuming. */
-	fail_unless (inputbuf_get (the_buffer) == 'e');
-	fail_unless (inputbuf_forget (the_buffer) == 0);
-	/* Reading from the file. */
-	fail_unless (inputbuf_get (the_buffer) == 'f');
-	fail_unless (inputbuf_get (the_buffer) == 'g');
-	fail_unless (inputbuf_get (the_buffer) == 'h');
-	fail_unless (inputbuf_get (the_buffer) == EOF);
+        /* Reading from the file. */
+        fail_unless (inputbuf_get (the_buffer) == 'a');
+        fail_unless (inputbuf_get (the_buffer) == 'b');
+        fail_unless (inputbuf_saving (the_buffer) == 0);
+        /* Reading from the file, and filling the buffer. */
+        fail_unless (inputbuf_get (the_buffer) == 'c');
+        fail_unless (inputbuf_get (the_buffer) == 'd');
+        fail_unless (inputbuf_get (the_buffer) == 'e');
+        fail_unless (inputbuf_rewind (the_buffer) == 0);
+        /* Consuming the buffer. */
+        fail_unless (inputbuf_get (the_buffer) == 'c');
+        fail_unless (inputbuf_get (the_buffer) == 'd');
+        fail_unless (inputbuf_saving (the_buffer) == 0);
+        /* Reading from the buffer, but not consuming. */
+        fail_unless (inputbuf_get (the_buffer) == 'e');
+        fail_unless (inputbuf_forget (the_buffer) == 0);
+        /* Reading from the file. */
+        fail_unless (inputbuf_get (the_buffer) == 'f');
+        fail_unless (inputbuf_get (the_buffer) == 'g');
+        fail_unless (inputbuf_get (the_buffer) == 'h');
+        fail_unless (inputbuf_get (the_buffer) == EOF);
 
 #main-pre
-	FILE *f = fopen ("test-inputbuf.inf", "r");
-	if (!f) {
-		perror ("Couldn't open input file");
-		exit (1);
-	}
-	the_buffer = inputbuf_new (f, 10);
-
-/* vim:set ft=c sw=8 ts=8 sts=8 noet: */
+        FILE *f = fopen ("test-inputbuf.inf", "r");
+        if (!f)
+          {
+            perror ("Couldn't open input file");
+            exit (1);
+          }
+        the_buffer = inputbuf_new (f, 10);

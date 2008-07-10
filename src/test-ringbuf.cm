@@ -34,82 +34,80 @@
 struct ringbuf *the_buffer;
 
 #test empty
-	fail_unless (ringbuf_get (the_buffer) == EOF);
+        fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #test read_test
-	fail_unless (ringbuf_put (the_buffer, 'a') == 0);
-	fail_unless (ringbuf_put (the_buffer, 'b') == 0);
-	fail_unless (ringbuf_put (the_buffer, 'c') == 0);
-	fail_unless (ringbuf_get (the_buffer) == 'a');
-	fail_unless (ringbuf_get (the_buffer) == 'b');
-	fail_unless (ringbuf_get (the_buffer) == 'c');
-	fail_unless (ringbuf_get (the_buffer) == EOF);
-	fail_unless (ringbuf_get (the_buffer) == EOF);
+        fail_unless (ringbuf_put (the_buffer, 'a') == 0);
+        fail_unless (ringbuf_put (the_buffer, 'b') == 0);
+        fail_unless (ringbuf_put (the_buffer, 'c') == 0);
+        fail_unless (ringbuf_get (the_buffer) == 'a');
+        fail_unless (ringbuf_get (the_buffer) == 'b');
+        fail_unless (ringbuf_get (the_buffer) == 'c');
+        fail_unless (ringbuf_get (the_buffer) == EOF);
+        fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #test wraparound
-	fail_unless (ringbuf_putmem (the_buffer, "abc", 3) == 0);
-	fail_unless (ringbuf_get (the_buffer) == 'a');
-	fail_unless (ringbuf_putmem (the_buffer, "defg", 4) == 1);
-	fail_unless (ringbuf_putmem (the_buffer, "def", 3) == 0);
-	fail_unless (ringbuf_put (the_buffer, 'g') == 1);
-	fail_unless (ringbuf_get (the_buffer) == 'b');
-	fail_unless (ringbuf_get (the_buffer) == 'c');
-	fail_unless (ringbuf_get (the_buffer) == 'd');
-	fail_unless (ringbuf_get (the_buffer) == 'e');
-	fail_unless (ringbuf_get (the_buffer) == 'f');
-	fail_unless (ringbuf_get (the_buffer) == EOF);
+        fail_unless (ringbuf_putmem (the_buffer, "abc", 3) == 0);
+        fail_unless (ringbuf_get (the_buffer) == 'a');
+        fail_unless (ringbuf_putmem (the_buffer, "defg", 4) == 1);
+        fail_unless (ringbuf_putmem (the_buffer, "def", 3) == 0);
+        fail_unless (ringbuf_put (the_buffer, 'g') == 1);
+        fail_unless (ringbuf_get (the_buffer) == 'b');
+        fail_unless (ringbuf_get (the_buffer) == 'c');
+        fail_unless (ringbuf_get (the_buffer) == 'd');
+        fail_unless (ringbuf_get (the_buffer) == 'e');
+        fail_unless (ringbuf_get (the_buffer) == 'f');
+        fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #test reader
-	struct ringbuf_reader *reader1;
-	struct ringbuf_reader *reader2;
-	ringbuf_put (the_buffer, 'x');
-	ringbuf_put (the_buffer, 'x');
-	ringbuf_get (the_buffer);
-	ringbuf_get (the_buffer);
-	ringbuf_putmem (the_buffer, "abcde", 5);
-	reader1 = ringbuf_reader_new (the_buffer);
-	fail_unless (ringbuf_reader_get (reader1) == 'a');
-	fail_unless (ringbuf_reader_get (reader1) == 'b');
-	fail_unless (ringbuf_reader_get (reader1) == 'c');
-	fail_unless (ringbuf_reader_get (reader1) == 'd');
-	reader2 = ringbuf_reader_new (the_buffer);
-	fail_unless (ringbuf_reader_get (reader2) == 'a');
-	ringbuf_reader_consume (reader1);
-	fail_unless (ringbuf_get (the_buffer) == 'e');
+        struct ringbuf_reader *reader1;
+        struct ringbuf_reader *reader2;
+        ringbuf_put (the_buffer, 'x');
+        ringbuf_put (the_buffer, 'x');
+        ringbuf_get (the_buffer);
+        ringbuf_get (the_buffer);
+        ringbuf_putmem (the_buffer, "abcde", 5);
+        reader1 = ringbuf_reader_new (the_buffer);
+        fail_unless (ringbuf_reader_get (reader1) == 'a');
+        fail_unless (ringbuf_reader_get (reader1) == 'b');
+        fail_unless (ringbuf_reader_get (reader1) == 'c');
+        fail_unless (ringbuf_reader_get (reader1) == 'd');
+        reader2 = ringbuf_reader_new (the_buffer);
+        fail_unless (ringbuf_reader_get (reader2) == 'a');
+        ringbuf_reader_consume (reader1);
+        fail_unless (ringbuf_get (the_buffer) == 'e');
 
 #test clear
-	ringbuf_put (the_buffer, 'a');
-	ringbuf_put (the_buffer, 'b');
-	ringbuf_put (the_buffer, 'c');
-	fail_unless (ringbuf_get (the_buffer) == 'a');
-	ringbuf_clear (the_buffer);
-	fail_unless (ringbuf_get (the_buffer) == EOF);
+        ringbuf_put (the_buffer, 'a');
+        ringbuf_put (the_buffer, 'b');
+        ringbuf_put (the_buffer, 'c');
+        fail_unless (ringbuf_get (the_buffer) == 'a');
+        ringbuf_clear (the_buffer);
+        fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #test putback
-	ringbuf_put (the_buffer, 'a');
-	ringbuf_put (the_buffer, 'b');
-	fail_unless (ringbuf_putback (the_buffer, 'c') == 0);
-	fail_unless (ringbuf_get (the_buffer) == 'c');
-	fail_unless (ringbuf_get (the_buffer) == 'a');
-	fail_unless (ringbuf_putback (the_buffer, 'd') == 0);
-	fail_unless (ringbuf_get (the_buffer) == 'd');
-	fail_unless (ringbuf_get (the_buffer) == 'b');
-	fail_unless (ringbuf_get (the_buffer) == EOF);
+        ringbuf_put (the_buffer, 'a');
+        ringbuf_put (the_buffer, 'b');
+        fail_unless (ringbuf_putback (the_buffer, 'c') == 0);
+        fail_unless (ringbuf_get (the_buffer) == 'c');
+        fail_unless (ringbuf_get (the_buffer) == 'a');
+        fail_unless (ringbuf_putback (the_buffer, 'd') == 0);
+        fail_unless (ringbuf_get (the_buffer) == 'd');
+        fail_unless (ringbuf_get (the_buffer) == 'b');
+        fail_unless (ringbuf_get (the_buffer) == EOF);
 
 #test reader_reset
-	struct ringbuf_reader *reader;
-	ringbuf_putmem (the_buffer, "abcd", 4);
-	reader = ringbuf_reader_new (the_buffer);
-	fail_unless (ringbuf_reader_get (reader) == 'a');
-	fail_unless (ringbuf_reader_get (reader) == 'b');
-	ringbuf_reader_reset (reader);
-	fail_unless (ringbuf_reader_get (reader) == 'a');
-	fail_unless (ringbuf_reader_get (reader) == 'b');
-	fail_unless (ringbuf_reader_get (reader) == 'c');
-	fail_unless (ringbuf_reader_get (reader) == 'd');
-	fail_unless (ringbuf_reader_get (reader) == EOF);
+        struct ringbuf_reader *reader;
+        ringbuf_putmem (the_buffer, "abcd", 4);
+        reader = ringbuf_reader_new (the_buffer);
+        fail_unless (ringbuf_reader_get (reader) == 'a');
+        fail_unless (ringbuf_reader_get (reader) == 'b');
+        ringbuf_reader_reset (reader);
+        fail_unless (ringbuf_reader_get (reader) == 'a');
+        fail_unless (ringbuf_reader_get (reader) == 'b');
+        fail_unless (ringbuf_reader_get (reader) == 'c');
+        fail_unless (ringbuf_reader_get (reader) == 'd');
+        fail_unless (ringbuf_reader_get (reader) == EOF);
 
 #main-pre
-	the_buffer = ringbuf_new (5);
-
-/* vim:set ft=c sw=8 ts=8 sts=8 noet: */
+        the_buffer = ringbuf_new (5);
