@@ -34,3 +34,6 @@ src/test-inputbuf.c
 src/test-inputbuf
 tests/*/output
 tests/*/r-output
+
+syntax:regexp
+eseq-.*\.tar\.[^.]*
