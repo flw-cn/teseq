@@ -26,6 +26,7 @@ depcomp
 install-sh
 missing
 stamp-h1
+run-tests
 
 src/test-ringbuf.c
 src/test-ringbuf
