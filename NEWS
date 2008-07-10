@@ -1,0 +1,16 @@
+                                                                -*- text -*
+NEWS file for Eseq
+
+Copyright (C) 2008  Micah Cowan  <micah@cowan.name>
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Version 1.0-devel
+
+* Initial release!
+
+* Eseq recognizes the various control characters and sequences
+  described by Ecma-35 and Ecma-48, and outputs them in a friendly format,
+  describing their effects.
