@@ -39,3 +39,4 @@ dist-hook:
 clean-local:
 	find tests -name r-output -o -name output | xargs rm -f
 	rm -f tests/cmdline--/-o
+	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf
