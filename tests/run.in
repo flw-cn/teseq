@@ -1,6 +1,10 @@
 #!/bin/sh
+# @configure_input@
 
 set -e
+
+srcdir=@abs_srcdir@
+builddir=@abs_builddir@
 
 get_vars()
 {
@@ -14,15 +18,17 @@ get_vars()
 	r_invocation=''
 	r_diffcmd=''
 	run_reseq=true
-	if [ -f vars ]
+	if [ -f "$testin/vars" ]
 	then
-		. ./vars
+		. "$testin/vars"
 	fi
-	invocation=${invocation:-'"$ESEQ" $eseq_options < "$input" \
-			    > "$output"'}
-	diffcmd=${diffcmd:-'diff -u "$expected" "$output"'}
-	r_invocation=${r_invocation:-'"$RESEQ" < "$r_input" > "$r_output"'}
-	r_diffcmd=${r_diffcmd:-'cmp -- "$r_expected" "$r_output"'}
+	invocation=${invocation:-'"$ESEQ" $eseq_options < \
+	                          "$testin/$input" > "$testout/$output"'}
+	diffcmd=${diffcmd:-'diff -u "$testin/$expected" "$testout/$output"'}
+	r_invocation=${r_invocation:-'"$RESEQ" < "$testin/$r_input" \
+	                              > "$testout/$r_output"'}
+	r_diffcmd=${r_diffcmd:-'cmp -- "$testin/$r_expected" \
+	                        "$testout/$r_output"'}
 	r_input="${r_input:-$expected}"
 	r_expected="${r_expected:-$input}"
 }
@@ -35,7 +41,11 @@ then
 	# Test reseq
 	run_test()
 	(
-		cd "$1"
+		test="$1"
+		testin="$srcdir/tests/$test"
+		testout="$builddir/tests/$test"
+		mkdir -p "$testout"
+		cd "$testout"
 		rm -f r-output
 		get_vars
 		if ! $run_reseq
@@ -58,7 +68,11 @@ else
 	# Test eseq
 	run_test()
 	(
-		cd "$1"
+		test="$1"
+		testin="$srcdir/tests/$test"
+		testout="$builddir/tests/$test"
+		mkdir -p "$testout"
+		cd "$testout"
 		rm -f output
 		get_vars
 		eval "$invocation"
@@ -74,8 +88,8 @@ fi
 
 ########################################
 
-: ${ESEQ=../../eseq}
-: ${RESEQ=../../reseq}
+: ${ESEQ=${builddir}/eseq}
+: ${RESEQ=${srcdir}/reseq}
 : ${ESEQ_TESTS='
 	empty
 	cmdline-in-out
@@ -100,18 +114,18 @@ nt=0
 np=0
 nf=0
 ft=''
-for t in $ESEQ_TESTS
+for test in $ESEQ_TESTS
 do
-	echo $t
-	if run_test $t
+	echo $test
+	if run_test $test
         then
 		np=$((np+1))
 	else
 		nf=$((nf+1))
 		echo
-		echo FAILED: $t
+		echo FAILED: $test
 		echo
-		ft="$ft $t"
+		ft="$ft $test"
 	fi
 	nt=$((nt+1))
 done

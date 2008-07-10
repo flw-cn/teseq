@@ -1,3 +1,4 @@
+cp -- "$testin"/-o .
 input='-o'
-r_diffcmd='cmp -- -o r-output'
-invocation='"$ESEQ" -- -o > output'
+r_diffcmd='cmp -- -o "$testout"/r-output'
+invocation='"$ESEQ" -- -o > "$testout"/output'

@@ -25,7 +25,7 @@ SUFFIXES = .cm
 check: check-eseq check-reseq
 
 check-eseq:
-	cd $(top_srcdir)/tests && ./run
+	./run-tests
 
 check-reseq:
-	cd $(top_srcdir)/tests && ./run -r
+	./run-tests -r

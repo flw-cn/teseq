@@ -29,5 +29,10 @@ AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strchr])
 
-AC_CONFIG_FILES([Makefile src/test-inputbuf.inf:src/test-inputbuf.inf])
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([run-tests:tests/run.in],[chmod +x run-tests])
+AC_CONFIG_COMMANDS([src/test-inputbuf.inf],
+                   [test "$srcdir" = . || \
+                    cp "$srcdir/src/test-inputbuf.inf" \
+                       src/test-inputbuf.inf])
 AC_OUTPUT
