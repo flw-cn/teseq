@@ -1,3 +1,4 @@
+/* -*- c -*- */
 /* test-ringbuf.cm: tests for ringbuf.c. */
 
 /*
