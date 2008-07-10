@@ -5,6 +5,7 @@ syntax:glob
 **/tags
 **/TAGS
 **/cscope.out
+**/.dirstamp
 **.o
 
 eseq
@@ -15,6 +16,7 @@ Makefile.in
 Makefile
 aclocal.m4
 autom4te.cache
+compile
 config.h.in
 config.h
 config.log
