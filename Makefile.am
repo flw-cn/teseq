@@ -10,6 +10,7 @@ eseq_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c src/putter.c \
                src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h
 
 check_PROGRAMS = src/test-ringbuf src/test-inputbuf
+check_DATA = src/test-inputbuf.inf
 TESTS = $(check_PROGRAMS)
 src_test_ringbuf_SOURCES = src/test-ringbuf.c src/ringbuf.c
 src_test_ringbuf_LDADD = -lcheck
@@ -24,7 +25,7 @@ SUFFIXES = .cm
 check: check-eseq check-reseq
 
 check-eseq:
-	cd $(topsrcdir)/tests && ./run
+	cd $(top_srcdir)/tests && ./run
 
 check-reseq:
-	cd $(topsrcdir)/tests && ./run -r
+	cd $(top_srcdir)/tests && ./run -r

@@ -51,7 +51,7 @@ struct inputbuf *the_buffer;
         fail_unless (inputbuf_get (the_buffer) == EOF);
 
 #main-pre
-        FILE *f = fopen ("test-inputbuf.inf", "r");
+        FILE *f = fopen ("src/test-inputbuf.inf", "r");
         if (!f)
           {
             perror ("Couldn't open input file");
