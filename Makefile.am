@@ -25,10 +25,10 @@ SUFFIXES = .cm
 
 check: check-eseq check-reseq
 
-check-eseq:
+check-eseq: eseq
 	./run-tests
 
-check-reseq:
+check-reseq: reseq
 	./run-tests -r
 
 EXTRA_DIST=src/test-inputbuf.inf
