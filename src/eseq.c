@@ -699,7 +699,7 @@ configure_processor (struct processor *p, int argc, char **argv)
   config.labels = 1;
   config.escapes = 1;
   while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LE", eseq_opts, NULL))
-         != -2)
+         != -1)
     {
       switch (opt)
         {
