@@ -459,7 +459,8 @@ print_gxd_info (struct processor *p, int intermediate, int final)
   else
     {
       if (config.labels)
-        putter_single (p->putr, "& (unknown function [nF])");
+        putter_single (p->putr, "& (unknown function [%dF])",
+                       intermediate - 0x20);
       return;
     }
 
