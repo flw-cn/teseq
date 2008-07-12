@@ -1,3 +1,16 @@
+: Esc Spc F
+& ACS: ANNOUNCE CODE STRUCTURE
+: Esc ! @
+& CZD: C0-DESIGNATE
+" Designate C0 Set of ISO-646
+: Esc ! G
+& CZD: C0-DESIGNATE
+: Esc " C
+& C1D: C1-DESIGNATE
+" Designate C1 Control Set of ISO 6429-1983
+: Esc " E
+& C1D: C1-DESIGNATE
+. LF/^J
 : Esc ( B
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
