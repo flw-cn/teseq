@@ -53,6 +53,8 @@
 
 #define DEFAULT_PARAM   ((unsigned int)-1)
 
+#define PUTTER_START_ESC    putter_start (p->putr, ":", "", ": ")
+
 enum processor_state
 {
   ST_INIT,
@@ -91,6 +93,17 @@ struct
 #define is_ascii_digit(x)       ((x) >= 0x30 && (x) <= 0x39)
 
 #define N_ARY_ELEMS(ary)        (sizeof (ary) / sizeof (ary)[0])
+
+void
+print_esc_char (struct processor *p, unsigned char c)
+{
+    if (c == C_ESC)
+      putter_puts (p->putr, " Esc");
+    else if (c == ' ')
+      putter_puts (p->putr, " Spc");
+    else
+      putter_printf (p->putr, " %c", c);
+}
 
 void
 print_sgr_param_description (struct processor *p, unsigned int param)
@@ -187,7 +200,8 @@ process_csi_sequence (struct processor *p)
   unsigned int params[255];
 
   if (e)
-    putter_start (p->putr, ":", "", ": ");
+    PUTTER_START_ESC;
+  
   if (e)
     putter_puts (p->putr, " Esc");
   c = inputbuf_get (p->ibuf);
@@ -407,7 +421,26 @@ get_set_name (int set, int final)
 }
 
 void
-print_ecma_info (struct processor *p, int intermediate, int final)
+print_cxd_info (struct processor *p, int intermediate, int final)
+{
+  if (intermediate == 0x21)
+    {
+      if (config.labels)
+        putter_single (p->putr, "& CZD: C0-DESIGNATE");
+      if (config.descriptions && final == 0x40)
+        putter_single (p->putr, "\" Designate C0 Set of ISO-646.");
+    }
+  else
+    {
+      if (config.labels)
+        putter_single (p->putr, "& C1D: C1-DESIGNATE");
+      if (config.descriptions && final == 0x43)
+        putter_single (p->putr, "\" Designate C1 Control Set of ISO 6429-1983.");
+    }
+}
+
+void
+print_gxd_info (struct processor *p, int intermediate, int final)
 {
   int designate;
   const char *desig_strs = "Z123";
@@ -418,10 +451,16 @@ print_ecma_info (struct processor *p, int intermediate, int final)
       set = 6;
       designate = intermediate - 0x2c;
     }
-  else
+  else if (intermediate != 0x27 && intermediate != 0x2c)
     {
       set = 4;
       designate = intermediate - 0x28;
+    }
+  else
+    {
+      if (config.labels)
+        putter_single (p->putr, "& (unknown function [nF])");
+      return;
     }
 
   if (config.labels)
@@ -451,9 +490,18 @@ handle_nF (struct processor *p, unsigned char i)
 
   if (config.escapes)
     {
-      putter_single (p->putr, ": Esc %c %c", i, f);
+      PUTTER_START_ESC;
+      print_esc_char (p, C_ESC);
+      print_esc_char (p, i);
+      print_esc_char (p, f);
+      putter_finish (p->putr, "");
     }
-  print_ecma_info (p, i, f);
+  if (i == 0x20 && config.labels)
+    putter_single (p->putr, "& ACS: ANNOUNCE CODE STRUCTURE");
+  else if (i == 0x21 || i == 0x22)
+    print_cxd_info (p, i, f);
+  else if (i >= 0x27)
+    print_gxd_info (p, i, f);
   return 1;
 
 nothandled:

@@ -35,6 +35,9 @@ sub process_sequence {
     if ($stuff eq 'Esc') {
         print $outf "\033";
     }
+    elsif ($stuff eq 'Spc') {
+        print $outf ' ';
+    }
     else {
         print $outf "$stuff";
     }

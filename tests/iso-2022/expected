@@ -2,15 +2,17 @@
 & ACS: ANNOUNCE CODE STRUCTURE
 : Esc ! @
 & CZD: C0-DESIGNATE
-" Designate C0 Set of ISO-646
+" Designate C0 Set of ISO-646.
 : Esc ! G
 & CZD: C0-DESIGNATE
 : Esc " C
 & C1D: C1-DESIGNATE
-" Designate C1 Control Set of ISO 6429-1983
+" Designate C1 Control Set of ISO 6429-1983.
 : Esc " E
 & C1D: C1-DESIGNATE
 . LF/^J
+: Esc ' A
+& (unknown function [nF])
 : Esc ( B
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
@@ -23,6 +25,8 @@
 : Esc + 5
 & G3D4: G3-DESIGNATE 94-SET
 " Designate 94-character set 5 (private) to G3.
+: Esc , A
+& (unknown function [nF])
 : Esc ( p
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set p to G0.
