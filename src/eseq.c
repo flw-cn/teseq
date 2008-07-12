@@ -630,15 +630,38 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
-eseq -h\n\
-eseq [-LDE] [-o out] [in]\n\
+eseq -h | --help\n\
+eseq -V | --version\n\
+eseq [-CLDE] [-o out] [in]\n\
 \n\
+	-h|--help\n\
+                Display usage information (this message).\n\
+        -V|--version\n\
+                Display version and warrantee.\n\
+\n\
+        -o      Send output to OUT rather than standard output.\n\
         -C      Don't print ^X for C0 controls.\n\
         -L      Don't print labels.\n\
         -D      Don't print descriptions.\n\
         -E      Don't print escape sequences.\n", f);
   exit (status);
 }
+
+void
+version (void)
+{
+  puts (PACKAGE_STRING);
+  puts ("\
+Copyright (C) 2008 Micah Cowan <micah@cowan.name>\n\
+License GPLv3+: GNU GPL version 3 or later \
+<http://gnu.org/licenses/gpl.html>\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.\
+");
+  exit (EXIT_SUCCESS);
+}
+
+  
 
 FILE *
 must_fopen (const char *fname, const char *mode)
@@ -659,6 +682,12 @@ must_fopen (const char *fname, const char *mode)
   exit (EXIT_FAILURE);
 }
 
+struct option eseq_opts[] = {
+  { "help", 0, NULL, 'h' },
+  { "version", 0, NULL, 'V' },
+  { 0 }
+};
+
 void
 configure_processor (struct processor *p, int argc, char **argv)
 {
@@ -669,12 +698,16 @@ configure_processor (struct processor *p, int argc, char **argv)
   config.descriptions = 1;
   config.labels = 1;
   config.escapes = 1;
-  while ((opt = getopt (argc, argv, ":ho:C^&D\"LE")) != -1)
+  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LE", eseq_opts, NULL))
+         != -2)
     {
       switch (opt)
         {
         case 'h':
           usage (EXIT_SUCCESS);
+          break;
+        case 'V':
+          version ();
           break;
         case 'o':
           outf = must_fopen (optarg, "w");

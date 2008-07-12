@@ -5,7 +5,7 @@ AC_PREREQ(2.61)
 AC_INIT([Eseq], [1.0-devel], [micah@cowan.name])
 AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 dist-lzma gnu])
 AC_CONFIG_SRCDIR([src/eseq.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([src/config.h])
 
 # Checks for programs.
 AC_PROG_CC
