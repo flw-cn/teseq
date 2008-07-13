@@ -46,3 +46,10 @@
 : Esc >
 & (private function [Fp])
 . LF/^J
+: Esc $ B
+& GZDM4: G0-DESIGNATE MULTIBYTE 94-SET
+|:#F|$O!";3ED$5$s!#|
+: Esc ( B
+& GZD4: G0-DESIGNATE 94-SET
+" Designate 94-character set B (US-ASCII) to G0.
+. LF/^J
