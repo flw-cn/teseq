@@ -1,74 +1,13 @@
-Options:
-  - How to treat 8-bit combinations:
-      UTF-8 when possible, 8-bit CR/GR sets otherwise
-      8-bit CR/GR only
-      Uninterpreted/opaque
-  - Whether to attempt to display "normal" strings in the state they are
-    presumed to have been in (i.e., standout mode, color, multibyte,
-    etc).
-  - Specified string, either of named control functions or of actual
-    control sequences, representing the state of the terminal before the
-    start of the input; especially to specify Ecma-35
-    designations/invocations.
-  - Specified highlight modes for
-      Normal text
-      Control sequences
-      Summary
-      Verbose explanation
-  - Number of columns/lines in terminal.
-  - Display mode
-      Control-stripping mode (Just strips controls and spits out the
-        rest).
-      Control-interpreting mode (to derive plaintext from a typescript:
-        handles overwriting from backspace, carriage return; possibly
-        line- and column-changing codes; throws out the rest).
-      Normal text and printable representations of control sequences,
-        plus any combination of the following (displayed in the order
-        listed):
-        - Control function identity
-        - Current states (related to what has been changed by this
-          function): highlighting, code pages, etc.
-        - Explanation of what the function is doing, and the result.
-  - Format for displaying control characters (any combination of:)
-      ESC x/y
-      0xHH
-      <HH>
-      X, C-X, M-C-X
-  - Normal text display:
-      Allow suppression (individually specified) of treatment of
-      whitespace control characters as control characters, outputting
-      them directly instead, and folding text according to original
-      terminal's specified line lengths.
+TODO:
 
-Note: identity and control expansions, when both specified,
-should be combined in a single line, like:
-    CARRIAGE RETURN ( 0x0D )
-    HORIZONTAL TAB ( C-I )
+Multibyte 94-set seqs with multiple intermediate bytes.
+Make Eseq handle 2/00 intermediate byte properly for CSI (more standard CSI functions).
+Document CSI functions.
+Make Eseq handle sub-parameters (`:'-separated) properly.
+Make Eseq handle other _possible_ nF functions, including other intermediate-byte 02/xx combos, and multibyte 96-sets.
+Xterm extensions.
 
-Categories of supported controls:
-    Single-character control functions (such as found in C0, C1, etc)
-    7-bit two-character invocations of the CR set.
-    Ecma-35 escape sequences:
-        Esc 2/0-2/15... 3/0-7/14...
-    Ecma-48 control sequences:
-        CSI 3/0-3/15... 2/0-2/15... 4/0-7/14
-    Ecma-48 control strings:
-        (SOS) ... ST
-        (APC|DCS|OSC|PM) (0/8-0/13 | 2/0-7/14))... ST
-    Private, non-standard extensions:
-        Xterm extensions (such as Esc O A for "cursor up", or mouse
-            controls)
-        vt220 extensions
-        Unrecognized extensions
-
-MILESTONES:
-    0. Token generator
-    1. Support for stripping controls.
-    2. Support for printable expansions of controls, in Ecma format.
-    3. Add highlight support (using defaults, no explicit specification).
-    4. Add alternative expansion formats.
-    5. Add control identification.
-    6. Add explanations.
+Interpretation of graphical characters based on current state (translation to UF-8?).
 
 FUTURE IDEAS:
 
@@ -76,6 +15,3 @@ Eventual support for matching control sequences against simpler entries
 in the terminfo databases? Trivially, ones that do not rely on
 parameters; next step would be ones that contain trivial parameter use
 such as %p1%d.
-
-Support for different sets of terminal controls, including ones
-potentially not based upon Ecma-35 and/or Ecma-48.
