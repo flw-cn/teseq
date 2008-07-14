@@ -501,6 +501,8 @@ handle_nF (struct processor *p, unsigned char i)
     putter_single (p->putr, "& ACS: ANNOUNCE CODE STRUCTURE");
   else if (i == 0x21 || i == 0x22)
     print_cxd_info (p, i, f);
+  else if (i == 0x24)
+    putter_single (p->putr, "& GZDM4: G0-DESIGNATE MULTIBYTE 94-SET");
   else if (i >= 0x27)
     print_gxd_info (p, i, f);
   return 1;
