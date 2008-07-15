@@ -196,7 +196,7 @@ process_csi_sequence (struct processor *p)
   int private_params = 0;
   int last_was_digit = 0;
   unsigned char n_params = 0;
-  unsigned int cur_param;
+  unsigned int cur_param = 0;
   unsigned int params[255];
 
   if (e)
@@ -681,13 +681,13 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
+eseq [-CLDE] [-o out] [in]\n\
 eseq -h | --help\n\
 eseq -V | --version\n\
-eseq [-CLDE] [-o out] [in]\n\
 \n\
-	-h|--help\n\
+	-h, --help\n\
                 Display usage information (this message).\n\
-        -V|--version\n\
+        -V, --version\n\
                 Display version and warrantee.\n\
 \n\
         -o      Send output to OUT rather than standard output.\n\
