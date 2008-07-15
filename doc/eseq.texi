@@ -48,11 +48,14 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 
 @menu
 * Overview::                    What does Eseq do? (with example)
+
+* Reseq::                       Reversing Eseq's output.
+
 * Copying::                     Copying and sharing this manual.
 * Index::                       Index of concepts.
 @end menu
 
-@node Overview, Copying, Top, Top
+@node Overview, Reseq, Top, Top
 @chapter Oveview
 @cindex control character
 @cindex control sequence
@@ -160,7 +163,49 @@ The final word, ``earth'', is followed by a period just
 after the closing pipe symbol; this indicates a following linefeed (or
 ``newline'') character.
 
-@node Copying, Index, Overview, Top
+@cindex @command{reseq}
+The @command{reseq} command may be used to reverse the procedure,
+accepting the above input and printing out the original set of escape
+sequences that produced it. @xref{Reseq}.
+
+@node Reseq, Copying, Overview, Top
+@chapter The Reseq Command
+@cindex @command{reseq}
+@cindex Reversing the output of @command{eseq}
+@cindex eseq, reversing the output
+
+Synopsis:
+
+@example
+reseq [@var{input}] > @var{output}
+@end example
+
+@noindent
+Eseq also comes with a @command{reseq} command, which essentially
+does the reverse of @command{eseq}. If you feed it the output from
+@command{eseq}, it will generate the corresponding escape
+sequences---that is, it will generate the same content that was fed to
+@command{eseq} to produce that output. The shell command
+
+@example
+$ eseq foo | reseq
+@end example
+
+@noindent
+is roughly equivalent to
+
+@example
+$ cat foo
+@end example
+
+@noindent
+The @command{reseq} command is written in
+@cindex Perl
+Perl, unlike @command{eseq}
+which is compiled from C-language sources, and so requires a Perl
+interpreter to be present in order to function.
+
+@node Copying, Index, Reseq, Top
 @appendix Copying
 @include fdl.texi
 
