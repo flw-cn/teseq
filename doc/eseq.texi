@@ -3,6 +3,7 @@
 @setfilename eseq.info
 @include version.texi
 @settitle Eseq @value{VERSION} Manual
+@paragraphindent asis
 @c %**end of header
 
 @copying
@@ -22,7 +23,7 @@ Texts.  A copy of the license is included in the section entitled
 
 @titlepage
 @title Eseq @value{VERSION} Manual
-@author Micah Cowan <@email{micah@@cowan.name}>
+@author by Micah Cowan <@email{micah@@cowan.name}>
 
 @c  The following two commands
 @c  Start the copyright page.
@@ -36,25 +37,136 @@ Texts.  A copy of the license is included in the section entitled
 @contents
 
 @ifnottex
-@node Top
+@node Top, Overview, (dir), (dir)
 @top Eseq
 
 This manual is for Eseq, version @value{VERSION}.
+
+@noindent
+Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 @end ifnottex
 
 @menu
-* First Chapter::               Getting started ...
-* Copying::                     
+* Overview::                    What does Eseq do? (with example)
+* Copying::                     Copying and sharing this manual.
+* Index::                       Index of concepts.
 @end menu
 
-@node First Chapter
-@chapter First Chapter
+@node Overview, Copying, Top, Top
+@chapter Oveview
+@cindex control character
+@cindex control sequence
+@cindex terminal
+@cindex terminal emulator
 
-@cindex first chapter
-@cindex chapter, first
+Eseq is a tool for translating files that contain control characters
+and terminal control sequences, into human-understandable text. It is
+intended to aid in debugging problems in terminal emulators, software
+that makes use of special terminal features, and interactions between
+the two.
 
-@node Copying
+It is primarily targeted at individuals who possess a basic
+understanding of terminal control sequences, especially
+@cindex @sc{csi}
+@cindex Control Sequence Introducer
+@acronym{@sc{csi}} sequences; however, by default Eseq will try to
+identify the sequences that it encounters, and what behavior they
+might produce in a terminal.
+
+@unnumberedsec A Quick Example
+@cindex examples
+@cindex terminal
+@cindex Hello, world!
+
+You can't beat a short example to demonstrate what a program does, so
+here goes. Suppose you've got a program that writes the following
+output to a terminal.
+
+@example
+@strong{Hi} @r{there, world}
+@end example
+
+@noindent
+A simple text string, using a boldface font to render the first word.
+
+Suppose that, after a moment or two, the program then replaced the
+final word ``world'' with the word ``earth''.
+
+In order to achieve this effect, the program would have to send
+special controls to the terminal to ask it to start writing in bold
+text, and then to revert back to normal text for the rest. To replace
+the final word, it might have to issue a series of backspaces before
+issuing the replacement word. All of this will be handled
+transparently by the terminal, and you wouldn't see any of the special
+characters the program sent to the terminal---unless perhaps you
+convinced the program to write to a text file as if it were writing to
+a terminal, or ran the program under a terminal capture utility such
+as the
+@cindex @command{script}
+@command{script} command.
+
+You may be able to produce this effect yourself with the following
+shell command.
+
+@example
+$ printf '\033[1mHi\033[m there, world'; sleep 1; \
+    printf '\b\b\b\b\bearth\n'
+@end example
+
+@noindent
+If you were to examine the output from such a command with a text
+editor, it might look something like this.
+
+@example
+^[[1mHi^[[m there, world^H^H^H^H^Hearth
+@end example
+
+@noindent
+Not very readable, is it? That's where eseq comes in! When you run
+that gibberish through the @command{eseq} command with the default
+settings, you'll get the following output.
+
+@example
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+|Hi|
+: Esc [ 0 m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+| there, world|
+. BS/^H BS/^H BS/^H BS/^H BS/^H
+|earth|.
+@end example
+
+@cindex line prefixes
+@cindex prefixes
+@noindent
+Note that the special conrol sequences that tell the terminal to start
+and stop writing in boldface text are separated out on their own lines
+(prefixed with a colon @samp{:}), and followed by an identification
+(prefixed with an ampersand @samp{&}) and a description of what it
+does (prefixed with a quote character @samp{"}).
+
+The actual text appears in lines bracketed by pipe @samp{|}
+characters.
+
+The series of single-character backspace controls appear on a line
+prefixed with a period @samp{.}, identified by its identifying acronym
+(@sc{bs} for @sc{backspace}), and its control-key representation
+(Control-H).
+
+The final word, ``earth'', is followed by a period just
+after the closing pipe symbol; this indicates a following linefeed (or
+``newline'') character.
+
+@node Copying, Index, Overview, Top
 @appendix Copying
 @include fdl.texi
+
+@node Index,  , Copying, Top
+@unnumbered Index
+
+@printindex cp
 
 @bye
