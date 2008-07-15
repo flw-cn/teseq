@@ -327,6 +327,37 @@ Perl, unlike @command{eseq}
 which is compiled from C-language sources, and so requires a Perl
 interpreter to be present in order to function.
 
+Of the various types of lines output by the @command{eseq} command,
+@command{reseq} only understands three:
+@cpindex text line
+text lines:
+
+@example
+|Hello, there|.
+|Here are|-
+-|some wrapped|-
+-|lines|.
+@end example
+
+@cpindex control-character line
+control-character lines:
+
+@example
+. CR/^M LF/^J
+. CR LF
+@end example
+
+and
+@cpindex escape-sequence line
+escape-sequence lines:
+
+@example
+: Esc [ 31 ; 3 m
+@end example
+
+Any other sorts of lines encountered are ignored and discarded, and
+have no effect on the output.
+
 @node Copying, Index, Reseq, Top
 @appendix Copying
 @include fdl.texi
