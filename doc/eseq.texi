@@ -4,6 +4,23 @@
 @include version.texi
 @settitle Eseq @value{VERSION} Manual
 @paragraphindent asis
+
+@macro thirtyfive
+@cindex standards
+@cindex Ecma-35
+@cindex ISO/IEC@tie{}2200
+Ecma-35 / ISO/IEC@tie{}2200
+@end macro
+
+@macro fortyeight
+@cindex standards
+@cindex Ecma-48
+@cindex ISO/IEC@tie{}6429
+Ecma-48 / ISO/IEC@tie{}6429
+@end macro
+
+@defcodeindex op
+@syncodeindex op cp
 @c %**end of header
 
 @copying
@@ -48,6 +65,7 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 
 @menu
 * Overview::                    What does Eseq do? (with example)
+* Invoking Eseq::               How to run Eseq, with options 'n' stuff.
 
 * Reseq::                       Reversing Eseq's output.
 
@@ -55,7 +73,7 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 * Index::                       Index of concepts.
 @end menu
 
-@node Overview, Reseq, Top, Top
+@node Overview, Invoking Eseq, Top, Top
 @chapter Oveview
 @cindex control character
 @cindex control sequence
@@ -168,11 +186,115 @@ The @command{reseq} command may be used to reverse the procedure,
 accepting the above input and printing out the original set of escape
 sequences that produced it. @xref{Reseq}.
 
-@node Reseq, Copying, Overview, Top
+@node Invoking Eseq, Reseq, Overview, Top
+@chapter Invoking Eseq
+@cindex invoking
+@cindex options
+@cindex usage
+@cindex help
+
+The format for running the @code{eseq} program is:
+
+@example
+eseq @var{options} [-o @var{output-file}] [@var{input-file}]
+eseq -h | --help
+eseq -v | --version
+@end example
+
+@noindent
+If @var{input-file} isn't specified, standard input will be
+used. Output is written to standard output by default, but see the
+@option{-o} option.
+
+@table @option
+@item --help
+@itemx -h
+@opindex --help
+@opindex -h
+Print usage information on standard output and exit successfully.
+
+@item --version
+@itemx -v
+@opindex --version
+@opindex -v
+Print the version number and licensing information of @code{hello} on
+standard output and then exit successfully.
+
+@item -o @var{file}
+@opindex -o
+Write output to @var{file} instead of standard output.
+
+@item -C
+@opindex -C
+@cpindex control character
+For control characters from the C0 set of @fortyeight{}, don't write
+the control-key representation, only the identifying acronym. For
+example, write the carriage-return/line-feed combination as
+@example
+. CR LF
+@end example
+@noindent
+rather than
+@example
+. CR/^M LF/^J
+@end example
+
+@item -L
+@opindex -L
+@cpindex label line
+Don't print identifying labels (lines beginning with @samp{&}) for
+escape sequences.
+
+@item -D
+@opindex -D
+@cpindex description line
+Don't print description lines (those beginning with @samp{"}).
+
+@item -E
+@opindex -E
+@cpindex escape-sequence line
+Don't print escape-sequence lines (beginning with
+@samp{:}). @strong{Warning:} this results in loss of information, and in
+particular means that running the output through the
+@cindex @command{reseq}
+@command{reseq} command won't reproduce the input.
+
+Still, this option can be useful (in combination with @option{-L}) for
+those that don't care about the exact sequence of characters, or what
+their function is called, but just what their effects in the terminal
+are (those that Eseq understands). The output produced 
+
+@end table
+
+@noindent
+Note that there are no options for suppressing
+@cpindex text line
+text lines (@samp{|})
+or
+@cpindex control-character line
+control-character lines (@samp{.}),
+as there are for description or
+escape-sequence lines.
+
+The @option{-L}, @option{-D} and @option{-E} options also have
+mnemonic equivalents of
+@opindex -&
+@option{-&},
+@opindex -"
+@option{-"} and
+@opindex -:
+@option{-:}
+respectively, corresponding to the character prefix used for those
+lines. However, while they may be more practical to remember, they
+will be less practical to type, since both @option{-&} and @option{-"}
+are apt to be interpreted as special by the shell, and must be quoted
+in order to pass them to the @command{eseq} command.
+
+@node Reseq, Copying, Invoking Eseq, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{eseq}
-@cindex eseq, reversing the output
+@cindex @command{eseq}, reversing the output
 
 Synopsis:
 
