@@ -10,6 +10,8 @@ syntax:glob
 
 eseq
 
+tags
+TAGS
 INSTALL
 configure
 Makefile.in
@@ -27,6 +29,18 @@ install-sh
 missing
 stamp-h1
 run-tests
+eseq.aux
+eseq.cp
+eseq.cps
+eseq.fn
+eseq.ky
+eseq.log
+eseq.pg
+eseq.toc
+eseq.tp
+eseq.vr
+mdate-sh
+texinfo.tex
 
 src/test-ringbuf.c
 src/test-ringbuf
@@ -35,6 +49,12 @@ src/test-inputbuf
 tests/*/output
 tests/*/r-output
 tests/cmdline--/-o
+doc/eseq.info
+doc/eseq.ps
+doc/eseq.html
+doc/eseq.pdf
+doc/stamp-vti
+doc/version.texi
 
 syntax:regexp
 eseq-.*\.tar\.[^.]*

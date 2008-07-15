@@ -18,6 +18,9 @@ src_test_ringbuf_LDADD = -lcheck
 src_test_inputbuf_SOURCES = src/test-inputbuf.c src/inputbuf.c src/ringbuf.c
 src_test_inputbuf_LDADD = -lcheck
 
+info_TEXINFOS = doc/eseq.texi
+doc_eseq_TEXINFOS = doc/fdl.texi
+
 SUFFIXES = .cm
 
 .cm.c:
