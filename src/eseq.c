@@ -162,10 +162,19 @@ print_csi_label (struct processor *p, unsigned char c,
                  unsigned char interm, unsigned int intermsz, int private)
 {
   const char **label;
-  unsigned char i = c - 0x40;
-  if (i < N_ARY_ELEMS (csi_labels))
+  const char *(*label_set)[2];
+
+  if (intermsz == 0)
+    label_set = csi_labels;
+  else if (intermsz == 1 && interm == ' ')
+    label_set = csi_spc_labels;
+  else
+    return;
+  
+  if (c >= 0x40 && c < 0x70)
     {
-      label = csi_labels[i];
+      unsigned char i = c - 0x40;
+      label = label_set[i];
       if (label[0])
         {
           const char *privmsg = "";
