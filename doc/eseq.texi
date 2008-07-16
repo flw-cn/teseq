@@ -73,6 +73,7 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 * Overview::                    What does Eseq do? (with example)
 * Invoking Eseq::               How to run Eseq, with options 'n' stuff.
 
+* Output Format::               
 * Reseq::                       Reversing Eseq's output.
 
 * Copying::                     Copying and sharing this manual.
@@ -192,7 +193,7 @@ The @command{reseq} command may be used to reverse the procedure,
 accepting the above input and printing out the original set of escape
 sequences that produced it. @xref{Reseq}.
 
-@node Invoking Eseq, Reseq, Overview, Top
+@node Invoking Eseq, Output Format, Overview, Top
 @chapter Invoking Eseq
 @cindex invoking
 @cindex options
@@ -290,13 +291,162 @@ mnemonic equivalents of
 @option{-"} and
 @opindex -:
 @option{-:}
-respectively, corresponding to the character prefix used for those
+respectively, corresponding to the
+@cindex line prefix
+@cindex prefix, line
+character prefix used for those
 lines. However, while they may be more practical to remember, they
 will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
 in order to pass them to the @command{eseq} command.
 
-@node Reseq, Copying, Invoking Eseq, Top
+@node Output Format, Reseq, Invoking Eseq, Top
+@chapter Output Format
+
+Eseq produces output that is primarily intended to be read by humans
+(from input that is usually not). For this reason, Eseq's output
+follows the following principles:
+
+@itemize
+@item
+Displays for different sorts of characters and sequences are displayed
+on distinct lines, and are easily distinguished by
+@cindex line prefix
+@cindex prefix, line
+the initial character.
+@item
+Every input character should be unambiguously visible to the user in
+the output (except, of course, when the user explicitly asks not to
+see them, as with the @option{-E} option). In particular, trailing
+space should be visible.
+@item
+Line lengths are limited to a maximum of 78 characters, so as to fit
+comfortably on most terminal displays.
+@item
+The output makes clear distinction between line breaks that occur due
+to line limits or intermixed character types, and those that actually
+occurred in the input.
+@end itemize
+
+@xref{Overview} for an output example.
+
+@menu
+* Text Lines::                  
+@end menu
+
+@node Text Lines,  , Output Format, Output Format
+@section Plain Text Lines
+
+@opindex |
+Lines of plain text input, are output between a pair of pipe characters
+@samp{|}, with a final period to indicate the linefeed character.
+Input:
+
+@example
+Hello there
+@end example
+
+@noindent
+Output:
+
+@example
+|Hello there|.
+@end example
+
+@noindent
+Trailing whitespace is thus made plainly visible to the reader.
+
+@example
+|Trailing space:    |.
+@end example
+
+@noindent
+A blank line is represented as empty content between the pipes.
+
+@example
+||.
+@end example
+
+@noindent
+If the input line is too long to display as one line of output, it
+will be displayed as follows, with dash characters, @samp{-}, to
+mark continuity at the beginnings and ends of the lines (outside the
+pipe characters).
+
+@example
+|This input line |-
+-|was too long to|-
+-| fit|.
+@end example
+
+You might wonder whether pipe characters themselves might have to be
+escaped, so as to avoid confusion with the surrounding pipes. After
+all, in a C string literal, denoted by double-quotes, @samp{"}, one
+must escape literal double-quote characters by preceding them with a
+backslash (and must then also escape literal backslashes): @code{"She
+said \"no\""}. However, no such escaping mechanism is needed in Eseq.
+Input:
+
+@example
+A line with a pipe | in it, and a line with just a pipe
+|
+@end example
+
+@noindent
+Output:
+
+@example
+|A line with a pipe | in it, and a line with just a pipe|.
+|||.
+@end example
+
+@noindent
+No special treatment whatsoever!
+
+The reason Eseq can get away with this is that the pipe character only
+has its special ``mark the enclosed as normal text'' meaning, when it
+is the first and the last character on a line of output (aside from a
+possible prefacing dash to indicate a wrapped line, or a trailing dash
+or period).
+
+A lot of the output lines you've seen so far have all ended with a
+period, denoting the linefeed character. However, this isn't always
+the case. For instance, if the input line contains a control
+character, Eseq will close the text line (with just a pipe, no
+period), print a control line with the control characters, and then
+finish up the rest of the text line. The following sample output
+represents a single line which contains a delete character and a null
+character:
+
+@example
+|Fee fi|
+. DEL/^?
+|fo|
+. NUL/^@@
+|fum|.
+@end example
+
+@noindent
+And here's a line that's terminated with a carriage-return/line-feed
+combination, rather than just a linefeed.
+
+@example
+|The promised line|
+. CR/^M LF/^J
+@end example
+
+@noindent
+The linefeed character is special: when it's preceded by control
+characters or escape sequence, it's printed as a control character;
+when it's preceded by text characters (or by nothing at all), it's
+printed as that final dot thing. This behavior is designed to make a
+newline look like the end of a line or a blank line when it should,
+and to look like a control character when it should.
+
+And of course, if the final line in the file is missing a newline, the
+dot won't appear there either.
+
+@node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{eseq}
