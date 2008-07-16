@@ -2,15 +2,12 @@
 . VT/^K FF/^L CR/^M SO/^N SI/^O DLE/^P DC1/^Q DC2/^R DC3/^S DC4/^T NAK/^U
 . SYN/^V ETB/^W CAN/^X EM/^Y SUB/^Z ESC/^[ IS4/^\ IS3/^] IS2/^^ IS1/^_ DEL/^?
 : Esc @
-& (unknown function)
 : Esc A
-& (unknown function)
 : Esc B
 & BPH: BREAK PERMITTED HERE
 : Esc C
 & NBH: NO BREAK HERE
 : Esc D
-& (unknown function)
 : Esc E
 & NEL: NEXT LINE
 : Esc F
@@ -52,7 +49,6 @@
 : Esc X
 & SOS: START OF STRING
 : Esc Y
-& (unknown function)
 : Esc Z
 & SCI: SINGLE CHARACTER INTRODUCER
 : Esc [

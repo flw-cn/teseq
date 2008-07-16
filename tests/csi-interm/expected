@@ -1,21 +1,15 @@
 : Esc [ m
 & SGR: SELECT GRAPHIC RENDITION
 : Esc [ ! m
-& (unknown function [CSI])
 : Esc [ Spc m
-& (unknown function [CSI])
 : Esc [ _
-& (unknown function [CSI])
 : Esc [ Spc M
 & IGS: IDENTIFY GRAPHIC SUBREPERTOIRE
 : Esc [ M
 & DL: DELETE LINE
 : Esc [ ! Spc M
-& (unknown function [CSI])
 : Esc [ Spc ! M
-& (unknown function [CSI])
 : Esc [ Spc ! ~
-& (private function [CSI])
 . CR/^M LF/^J
 : Esc [ Spc @
 & SL: 
@@ -46,7 +40,6 @@
 : Esc [ Spc M
 & IGS: IDENTIFY GRAPHIC SUBREPERTOIRE
 : Esc [ Spc N
-& (unknown function [CSI])
 : Esc [ Spc O
 & IDCS: 
 : Esc [ Spc P
@@ -100,16 +93,10 @@
 : Esc [ Spc h
 & SLS: 
 : Esc [ Spc i
-& (unknown function [CSI])
 : Esc [ Spc j
-& (unknown function [CSI])
 : Esc [ Spc k
 & SCP: 
 : Esc [ Spc l
-& (unknown function [CSI])
 : Esc [ Spc m
-& (unknown function [CSI])
 : Esc [ Spc n
-& (unknown function [CSI])
 : Esc [ Spc o
-& (unknown function [CSI])

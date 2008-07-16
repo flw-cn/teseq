@@ -9,7 +9,6 @@
 : Esc [ ? 1 h
 & SM: SET MODE (private params)
 : Esc =
-& (private function [Fp])
 : Esc [ m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear graphic rendition to defaults.
@@ -17,7 +16,6 @@
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
 : Esc [ 1 ; 51 r
-& (private function [CSI])
 : Esc [ H
 & CUP: CURSOR POSITION
 : Esc [ J
@@ -231,7 +229,6 @@
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
 : Esc [ 1 ; 50 r
-& (private function [CSI])
 : Esc [ 50 ; 1 H
 & CUP: CURSOR POSITION
 . LF
@@ -346,11 +343,9 @@
 " Clear italicized or fraktur text.
 |prompt$ |
 : Esc [ 1 ; 51 r
-& (private function [CSI])
 : Esc [ ? 1 l
 & RM: RESET MODE (private params)
 : Esc >
-& (private function [Fp])
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
 : Esc [ 3 m
