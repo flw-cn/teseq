@@ -23,6 +23,12 @@ Ecma-48 / ISO/IEC@tie{}6429
 @syncodeindex op cp
 @c %**end of header
 
+@dircategory Miscellaneous
+@direntry
+* eseq: (eseq).                   Terminal control sequence analyzer.
+* reseq: (eseq)Reseq.             Reverse-translate output from eseq.
+@end direntry
+
 @copying
 This manual is for Eseq, version @value{VERSION}.
 
