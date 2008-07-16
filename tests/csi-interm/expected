@@ -1,0 +1,115 @@
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+: Esc [ ! m
+& (unknown function [CSI])
+: Esc [ Spc m
+& (unknown function [CSI])
+: Esc [ _
+& (unknown function [CSI])
+: Esc [ Spc M
+& IGS: IDENTIFY GRAPHIC SUBREPERTOIRE
+: Esc [ M
+& DL: DELETE LINE
+: Esc [ ! Spc M
+& (unknown function [CSI])
+: Esc [ Spc ! M
+& (unknown function [CSI])
+: Esc [ Spc ! ~
+& (private function [CSI])
+. CR/^M LF/^J
+: Esc [ Spc @
+& SL: 
+: Esc [ Spc A
+& SR: 
+: Esc [ Spc B
+& GSM: 
+: Esc [ Spc C
+& GSS: 
+: Esc [ Spc D
+& FNT: 
+: Esc [ Spc E
+& TSS: 
+: Esc [ Spc F
+& JFY: 
+: Esc [ Spc G
+& SPI: 
+: Esc [ Spc H
+& QUAD: 
+: Esc [ Spc I
+& SSU: 
+: Esc [ Spc J
+& PFS: 
+: Esc [ Spc K
+& SHS: 
+: Esc [ Spc L
+& SVS: 
+: Esc [ Spc M
+& IGS: IDENTIFY GRAPHIC SUBREPERTOIRE
+: Esc [ Spc N
+& (unknown function [CSI])
+: Esc [ Spc O
+& IDCS: 
+: Esc [ Spc P
+& PPA: 
+: Esc [ Spc Q
+& PPR: 
+: Esc [ Spc R
+& PPB: 
+: Esc [ Spc S
+& SPD: 
+: Esc [ Spc T
+& DTA: 
+: Esc [ Spc U
+& SHL: 
+: Esc [ Spc V
+& SLL: 
+: Esc [ Spc W
+& FNK: 
+: Esc [ Spc X
+& SPQR: 
+: Esc [ Spc Y
+& SEF: 
+: Esc [ Spc Z
+& PEC: 
+: Esc [ Spc [
+& SSW: 
+: Esc [ Spc \
+& SACS: 
+: Esc [ Spc ]
+& SAPV: 
+: Esc [ Spc ^
+& STAB: 
+: Esc [ Spc _
+& GCC: 
+: Esc [ Spc `
+& TATE: 
+: Esc [ Spc a
+& TALE: 
+: Esc [ Spc b
+& TAC: 
+: Esc [ Spc c
+& TCC: 
+: Esc [ Spc d
+& TSR: 
+: Esc [ Spc e
+& SCO: 
+: Esc [ Spc f
+& SRCS: 
+: Esc [ Spc g
+& SCS: 
+: Esc [ Spc h
+& SLS: 
+: Esc [ Spc i
+& (unknown function [CSI])
+: Esc [ Spc j
+& (unknown function [CSI])
+: Esc [ Spc k
+& SCP: 
+: Esc [ Spc l
+& (unknown function [CSI])
+: Esc [ Spc m
+& (unknown function [CSI])
+: Esc [ Spc n
+& (unknown function [CSI])
+: Esc [ Spc o
+& (unknown function [CSI])
