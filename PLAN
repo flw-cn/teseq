@@ -1,7 +1,6 @@
 TODO:
 
 Multibyte 94-set seqs with multiple intermediate bytes.
-Make Eseq handle 2/00 intermediate byte properly for CSI (more standard CSI functions).
 Document CSI functions.
 Make Eseq handle sub-parameters (`:'-separated) properly.
 Make Eseq handle other _possible_ nF functions, including other intermediate-byte 02/xx combos, and multibyte 96-sets.
