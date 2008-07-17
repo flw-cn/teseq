@@ -12,7 +12,6 @@
 & C1D: C1-DESIGNATE
 . LF/^J
 : Esc ' A
-& (unknown function [7F])
 : Esc ( B
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
@@ -26,7 +25,6 @@
 & G3D4: G3-DESIGNATE 94-SET
 " Designate 94-character set 5 (private) to G3.
 : Esc , A
-& (unknown function [12F])
 : Esc ( p
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set p to G0.
@@ -42,9 +40,7 @@
 " Designate 96-character set t to G3.
 . LF/^J
 : Esc =
-& (private function [Fp])
 : Esc >
-& (private function [Fp])
 . LF/^J
 : Esc $ B
 & GZDM4: G0-DESIGNATE MULTIBYTE 94-SET

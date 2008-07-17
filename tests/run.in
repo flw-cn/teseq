@@ -108,6 +108,7 @@ fi
 	high-val
 	hardstatus
 	controls
+        csi-interm
 '}
 
 nt=0

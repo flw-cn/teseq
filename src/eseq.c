@@ -39,8 +39,11 @@
 #define C_ESC           CONTROL('[')
 
 #define GET_COLUMN(c)   (((c) & 0xf0) >> 4)
-#define IS_FINAL_COLUMN(col)    ((col) >= 4 && (col) <= 7)
-#define IS_FINAL_BYTE(c)        IS_FINAL_COLUMN (GET_COLUMN (c))
+#define IS_CSI_FINAL_COLUMN(col)    ((col) >= 4 && (col) <= 7)
+#define IS_CSI_INTERMEDIATE_COLUMN(col) ((col) == 2)
+#define IS_CSI_INTERMEDIATE_CHAR(c) \
+  IS_CSI_INTERMEDIATE_COLUMN (GET_COLUMN (c))
+#define IS_CSI_FINAL_CHAR(c)        IS_CSI_FINAL_COLUMN (GET_COLUMN (c))
 
 #define IS_nF_INTERMEDIATE_CHAR(c)      (GET_COLUMN (c) == 2)
 #define IS_nF_FINAL_CHAR(c)     ((c) >= 0x30 || (c) < 0x7f)
@@ -155,13 +158,23 @@ interpret_sgr_params (struct processor *p, unsigned char n_params,
 }
 
 void
-print_csi_label (struct processor *p, unsigned char c, int private)
+print_csi_label (struct processor *p, unsigned char c,
+                 unsigned char interm, unsigned int intermsz, int private)
 {
   const char **label;
-  unsigned char i = c - 0x40;
-  if (i < N_ARY_ELEMS (csi_labels))
+  const char *(*label_set)[2];
+
+  if (intermsz == 0)
+    label_set = csi_labels;
+  else if (intermsz == 1 && interm == ' ')
+    label_set = csi_spc_labels;
+  else
+    return;
+  
+  if (c >= 0x40 && c < 0x70)
     {
-      label = csi_labels[i];
+      unsigned char i = c - 0x40;
+      label = label_set[i];
       if (label[0])
         {
           const char *privmsg = "";
@@ -169,10 +182,6 @@ print_csi_label (struct processor *p, unsigned char c, int private)
             privmsg = " (private params)";
           putter_single (p->putr, "& %s: %s%s", label[0], label[1], privmsg);
         }
-    }
-  else
-    {
-      putter_single (p->putr, "%s", "& (private function [CSI])");
     }
 }
 
@@ -183,8 +192,6 @@ print_c1_label (struct processor *p, unsigned char c)
   const char **label = c1_labels[i];
   if (label[0])
     putter_single (p->putr, "& %s: %s", label[0], label[1]);
-  else
-    putter_single (p->putr, "& (unknown function)");
 }
 
 void
@@ -198,6 +205,8 @@ process_csi_sequence (struct processor *p)
   unsigned char n_params = 0;
   unsigned int cur_param = 0;
   unsigned int params[255];
+  unsigned char interm = 0;
+  unsigned int intermsz = 0;
 
   if (e)
     PUTTER_START_ESC;
@@ -211,7 +220,7 @@ process_csi_sequence (struct processor *p)
   do
     {
       c = inputbuf_get (p->ibuf);
-      if (!first_param_char_seen && !IS_FINAL_BYTE (c))
+      if (!first_param_char_seen && !IS_CSI_FINAL_CHAR (c))
         {
           first_param_char_seen = 1;
           private_params = IS_PRIVATE_PARAM_CHAR (c);
@@ -229,10 +238,15 @@ process_csi_sequence (struct processor *p)
               cur_param = c - '0';
             }
           last_was_digit = 1;
-          continue;
         }
       else
         {
+          if (IS_CSI_INTERMEDIATE_CHAR (c))
+            {
+              interm = c;
+              ++intermsz;
+            }
+
           if (last_was_digit)
             {
               params[n_params++] = cur_param;
@@ -242,17 +256,16 @@ process_csi_sequence (struct processor *p)
             }
           else
             params[n_params++] = DEFAULT_PARAM;
+
           if (e)
-            putter_putc (p->putr, ' ');
+            print_esc_char (p, c);
         }
-      if (e)
-        putter_putc (p->putr, c);
     }
-  while (!IS_FINAL_BYTE (c));
+  while (!IS_CSI_FINAL_CHAR (c));
   if (e)
     putter_finish (p->putr, "");
   if (config.labels)
-    print_csi_label (p, c, private_params);
+    print_csi_label (p, c, interm, intermsz, private_params);
   if (c == 'm')
     {
       if (config.descriptions && !private_params)
@@ -284,7 +297,7 @@ read_csi_sequence (struct processor *p)
           state = SEQ_CSI_PARAMETER;
           private_params = IS_PRIVATE_PARAM_CHAR (c);
         case SEQ_CSI_PARAMETER:
-          if (col == 2)
+          if (IS_CSI_INTERMEDIATE_COLUMN (col))
             {
               state = SEQ_CSI_INTERMEDIATE;
               break;
@@ -297,12 +310,12 @@ read_csi_sequence (struct processor *p)
             }
           /* Fall through */
         case SEQ_CSI_INTERMEDIATE:
-          if (IS_FINAL_COLUMN (col))
+          if (IS_CSI_FINAL_COLUMN (col))
             {
               inputbuf_rewind (p->ibuf);
               return 1;
             }
-          else if (col != 2)
+          else if (! IS_CSI_INTERMEDIATE_COLUMN (col))
             {
               return 0;
             }
@@ -457,12 +470,7 @@ print_gxd_info (struct processor *p, int intermediate, int final)
       designate = intermediate - 0x28;
     }
   else
-    {
-      if (config.labels)
-        putter_single (p->putr, "& (unknown function [%dF])",
-                       intermediate - 0x20);
-      return;
-    }
+    return;
 
   if (config.labels)
     {
@@ -540,8 +548,6 @@ handle_Fp (struct processor *p, unsigned char c)
 {
   if (config.escapes)
     putter_single (p->putr, ": Esc %c", c);
-  if (config.labels)
-    putter_single (p->putr, "%s", "& (private function [Fp])");
   return 1;
 }
 
