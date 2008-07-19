@@ -456,6 +456,7 @@ dot won't appear there either.
 
 Currently, the only characters included in text lines, are those from
 the printable range of characters from US
+@cindex standards
 @cindex @sc{ascii}
 @sc{ascii} (@six{})---and sometimes linefeed, represented by the
 special final-dot notation. This means that if the terminal was using
@@ -486,7 +487,11 @@ invoke that character set for use).
 @cindex control character
 
 Control lines are used to display characters whose code values fall
-outside the range of printable characters from US ASCII (@six{}). That
+outside the range of printable characters from US
+@cindex standards
+@cindex @sc{ascii}
+@sc{ascii}
+(@six{}). That
 is, those characters whose code values fall below below 32 decimal
 (that is, those from the C0 set of control characters from
 @fortyeight{}); and those whose values are at or above 127 decimal
