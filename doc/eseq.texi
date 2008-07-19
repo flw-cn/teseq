@@ -5,18 +5,25 @@
 @settitle Eseq @value{VERSION} Manual
 @paragraphindent asis
 
+@macro six
+@cindex standards
+@cindex Ecma-6
+@cindex ISO 646
+Ecma-6@tie{}/ ISO@tie{}646
+@end macro
+
 @macro thirtyfive
 @cindex standards
 @cindex Ecma-35
 @cindex ISO/IEC@tie{}2200
-Ecma-35 / ISO/IEC@tie{}2200
+Ecma-35@tie{}/ ISO/IEC@tie{}2200
 @end macro
 
 @macro fortyeight
 @cindex standards
 @cindex Ecma-48
 @cindex ISO/IEC@tie{}6429
-Ecma-48 / ISO/IEC@tie{}6429
+Ecma-48@tie{}/ ISO/IEC@tie{}6429
 @end macro
 
 @defcodeindex op
@@ -332,10 +339,11 @@ occurred in the input.
 
 @menu
 * Text Lines::                  
+* Control Lines::               
 @end menu
 
-@node Text Lines,  , Output Format, Output Format
-@section Plain Text Lines
+@node Text Lines, Control Lines, Output Format, Output Format
+@section Text Lines
 
 @opindex |
 Lines of plain text input, are output between a pair of pipe characters
@@ -445,6 +453,77 @@ and to look like a control character when it should.
 
 And of course, if the final line in the file is missing a newline, the
 dot won't appear there either.
+
+Currently, the only characters included in text lines, are those from
+the printable range of characters from US
+@cindex @sc{ascii}
+@sc{ascii} (@six{})---and sometimes linefeed, represented by the
+special final-dot notation. This means that if the terminal was using
+a character set that high-value code points, all high-valued bytes
+will be represented in hexadecimal on control lines, and not displayed
+on a text line. Future versions of Eseq may provide options allowing
+for these characters to be represented properly in text lines, but for
+now, the output format is ASCII characters only.
+
+Note that even characters falling in the normal range of @sc{ascii}
+printable characters may not necessarily be represented correctly: for
+instance, if escape codes are present in the input that would switch
+the terminal to a different national variant of @six{}, then the real
+terminal might display (say, for ISO-646ES)
+@ifnotinfo
+@samp{@~{N}}
+@end ifnotinfo
+@ifinfo
+the LATIN CAPITAL LETTER N WITH TILDE
+@end ifinfo
+instead of
+@samp{[}; but the output from Eseq will not change based on this (even
+though it will recognize and identify the control sequences that
+invoke that character set for use).
+
+@node Control Lines,  , Text Lines, Output Format
+@section Control Lines
+@cindex control character
+
+Control lines are used to display characters whose code values fall
+outside the range of printable characters from US ASCII (@six{}). That
+is, those characters whose code values fall below below 32 decimal
+(that is, those from the C0 set of control characters from
+@fortyeight{}); and those whose values are at or above 127 decimal
+(the ``delete'' character, and character byte values with the high bit
+set).
+
+@opindex .
+Control lines begin with an initial dot, @samp{.}, followed by the
+control characters or high-value bytes being represented.
+
+@example
+. BEL/^G NUL/^@ CR/^M LF/^J DEL/^? xA0 xFF
+@end example
+
+Control characters (whose numeric codes fall below decimal 32, plus
+the delete character at decimal 127) are represented by a mnemonic
+acronym identifying the character's function. Unless the
+@opindex -C
+@option{-C} was given, this acronym is followed by a slash, and the
+control-key combination that would produce the corresponding character
+(control characters are usually much more recognizable from one or the
+other of their name or their control-character representation, than
+they are by their hexadecimal code value). The ``control-key
+combination'' representation consists of a ``hat'' or ``circumflex
+accent'' character, followed by a character with a value in the range
+of 63 through 95 decimal.
+
+@cindex delete character
+Note that the delete character, designated as
+@samp{DEL/^?}, is a special case, in that one can not generally
+reproduce that key by holding down the control key and typing a
+question mark; it is simply used as an identification of the
+key.
+
+Other values (high-value bytes) are represented by the lowercase
+letter @samp{x} followed by the two-digit hexadecimal code value for
+the character.
 
 @node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
