@@ -457,8 +457,8 @@ dot won't appear there either.
 Currently, the only characters included in text lines, are those from
 the printable range of characters from US
 @cindex standards
-@cindex @sc{ascii}
-@sc{ascii} (@six{})---and sometimes linefeed, represented by the
+@cindex ASCII
+ASCII (@six{})---and sometimes linefeed, represented by the
 special final-dot notation. This means that if the terminal was using
 a character set that high-value code points, all high-valued bytes
 will be represented in hexadecimal on control lines, and not displayed
@@ -466,7 +466,7 @@ on a text line. Future versions of Eseq may provide options allowing
 for these characters to be represented properly in text lines, but for
 now, the output format is ASCII characters only.
 
-Note that even characters falling in the normal range of @sc{ascii}
+Note that even characters falling in the normal range of ASCII
 printable characters may not necessarily be represented correctly: for
 instance, if escape codes are present in the input that would switch
 the terminal to a different national variant of @six{}, then the real
@@ -489,8 +489,8 @@ invoke that character set for use).
 Control lines are used to display characters whose code values fall
 outside the range of printable characters from US
 @cindex standards
-@cindex @sc{ascii}
-@sc{ascii}
+@cindex ASCII
+ASCII
 (@six{}). That
 is, those characters whose code values fall below below 32 decimal
 (that is, those from the C0 set of control characters from
@@ -506,6 +506,7 @@ control characters or high-value bytes being represented.
 . BEL/^G NUL/^@ CR/^M LF/^J DEL/^? xA0 xFF
 @end example
 
+@noindent
 Control characters (whose numeric codes fall below decimal 32, plus
 the delete character at decimal 127) are represented by a mnemonic
 acronym identifying the character's function. Unless the
