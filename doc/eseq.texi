@@ -26,6 +26,17 @@ Ecma-35@tie{}/ ISO/IEC@tie{}2200
 Ecma-48@tie{}/ ISO/IEC@tie{}6429
 @end macro
 
+@ifinfo
+@macro th{content}
+\content\@tie{}@tie{}|
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro th{content}
+@strong{\content\}
+@end macro
+@end ifnotinfo
+
 @defcodeindex op
 @syncodeindex op cp
 @c %**end of header
@@ -658,21 +669,117 @@ space, except that strings of digits are lumped all together.
 
 Each character is represented by itself (including colon, as long as
 it's not at the start of the line), except the escape character, and
-the space character. Control characters and high-value bytes are not
-currently represented on escape-sequence lines (they are not part of
-any escape sequences Eseq recognizes), but if they are in the future
-(say, as part of non-standardized escape sequences), they will most
-likely be represented as @samp{xXX} hexadecimal strings (as high-value
-bytes are represented in control-character lines.
+the space character (represented as @samp{Spc}). Control characters
+and high-value bytes are not currently represented on escape-sequence
+lines (they are not part of any escape sequences Eseq recognizes), but
+if they are in the future (say, as part of non-standardized escape
+sequences), they will most likely be represented as @samp{xXX}
+hexadecimal strings (as high-value bytes are represented in
+control-character lines.
 
 If an escape sequence requires more than one output line, the
 continuing lines will also begin with a colon, followed by two spaces
-(instead of one).
+(instead of one). Lines will not be split in the middle of a number.
 
 @example
 : Esc [ 1 ; 2 ; 3 ; 4
-:  5 ; 6 ; 7 m
+:  ; 5 ; 6 ; 7 m
 @end example
+
+@menu
+* Escape Sequence Recognition::  
+@end menu
+
+@node Escape Sequence Recognition,  , Escape-Sequence Lines, Escape-Sequence Lines
+@unnumberedsubsec Recognizing Escape Sequences
+@cindex escape sequence, defined
+
+Okay, great, so escape-sequence lines help distinguish
+control-characters and text characters that make up an escape sequence
+from those that don't. But what exactly makes up an escape sequence,
+anyway?
+
+The @thirtyfive{} standard defines an escape sequence to be a sequence
+of characters beginning with @sc{esc}, with a
+@cindex final byte
+@cindex escape sequence, final byte
+final byte in the range
+@code{x30}--@code{x7E}, and any number (including zero) of
+@cindex intermediate byte
+@cindex escape sequence, intermediate byte
+intermediate bytes in the range @code{x20}-@code{x2F}.
+@ifinfo
+The following table
+@end ifinfo
+@ifnotinfo
+@ref{ascii}
+@end ifnotinfo
+has been provided as a reference for finding which characters match
+which codes.
+
+@float Table,ascii
+@cindex table of printable ASCII characters
+@multitable {@th{xFF}} {Spc} {Spc} {Spc} {Spc} {Spc} {Spc}
+@headitem @tab x2X @tab x3X @tab x4X @tab x5X
+@tab x6X @tab x7X
+@c
+@item @th{xX0} @tab @sc{spc} @tab 0 @tab @@ @tab P
+@tab ` @tab p
+@c
+@item @th{xX1} @tab ! @tab 1 @tab A @tab Q @tab a @tab q
+@c
+@item @th{xX2} @tab " @tab 2 @tab B @tab R @tab b @tab r
+@c
+@item @th{xX3} @tab # @tab 3 @tab C @tab S @tab c @tab s
+@c
+@item @th{xX4} @tab $ @tab 4 @tab D @tab T @tab d @tab t
+@c
+@item @th{xX5} @tab % @tab 5 @tab E @tab U @tab e @tab u
+@c
+@item @th{xX6} @tab & @tab 6 @tab F @tab V @tab f @tab v
+@c
+@item @th{xX7} @tab ' @tab 7 @tab G @tab W @tab g @tab w
+@c
+@item @th{xX8} @tab ( @tab 8 @tab H @tab X @tab h @tab x
+@c
+@item @th{xX9} @tab ) @tab 9 @tab I @tab Y @tab i @tab y
+@c
+@item @th{xXA} @tab * @tab : @tab J @tab Z @tab j @tab z
+@c
+@item @th{xXB} @tab + @tab ; @tab K @tab [ @tab k @tab @{
+@c
+@item @th{xXC} @tab , @tab < @tab L @tab \ @tab l @tab |
+@c
+@item @th{xXD} @tab - @tab = @tab M @tab ] @tab m @tab @}
+@c
+@item @th{xXE} @tab . @tab > @tab N @tab ^ @tab n @tab ~
+@c
+@item @th{xXF} @tab / @tab ? @tab O @tab _ @tab o @tab @sc{del}
+@end multitable
+@end float
+
+So, for instance, the following is a valid escape sequence.
+
+@example
+: Esc $ ( C
+@end example
+
+@noindent
+@samp{$} and @samp{(} have code values @code{x24} and @code{x28}, and
+so are valid intermediate bytes; @samp{C} has the value @code{x43},
+and so terminates the escape sequence.
+
+You may have noticed that a lot of the examples of escape sequences in
+this document don't actually follow this format. For instance, 
+
+@example
+: Esc [ 3 ; 31 m
+@end example
+
+@noindent
+According to the definition we just gave, @samp{[} should be the final
+byte of an escape sequence. So why does Eseq keep going until it
+reaches the @samp{m}?
 
 @node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
