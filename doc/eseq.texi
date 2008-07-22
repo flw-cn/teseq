@@ -339,10 +339,11 @@ occurred in the input.
 
 @menu
 * Text Lines::                  
-* Control Lines::               
+* Control-Character Lines::     
+* Escape-Sequence Lines::       
 @end menu
 
-@node Text Lines, Control Lines, Output Format, Output Format
+@node Text Lines, Control-Character Lines, Output Format, Output Format
 @section Text Lines
 
 @opindex |
@@ -421,10 +422,10 @@ A lot of the output lines you've seen so far have all ended with a
 period, denoting the linefeed character. However, this isn't always
 the case. For instance, if the input line contains a control
 character, Eseq will close the text line (with just a pipe, no
-period), print a control line with the control characters, and then
-finish up the rest of the text line. The following sample output
-represents a single line which contains a delete character and a null
-character:
+period), print a control-character line with the control characters,
+and then finish up the rest of the text line. The following sample
+output represents a single line which contains a delete character and
+a null character:
 
 @example
 |Fee fi|
@@ -458,13 +459,13 @@ Currently, the only characters included in text lines, are those from
 the printable range of characters from US
 @cindex standards
 @cindex ASCII
-ASCII (@six{})---and sometimes linefeed, represented by the
-special final-dot notation. This means that if the terminal was using
-a character set that high-value code points, all high-valued bytes
-will be represented in hexadecimal on control lines, and not displayed
-on a text line. Future versions of Eseq may provide options allowing
-for these characters to be represented properly in text lines, but for
-now, the output format is ASCII characters only.
+ASCII (@six{})---and sometimes linefeed, represented by the special
+final-dot notation. This means that if the terminal was using a
+character set that high-value code points, all high-valued bytes will
+be represented in hexadecimal on control-character lines, and not
+displayed on a text line. Future versions of Eseq may provide options
+allowing for these characters to be represented properly in text
+lines, but for now, the output format is ASCII characters only.
 
 Note that even characters falling in the normal range of ASCII
 printable characters may not necessarily be represented correctly: for
@@ -482,12 +483,13 @@ instead of
 though it will recognize and identify the control sequences that
 invoke that character set for use).
 
-@node Control Lines,  , Text Lines, Output Format
-@section Control Lines
+@node Control-Character Lines, Escape-Sequence Lines, Text Lines, Output Format
+@section Control-Character Lines
 @cindex control character
+@cindex control-character line
 
-Control lines are used to display characters whose code values fall
-outside the range of printable characters from US
+Control-character lines are used to display characters whose code
+values fall outside the range of printable characters from US
 @cindex standards
 @cindex ASCII
 ASCII
@@ -499,7 +501,7 @@ is, those characters whose code values fall below below 32 decimal
 set).
 
 @opindex .
-Control lines begin with an initial dot, @samp{.}, followed by the
+Control-character lines begin with an initial dot, @samp{.}, followed by the
 control characters or high-value bytes being represented.
 
 @example
@@ -530,6 +532,85 @@ key.
 Other values (high-value bytes) are represented by the lowercase
 letter @samp{x} followed by the two-digit hexadecimal code value for
 the character.
+
+@node Escape-Sequence Lines,  , Control-Character Lines, Output Format
+@section Escape-Sequence Lines
+@cindex escape-sequence lines
+
+Escape-sequence lines, which begin with the colon, @samp{:}, don't add
+any new semantics---any characters in an escape-sequence line could be
+represented on control-character and text lines (and, with just a
+one-character change in the escape sequence, would be). But they
+serve to set escape sequences apart from normal control-character or
+text lines, making it easier to see on one line all the characters
+that contribute to a single control function, rather than splitting
+them between control-character and text lines.
+Here's an example with some intermixed escape-sequence and text lines
+(without the usual label and description lines, which are described in
+later sections):
+
+@example
+|Well |
+: Esc [ 3 ; 31 m
+|Daniel|
+: Esc [ 23 ; 39 m
+| didn't do it...|.
+@end example
+
+@noindent
+The two escape-sequence lines represent, respectively, controls that
+set text rendering to use italics in the color red, and to set normal
+font rendering in the default color (the actual interpretation of
+these controls may vary by application).
+
+Note that the escape-sequence lines include control characters (well,
+character, namely @samp{Esc}) intermixed with normal text
+characters. So the above could have been written like:
+
+@example
+|Well |
+. ESC
+|[3;31mDaniel|
+. ESC
+|[23;39m didn't do it...|.
+@end example
+
+@noindent
+But this loses the separation between characters that, yes, happen to
+be text characters, but really just contribute to some terminal
+control function invocation, and characters that are, really and
+truly, text.
+
+@example
+: Esc [ 3 ; 31 m
+@end example
+
+@noindent
+Some things to note. First, the escape key is noted as @samp{Esc}, and
+not @samp{ESC} as it would be in a control-character line. Don't ask
+me why; maybe I just felt it was one more thing to dilineate between
+escape-sequence lines and control-character lines.
+
+Also, each character is separated from its neighbors by a single
+space, except that strings of digits are lumped all together.
+
+Each character is represented by itself (including colon, as long as
+it's not at the start of the line), except the escape character, and
+the space character. Control characters and high-value bytes are not
+currently represented on escape-sequence lines (they are not part of
+any escape sequences Eseq recognizes), but if they are in the future
+(say, as part of non-standardized escape sequences), they will most
+likely be represented as @samp{xXX} hexadecimal strings (as high-value
+bytes are represented in control-character lines.
+
+If an escape sequence requires more than one output line, the
+continuing lines will also begin with a colon, followed by two spaces
+(instead of one).
+
+@example
+: Esc [ 1 ; 2 ; 3 ; 4
+:  5 ; 6 ; 7 m
+@end example
 
 @node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
