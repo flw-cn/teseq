@@ -687,20 +687,23 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
-eseq [-CLDE] [-o out] [in]\n\
-eseq -h | --help\n\
-eseq -V | --version\n\
+Usage: eseq [-CLDE] [-o out] [in]\n\
+   or: eseq -h | --help\n\
+   or: eseq -V | --version\n\
+Format text with terminal escapes and control sequences for human\n\
+consumption.\n\
+\n", f);
+  fputs ("\
+ -h, --help     Display usage information (this message).\n\
+ -V, --version  Display version and warrantee.\n\
+ -o             Send output to OUT rather than standard output.\n\
+ -C             Don't print ^X for C0 controls.\n\
+ -L             Don't print labels.\n\
+ -D             Don't print descriptions.\n\
+ -E             Don't print escape sequences.\n\
 \n\
-	-h, --help\n\
-                Display usage information (this message).\n\
-        -V, --version\n\
-                Display version and warrantee.\n\
-\n\
-        -o      Send output to OUT rather than standard output.\n\
-        -C      Don't print ^X for C0 controls.\n\
-        -L      Don't print labels.\n\
-        -D      Don't print descriptions.\n\
-        -E      Don't print escape sequences.\n", f);
+Report bugs to micah@cowan.name.\n\
+", f);
   exit (status);
 }
 
@@ -709,7 +712,7 @@ version (void)
 {
   puts (PACKAGE_STRING);
   puts ("\
-Copyright (C) 2008 Micah Cowan <micah@cowan.name>\n\
+Copyright (C) 2008 Micah Cowan <micah@cowan.name>.\n\
 License GPLv3+: GNU GPL version 3 or later \
 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\

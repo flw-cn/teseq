@@ -50,6 +50,7 @@ src/test-inputbuf
 tests/*/output
 tests/*/r-output
 tests/cmdline--/-o
+doc/eseq.1
 doc/eseq.info
 doc/eseq.ps
 doc/eseq.html
@@ -57,5 +58,4 @@ doc/eseq.pdf
 doc/stamp-vti
 doc/version.texi
 
-syntax:regexp
-eseq-.*\.tar\.[^.]*
+eseq-*

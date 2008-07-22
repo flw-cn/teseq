@@ -712,7 +712,7 @@ which is compiled from C-language sources, and so requires a Perl
 interpreter to be present in order to function.
 
 Of the various types of lines output by the @command{eseq} command,
-@command{reseq} only understands three:
+@command{reseq} only understands three;
 @cpindex text line
 text lines:
 

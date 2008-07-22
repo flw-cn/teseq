@@ -20,8 +20,12 @@ src_test_inputbuf_LDADD = -lcheck
 
 info_TEXINFOS = doc/eseq.texi
 doc_eseq_TEXINFOS = doc/fdl.texi
+dist_man_MANS = doc/eseq.1
 
 SUFFIXES = .cm
+
+doc/eseq.1: ./eseq
+	help2man ./eseq -p eseq -o doc/eseq.1
 
 .cm.c:
 	$(CHECKMK) $< > $@
@@ -34,7 +38,7 @@ check-eseq: eseq run-tests
 check-reseq: reseq run-tests
 	./run-tests -r
 
-EXTRA_DIST=src/test-inputbuf.inf
+EXTRA_DIST=src/test-inputbuf.inf doc/eseq.1
 
 dist-hook:
 	cp -R -- `find $(srcdir)/tests -type d ! -name tests` $(distdir)/tests
@@ -42,4 +46,6 @@ dist-hook:
 clean-local:
 	find tests -name r-output -o -name output | xargs rm -f
 	rm -f tests/cmdline--/-o
-	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf
+	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf doc/eseq.1
+
+CLEANFILES = eseq.dvi
