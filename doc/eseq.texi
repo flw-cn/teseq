@@ -758,6 +758,7 @@ which codes.
 @end multitable
 @end float
 
+@noindent
 So, for instance, the following is a valid escape sequence.
 
 @example
@@ -780,6 +781,83 @@ this document don't actually follow this format. For instance,
 According to the definition we just gave, @samp{[} should be the final
 byte of an escape sequence. So why does Eseq keep going until it
 reaches the @samp{m}?
+
+The answer is that the escape sequence @emph{does} end with the
+@samp{[}; but the combination @samp{Esc [} invokes a control named
+@code{CONTROL SEQUENCE INTRODUCER}
+@cindex @sc{csi}
+(@sc{csi}). The @sc{csi} control
+marks the beginning of a different kind of sequence, called a
+@cindex control sequence
+``control sequence''. Control sequences are described by the
+@fortyeight{} standard, which considers it to be a distinct concept
+from escape sequences; however, Eseq treats both types of sequences as
+``escape sequences''.
+
+A control sequence starts with the two-character @sc{csi} escape
+sequence @samp{Esc [}, followed by an optional sequence of
+@cindex parameter byte
+parameter bytes in the range @code{x30}--@code{x3F}, an optional
+sequence of
+@cindex intermediate byte
+intermediate bytes in the range @code{x20}--@code{x2F} (the same range
+as intermediate bytes in a regular escape sequence), and a
+@cindex final byte
+final byte in the range @code{x40}--@code{x7e}. The set of standard
+control sequence functions are defined in @fortyeight{}.
+
+When used in accordance with the standard, the parameter bytes are
+used to provide a semicolon-separated list of numeric parameters to
+the control function being invoked. These affect the details of the
+control function's behavior; but not which control function is being
+invoked:
+
+@example
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 0 m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+@end example
+
+@noindent
+Both sequences end with the same sequence of intermediate bytes (none)
+and final byte; both invoke the @sc{sgr} control function. But the
+first one indicates that following text should be rendered boldface,
+while the second indicates that text rendering should be restored to
+its default settings.
+
+Intermediate bytes, however, together with the final byte, @emph{do}
+affect the meaning of the function invoked. Currently, @fortyeight{}
+only defines functions for either no intermediate bytes, or a single
+space character (@code{x20}) as the intermediate byte.
+
+@example
+: Esc [ A
+& CUU: CURSOR UP
+: Esc [ Spc A
+& SR: SCROLL RIGHT
+@end example
+
+@noindent
+@fortyeight{} describes an alternate representation for @sc{csi}; the
+8-bit byte value @code{x9B}. Eseq does not currently treat that value
+specially, nor any of the other high-value bytes from the C1 set of
+control functions. This is because whether or not those bytes indicate
+control functions is dependent upon what character encoding is in
+use. Future versions of Eseq may support an option to interpret these
+forms as well, at which time control sequences using the single-byte
+@sc{csi} control will probably be rendered like:
+
+@example
+: CSI [ 1 m
+@end example
+
+@noindent
+@fortyeight{} also describes another kind of sequence called ``control
+strings''. These are not yet recognized by Eseq, but may be in the
+future.
 
 @node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
