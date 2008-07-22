@@ -335,7 +335,7 @@ to line limits or intermixed character types, and those that actually
 occurred in the input.
 @end itemize
 
-@xref{Overview} for an output example.
+@ref{Overview} for an output example.
 
 @menu
 * Text Lines::                  
@@ -532,6 +532,68 @@ key.
 Other values (high-value bytes) are represented by the lowercase
 letter @samp{x} followed by the two-digit hexadecimal code value for
 the character.
+
+For reference, here's a table of the control characters (plus
+@sc{del}). It is based on the information from Table 1 of
+@fortyeight{} (the control-key representation has been added).
+
+@cindex control characters table
+@cindex table of control characters
+@multitable @columnfractions .10 .10 .20 .10 .10 .20
+@headitem Hex @tab Key @tab Name
+@tab      Hex @tab Key @tab Name
+@c
+@item x00 @tab ^@@ @tab NUL
+@tab  x10 @tab ^P @tab DLE
+@c
+@item x01 @tab ^A @tab SOH
+@tab  x11 @tab ^Q @tab DC1
+@c
+@item x02 @tab ^B @tab STX
+@tab  x12 @tab ^R @tab DC2
+@c
+@item x03 @tab ^C @tab ETX
+@tab  x13 @tab ^S @tab DC3
+@c
+@item x04 @tab ^D @tab EOT
+@tab  x14 @tab ^T @tab DC4
+@c
+@item x05 @tab ^E @tab ENQ
+@tab  x15 @tab ^U @tab NAK
+@c
+@item x06 @tab ^F @tab ACK
+@tab  x16 @tab ^V @tab SYN
+@c
+@item x07 @tab ^G @tab BEL
+@tab  x17 @tab ^W @tab ETB
+@c
+@item x08 @tab ^H @tab BS
+@tab  x18 @tab ^X @tab CAN
+@c
+@item x09 @tab ^I @tab TAB
+@tab  x19 @tab ^Y @tab EM
+@c
+@item x0A @tab ^J @tab LF
+@tab  x1A @tab ^Z @tab SUB
+@c
+@item x0B @tab ^K @tab VT
+@tab  x1B @tab ^[ @tab ESC
+@c
+@item x0C @tab ^L @tab FF
+@tab  x1C @tab ^\ @tab IS4
+@c
+@item x0D @tab ^M @tab CR
+@tab  x1D @tab ^] @tab IS3
+@c
+@item x0E @tab ^N @tab SO
+@tab  x1E @tab ^^ @tab IS2
+@c
+@item x0F @tab ^O @tab SI
+@tab  x1F @tab ^_ @tab IS1
+@c
+@item x7F @tab ^? @tab DEL
+@tab @tab @tab
+@end multitable
 
 @node Escape-Sequence Lines,  , Control-Character Lines, Output Format
 @section Escape-Sequence Lines
