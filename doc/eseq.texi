@@ -352,6 +352,8 @@ occurred in the input.
 * Text Lines::                  
 * Control-Character Lines::     
 * Escape-Sequence Lines::       
+* Label Lines::                 
+* Description Lines::           
 @end menu
 
 @node Text Lines, Control-Character Lines, Output Format, Output Format
@@ -606,7 +608,7 @@ For reference, here's a table of the control characters (plus
 @tab @tab @tab
 @end multitable
 
-@node Escape-Sequence Lines,  , Control-Character Lines, Output Format
+@node Escape-Sequence Lines, Label Lines, Control-Character Lines, Output Format
 @section Escape-Sequence Lines
 @cindex escape-sequence lines
 
@@ -855,9 +857,84 @@ forms as well, at which time control sequences using the single-byte
 @end example
 
 @noindent
-@fortyeight{} also describes another kind of sequence called ``control
-strings''. These are not yet recognized by Eseq, but may be in the
-future.
+@fortyeight{} also describes another kind of sequence called
+@cindex control string
+``control strings''. These are not interpreted by Eseq; the
+control characters involved (for example, @samp{SOS/^X} and
+@samp{ST/^\} will be printed on control-character lines, and any text
+characters will be displayed on text lines.
+
+Future versions of Eseq will probably not depart from this display
+behavior; however, support for some common interpretations for control
+strings may be added, in which case a label line and/or description
+line might follow the control string, describing its usual
+interpretation.
+
+@node Label Lines, Description Lines, Escape-Sequence Lines, Output Format
+@section Label Lines
+@cindex label line
+
+@opindex &
+Label lines begin with the ampersand, @samp{&}:
+
+@example
+& SGR: SELECT GRAPHIC RENDITION
+@end example
+
+@noindent
+Label lines always describe a control function, and are always
+preceded by the escape sequence that invokes that function (unless the
+@opindex -E
+@option{-E} option was given, suppressing output for escape-sequence
+lines).
+
+The format of a label line's content is always @var{acronym}:
+@var{name}; both of these are defined for each control function
+by @fortyeight{}.
+
+Label lines currently are never wrapped; however, future
+versions of Eseq may wrap label lines. At that time, continuation
+label lines will probably consist of an extra space after the
+ampersand (similar to how escape-sequence lines are wrapped). Lines
+will never be split in the middle of a word.
+
+Future versions of Eseq may use label lines to describe things besides
+escape sequences; for instance, control characters or control strings,
+or other strings that may be interpreted specially by some devices or
+applications.
+
+@node Description Lines,  , Label Lines, Output Format
+@section Description Lines
+@cindex description line
+
+@opindex "
+Description lines begin with the double-quote, @samp{"}:
+
+@example
+" Move the cursor up 2 lines.
+@end example
+
+@noindent
+Sequences of description lines are generally preceded by a label line
+(unless the
+@opindex -L
+@option{-L} option was supplied), and describe the same
+control function labeled by that line. More than one description line
+may be used to describe a function, whereas only one label line is
+ever used for a control function.
+
+Description lines currently are never wrapped; however, future
+versions of Eseq may wrap label lines. At such time, contunuation
+description lines will also begin with the double-quote
+character, but an extra space will probably not be printed. Lines will
+never be split in the middle of a word.
+
+Future versions of Eseq may use description lines to describe thigns
+besides escape sequences; for instance, control characters or control
+strings, or other strings that may be interpreted specially by some
+devices or applications. Some description lines may appear without a
+preceding label line (even when @option{-L} was not specified), in the
+event that no standard designation for the function is known.
 
 @node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
