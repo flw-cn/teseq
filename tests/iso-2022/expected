@@ -51,4 +51,9 @@
 : Esc $ ) D
 & G1DM4: G1-DESIGNATE MULTIBYTE 94-SET
 : Esc $ ( B
+: Esc * ! $ A
+: Esc $ ( + B
+. ESC/^[
+|$(|
+. SUB/^Z
 . LF/^J
