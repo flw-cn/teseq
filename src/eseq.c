@@ -218,7 +218,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
                             && n_params != 2);
       if (! wrong_num_params)
         {
-          handler->fn (p->putr, n_params, params);
+          handler->fn (c, p->putr, n_params, params);
         }
     }
 }

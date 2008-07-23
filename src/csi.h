@@ -28,7 +28,8 @@ enum csi_func_type
 
 #define CSI_DEFAULT_NONE        -1
 
-typedef void (*csi_handler_func) (struct putter *, size_t, unsigned int []);
+typedef void (*csi_handler_func) (unsigned char, struct putter *,
+                                  size_t, unsigned int []);
 
 struct csi_handler
 {

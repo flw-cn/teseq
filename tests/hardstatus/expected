@@ -26,6 +26,7 @@
 & ED: ERASE IN PAGE
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -38,6 +39,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -50,6 +52,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -62,6 +65,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -78,6 +82,7 @@
 & ED: ERASE IN PAGE
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -90,6 +95,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -102,6 +108,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -114,6 +121,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -128,6 +136,7 @@
 . CR
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -140,6 +149,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
+" Move the cursor down 50 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -153,6 +163,7 @@
 . LF
 : Esc [ 49 B
 & CUD: CURSOR DOWN
+" Move the cursor down 49 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -165,6 +176,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 49 B
 & CUD: CURSOR DOWN
+" Move the cursor down 49 lines.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -179,6 +191,7 @@
 . CR
 : Esc [ 48 B
 & CUD: CURSOR DOWN
+" Move the cursor down 48 lines.
 . LF
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION

@@ -25,7 +25,8 @@
 #include "sgr.h"
 
 static void
-csi_do_ich (struct putter *putr, size_t n_params, unsigned int *params)
+csi_do_ich (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
 {
   assert (n_params == 1);
   putter_single (putr, ("\" Shift characters after the cursor to make room "
@@ -34,11 +35,14 @@ csi_do_ich (struct putter *putr, size_t n_params, unsigned int *params)
 }
 
 static void
-csi_do_cuu (struct putter *putr, size_t n_params, unsigned int *params)
+csi_do_cuu (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
 {
+  const char *dir[] = {"up", "down", "right", "left"};
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor up %d line%s.", params[0],
-                 params[0] == 1 ? "" : "s");
+  putter_single (putr, "\" Move the cursor %s %d line%s.",
+                 dir[ final - 0x41 ],
+                 params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -72,7 +76,8 @@ print_t416_description (struct putter *putr, unsigned char n_params,
 }
 
 static void
-csi_do_sgr (struct putter *putr, size_t n_params, unsigned int *params)
+csi_do_sgr (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
 {
   unsigned int *pend = params + n_params;
   unsigned int *param;
@@ -93,9 +98,9 @@ struct csi_handler csi_handlers[] =
   {
     {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1 },  /* x40 */
     {"CUU", "CURSOR UP", CSI_FUNC_PN, csi_do_cuu, 1 },
-    {"CUD", "CURSOR DOWN"},
-    {"CUF", "CURSOR RIGHT"},
-    {"CUB", "CURSOR LEFT"},
+    {"CUD", "CURSOR DOWN", CSI_FUNC_PN, csi_do_cuu, 1 },
+    {"CUF", "CURSOR RIGHT", CSI_FUNC_PN, csi_do_cuu, 1 },
+    {"CUB", "CURSOR LEFT", CSI_FUNC_PN, csi_do_cuu, 1 },
     {"CNL", "CURSOR NEXT LINE"},
     {"CPL", "CURSOR PRECEDING LINE"},
     {"CHA", "CURSOR CHARACTER ABSOLUTE"},

@@ -16,4 +16,22 @@
 : Esc [ 2 A
 & CUU: CURSOR UP
 " Move the cursor up 2 lines.
+: Esc [ B
+& CUD: CURSOR DOWN
+" Move the cursor down 1 line.
+: Esc [ 2 B
+& CUD: CURSOR DOWN
+" Move the cursor down 2 lines.
+: Esc [ C
+& CUF: CURSOR RIGHT
+" Move the cursor right 1 line.
+: Esc [ 2 C
+& CUF: CURSOR RIGHT
+" Move the cursor right 2 lines.
+: Esc [ D
+& CUB: CURSOR LEFT
+" Move the cursor left 1 line.
+: Esc [ 2 D
+& CUB: CURSOR LEFT
+" Move the cursor left 2 lines.
 . LF/^J
