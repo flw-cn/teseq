@@ -55,4 +55,5 @@
 : Esc $ ( + B
 . ESC/^[
 |$(|
-. SUB/^Z LF/^J
+. SUB/^Z LF/^J ESC/^[
+|$)|
