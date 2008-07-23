@@ -7,3 +7,13 @@
 : Esc [ 1 ; 2 @
 & ICH: INSERT CHARACTER
 . LF/^J
+: Esc [ A
+& CUU: CURSOR UP
+" Move the cursor up 1 line.
+: Esc [ 1 A
+& CUU: CURSOR UP
+" Move the cursor up 1 line.
+: Esc [ 2 A
+& CUU: CURSOR UP
+" Move the cursor up 2 lines.
+. LF/^J

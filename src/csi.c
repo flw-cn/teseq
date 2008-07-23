@@ -34,6 +34,14 @@ csi_do_ich (struct putter *putr, size_t n_params, unsigned int *params)
 }
 
 static void
+csi_do_cuu (struct putter *putr, size_t n_params, unsigned int *params)
+{
+  assert (n_params == 1);
+  putter_single (putr, "\" Move the cursor up %d line%s.", params[0],
+                 params[0] == 1 ? "" : "s");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -84,7 +92,7 @@ struct csi_handler csi_no_handler = { NULL, NULL };
 struct csi_handler csi_handlers[] =
   {
     {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1 },  /* x40 */
-    {"CUU", "CURSOR UP"},
+    {"CUU", "CURSOR UP", CSI_FUNC_PN, csi_do_cuu, 1 },
     {"CUD", "CURSOR DOWN"},
     {"CUF", "CURSOR RIGHT"},
     {"CUB", "CURSOR LEFT"},
