@@ -48,6 +48,10 @@ struct inputbuf *the_buffer;
         fail_unless (inputbuf_get (the_buffer) == 'f');
         fail_unless (inputbuf_get (the_buffer) == 'g');
         fail_unless (inputbuf_get (the_buffer) == 'h');
+        /* Reading at EOF. */
+        fail_unless (inputbuf_saving (the_buffer) == 0);
+        fail_unless (inputbuf_get (the_buffer) == EOF);
+        fail_unless (inputbuf_rewind (the_buffer) == 0);
         fail_unless (inputbuf_get (the_buffer) == EOF);
 
 #main-pre

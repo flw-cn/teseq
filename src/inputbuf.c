@@ -80,7 +80,8 @@ inputbuf_get (struct inputbuf *ib)
       if (c == EOF)
         {
           c = getc (ib->file);
-          ringbuf_put (ib->rb, c);
+          if (c != EOF)
+            ringbuf_put (ib->rb, c);
         }
     }
   else
