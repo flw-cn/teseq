@@ -109,6 +109,7 @@ fi
 	hardstatus
 	controls
         csi-interm
+        csi-desc
 '}
 
 nt=0
@@ -151,6 +152,6 @@ echo "Failed: $nf"
 echo
 echo "$ft"
 
-exit $nf
+exit $nfk
 
 # vim:sw=8 sts=8 ts=8 noet
