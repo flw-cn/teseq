@@ -209,8 +209,17 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
     print_csi_label (p, handler, private_params);
   if (config.descriptions && !private_params && handler->acro && handler->fn)
     {
+      int wrong_num_params = 0;
       init_csi_params (handler, &n_params, params);
-      handler->fn (p->putr, n_params, params);
+      wrong_num_params = ((handler->type == CSI_FUNC_PN
+                           || handler->type == CSI_FUNC_PS) && n_params != 1);
+      wrong_num_params |= ((handler->type == CSI_FUNC_PN_PN
+                            || handler->type == CSI_FUNC_PS_PS)
+                            && n_params != 2);
+      if (! wrong_num_params)
+        {
+          handler->fn (p->putr, n_params, params);
+        }
     }
 }
 

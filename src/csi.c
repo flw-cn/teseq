@@ -25,6 +25,15 @@
 #include "sgr.h"
 
 static void
+csi_do_ich (struct putter *putr, size_t n_params, unsigned int *params)
+{
+  assert (n_params == 1);
+  putter_single (putr, ("\" Shift characters after the cursor to make room "
+                        "for %d new character%s."), params[0],
+                 params[0] == 1 ? "" : "s");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -57,24 +66,24 @@ print_t416_description (struct putter *putr, unsigned char n_params,
 static void
 csi_do_sgr (struct putter *putr, size_t n_params, unsigned int *params)
 {
-  int i;
   unsigned int *pend = params + n_params;
+  unsigned int *param;
+  
   assert (n_params > 0);
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
     print_t416_description (putr, n_params, params);
   else
-    for (i = 0; i != n_params; ++i)
+    for (param = params; param != pend; ++param)
       {
-        unsigned int param = params[i];
-        print_sgr_param_description (putr, param);
+        print_sgr_param_description (putr, *param);
       }
 }
 
-extern struct csi_handler csi_no_handler = { NULL, NULL };
+struct csi_handler csi_no_handler = { NULL, NULL };
 
-extern struct csi_handler csi_handlers[] =
+struct csi_handler csi_handlers[] =
   {
-    {"ICH", "INSERT CHARACTER"},  /* x40 */
+    {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1 },  /* x40 */
     {"CUU", "CURSOR UP"},
     {"CUD", "CURSOR DOWN"},
     {"CUF", "CURSOR RIGHT"},
@@ -124,7 +133,7 @@ extern struct csi_handler csi_handlers[] =
     {"DAQ", "DEFINE AREA QUALIFICATION"}
   };
 
-extern struct csi_handler csi_spc_handlers[] = 
+struct csi_handler csi_spc_handlers[] = 
   {
     {"SL", "SCROLL LEFT"},
     {"SR", "SCROLL RIGHT"},

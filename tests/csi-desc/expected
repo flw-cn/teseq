@@ -4,4 +4,6 @@
 : Esc [ 23 @
 & ICH: INSERT CHARACTER
 " Shift characters after the cursor to make room for 23 new characters.
+: Esc [ 1 ; 2 @
+& ICH: INSERT CHARACTER
 . LF/^J
