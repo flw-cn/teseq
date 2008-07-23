@@ -6,7 +6,7 @@ bin_PROGRAMS = eseq
 dist_bin_SCRIPTS  = reseq
 dist_libexec_SCRIPTS = src/eseq-post.sed
 
-eseq_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c src/putter.c \
+eseq_SOURCES = src/eseq.c src/inputbuf.c src/ringbuf.c src/putter.c src/csi.c \
                src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h \
                src/c1.h src/eseq.h
 

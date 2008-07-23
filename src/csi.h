@@ -1,104 +1,47 @@
 /* csi.h */
 
-const char *csi_labels[][2] = {
-  {"ICH", "INSERT CHARACTER"},  /* x40 */
-  {"CUU", "CURSOR UP"},
-  {"CUD", "CURSOR DOWN"},
-  {"CUF", "CURSOR RIGHT"},
-  {"CUB", "CURSOR LEFT"},
-  {"CNL", "CURSOR NEXT LINE"},
-  {"CPL", "CURSOR PRECEDING LINE"},
-  {"CHA", "CURSOR CHARACTER ABSOLUTE"},
-  {"CUP", "CURSOR POSITION"},   /* x48 */
-  {"CHT", "CURSOR FORWARD TABULATION"},
-  {"ED", "ERASE IN PAGE"},
-  {"EL", "ERASE IN LINE"},
-  {"IL", "INSERT LINE"},
-  {"DL", "DELETE LINE"},
-  {"EF", "ERASE IN FIELD"},
-  {"EA", "ERASE IN AREA"},
-  {"DCH", "DELETE CHARACTER"},  /* x50 */
-  {"SEE", "SELECT EDITING EXTENT"},
-  {"CPR", "ACTIVE POSITION REPORT"},
-  {"SU", "SCROLL UP"},
-  {"SD", "SCROLL DOWN"},
-  {"NP", "NEXT PAGE"},
-  {"PP", "PRECEDING PAGE"},
-  {"CTC", "CURSOR TABULATION CONTROL"},
-  {"ECH", "ERASE CHARACTER"},   /* x58 */
-  {"CVT", "CURSOR LINE TABULATION"},
-  {"CBT", "CURSOR BACKWARD TABULATION"},
-  {"SRS", "START REVERSED STRING"},
-  {"PTX", "PARALLEL TEXTS"},
-  {"SDS", "START DIRECTED STRING"},
-  {"SIMD", "SELECT IMPLICIT MOVEMENT DIRECTION"},
-  {NULL, NULL},
-  {"HPA", "CHARACTER POSITION ABSOLUTE"},       /* x60 */
-  {"HPR", "CHARACTER POSITION FORWARD"},
-  {"REP", "REPEAT"},
-  {"DA", "DEVICE ATTRIBUTES"},
-  {"VPA", "LINE POSITION ABSOLUTE"},
-  {"VPR", "LINE POSITION FORWARD"},
-  {"HVP", "CHARACTER AND LINE POSITION"},
-  {"TBC", "TABULATION CLEAR"},
-  {"SM", "SET MODE"},           /* x68 */
-  {"MC", "MEDIA COPY"},
-  {"HPB", "CHARACTER POSITION BACKWARD"},
-  {"VPB", "LINE POSITION BACKWARD"},
-  {"RM", "RESET MODE"},
-  {"SGR", "SELECT GRAPHIC RENDITION"},
-  {"DSR", "DEVICE STATUS REPORT"},
-  {"DAQ", "DEFINE AREA QUALIFICATION"}
+#ifndef ESEQ_CSI_H
+#define ESEQ_CSI_H
+
+#include "eseq.h"
+
+#include <stddef.h>
+
+#include "putter.h"
+
+enum csi_func_type
+  {
+    CSI_FUNC_NONE,
+    CSI_FUNC_PN,
+    CSI_FUNC_PN_PN,
+    CSI_FUNC_PN_ANY,
+    CSI_FUNC_PS,
+    CSI_FUNC_PS_PS,
+    CSI_FUNC_PS_ANY
+  };
+
+#define CSI_USE_DEFAULT1(type)  ((type) == CSI_FUNC_PN_PN \
+                                 || (type) == CSI_FUNC_PS_PS)
+
+#define CSI_GET_DEFAULT(h, n)   (((n) == 1 && CSI_USE_DEFAULT1 ((h)->type)) \
+                                 ? h->default1 : h->default0)
+
+#define CSI_DEFAULT_NONE        -1
+
+typedef void (*csi_handler_func) (struct putter *, size_t, unsigned int []);
+
+struct csi_handler
+{
+  const char            *acro;
+  const char            *label;
+  enum csi_func_type    type;
+  csi_handler_func      fn;
+  int                   default0;
+  int                   default1;
 };
 
-const char *csi_spc_labels[][2] = {
-  {"SL", "SCROLL LEFT"},
-  {"SR", "SCROLL RIGHT"},
-  {"GSM", "GRAPHIC SIZE MODIFICATION"},
-  {"GSS", "GRAPHIC SIZE SELECTION"},
-  {"FNT", "FONT SELECTION"},
-  {"TSS", "THIN SPACE SPECIFICATION"},
-  {"JFY", "JUSTIFY"},
-  {"SPI", "SPACING INCREMENT"},
-  {"QUAD", "QUAD"},
-  {"SSU", "SELECT SIZE UNIT"},
-  {"PFS", "PAGE FORMAT SELECTION"},
-  {"SHS", "SELECT CHARACTER SPACING"},
-  {"SVS", "SELECT LINE SPACING"},
-  {"IGS", "IDENTIFY GRAPHIC SUBREPERTOIRE"},
-  {NULL, NULL},
-  {"IDCS", "IDENTIFY DEVICE CONTROL STRING"},
-  {"PPA", "PAGE POSITION ABSOLUTE"},
-  {"PPR", "PAGE POSITION FORWARD"},
-  {"PPB", "PAGE POSITION BACKWARD"},
-  {"SPD", "SELECT PRESENTATION DIRECTIONS"},
-  {"DTA", "DIMENSION TEXT AREA"},
-  {"SLH", "SET LINE HOME"},
-  {"SLL", "SET LINE LIMIT"},
-  {"FNK", "FUNCTION KEY"},
-  {"SPQR", "SELECT PRINT QUALITY AND RAPIDITY"},
-  {"SEF", "SHEET EJECT AND FEED"},
-  {"PEC", "PRESENTATION EXPAND OR CONTRACT"},
-  {"SSW", "SET SPACE WIDTH"},
-  {"SACS", "SET ADDITIONAL CHARACTER SEPARATION"},
-  {"SAPV", "SELECT ALTERNATIVE PRESENTATION VARIANTS"},
-  {"STAB", "SELECTIVE TABULATION"},
-  {"GCC", "GRAPHIC CHARACTER COMBINATION"},
-  {"TATE", "TABULATION ALIGNED TRAILING EDGE"},
-  {"TALE", "TABULATION ALIGNED LEADING EDGE"},
-  {"TAC", "TABULATION ALIGNED CENTRED"},
-  {"TCC", "TABULATION CENTRED ON CHARACTER"},
-  {"TSR", "TABULATION STOP REMOVE"},
-  {"SCO", "SELECT CHARACTER ORIENTATION"},
-  {"SRCS", "SET REDUCED CHARACTER SEPARATION"},
-  {"SCS", "SET CHARACTER SPACING"},
-  {"SLS", "SET LINE SPACING"},
-  {NULL, NULL},
-  {NULL, NULL},
-  {"SCP", "SELECT CHARACTER PATH"},
-  {NULL, NULL},
-  {NULL, NULL},
-  {NULL, NULL},
-  {NULL, NULL}
-};
+extern struct csi_handler csi_handlers[];
+extern struct csi_handler csi_spc_handlers[];
+extern struct csi_handler csi_no_handler;
 
+#endif /* ESEQ_CSI_H */

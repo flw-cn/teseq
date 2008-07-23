@@ -31,7 +31,6 @@
 /* label/description maps. */
 #include "csi.h"
 #include "c1.h"
-#include "sgr.h"
 
 
 #define CONTROL(c)      ((unsigned char)((c) - 0x40) & 0x7f)
@@ -54,8 +53,6 @@
  * practice, we'll consider it private for our purposes. */
 #define IS_PRIVATE_PARAM_CHAR(c)        (((c) >= 0x3c && (c) <= 0x3f) \
                                          || (c) == 0x3a)
-
-#define DEFAULT_PARAM   ((unsigned int)-1)
 
 #define PUTTER_START_ESC    putter_start (p->putr, ":", "", ": ")
 
@@ -96,8 +93,6 @@ struct
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
 #define is_ascii_digit(x)       ((x) >= 0x30 && (x) <= 0x39)
 
-#define N_ARY_ELEMS(ary)        (sizeof (ary) / sizeof (ary)[0])
-
 void
 print_esc_char (struct processor *p, unsigned char c)
 {
@@ -110,79 +105,16 @@ print_esc_char (struct processor *p, unsigned char c)
 }
 
 void
-print_sgr_param_description (struct processor *p, unsigned int param)
+print_csi_label (struct processor *p, struct csi_handler *handler,
+                 int private)
 {
-  const char *msg = NULL;
-  if (param < N_ARY_ELEMS (sgr_param_descriptions))
-    msg = sgr_param_descriptions[param];
-  if (msg)
+  if (handler->acro)
     {
-      putter_single (p->putr, "\" %s", msg);
-    }
-}
-
-void
-print_t416_description (struct processor *p, unsigned char n_params,
-                        unsigned int *params)
-{
-  const char *fore_back = "foreground";
-  if (params[0] == 48)
-    fore_back = "background";
-  if (n_params == 3 && params[1] == 5)
-    {
-      putter_single (p->putr, "\" Set %s color to index %d.",
-                     fore_back, params[2]);
-    }
-  else
-    {
-      putter_single (p->putr, "\" Set %s color (unknown).", fore_back);
-    }
-}
-
-void
-interpret_sgr_params (struct processor *p, unsigned char n_params,
-                      unsigned int *params)
-{
-  unsigned char i;
-  if (n_params == 0)
-    print_sgr_param_description (p, 0u);
-  else if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
-    print_t416_description (p, n_params, params);
-  else
-    for (i = 0; i != n_params; ++i)
-      {
-        unsigned int param = params[i];
-        if (param == DEFAULT_PARAM)
-          param = 0;
-        print_sgr_param_description (p, param);
-      }
-}
-
-void
-print_csi_label (struct processor *p, unsigned char c,
-                 unsigned char interm, unsigned int intermsz, int private)
-{
-  const char **label;
-  const char *(*label_set)[2];
-
-  if (intermsz == 0)
-    label_set = csi_labels;
-  else if (intermsz == 1 && interm == ' ')
-    label_set = csi_spc_labels;
-  else
-    return;
-  
-  if (c >= 0x40 && c < 0x70)
-    {
-      unsigned char i = c - 0x40;
-      label = label_set[i];
-      if (label[0])
-        {
-          const char *privmsg = "";
-          if (private)
-            privmsg = " (private params)";
-          putter_single (p->putr, "& %s: %s%s", label[0], label[1], privmsg);
-        }
+      const char *privmsg = "";
+      if (private)
+        privmsg = " (private params)";
+      putter_single (p->putr, "& %s: %s%s", handler->acro, handler->label,
+                     privmsg);
     }
 }
 
@@ -196,18 +128,29 @@ print_c1_label (struct processor *p, unsigned char c)
 }
 
 void
-process_csi_sequence (struct processor *p)
+init_csi_params (struct csi_handler *handler, size_t *n_params,
+                 unsigned int params[])
+{
+  if (handler->acro)
+    {
+      if (*n_params == 0)
+        params[*n_params++] = handler->default0;
+      if (*n_params == 1 && CSI_USE_DEFAULT1 (handler->type))
+        params[*n_params++] = handler->default1;
+    }
+}
+
+void
+process_csi_sequence (struct processor *p, struct csi_handler *handler)
 {
   int c;
   int e = config.escapes;
   int first_param_char_seen = 0;
   int private_params = 0;
   int last_was_digit = 0;
-  unsigned char n_params = 0;
-  unsigned int cur_param = 0;
+  size_t n_params = 0;
+  size_t cur_param = 0;
   unsigned int params[255];
-  unsigned char interm = 0;
-  unsigned int intermsz = 0;
 
   if (e)
     PUTTER_START_ESC;
@@ -242,12 +185,6 @@ process_csi_sequence (struct processor *p)
         }
       else
         {
-          if (IS_CSI_INTERMEDIATE_CHAR (c))
-            {
-              interm = c;
-              ++intermsz;
-            }
-
           if (last_was_digit)
             {
               params[n_params++] = cur_param;
@@ -256,7 +193,10 @@ process_csi_sequence (struct processor *p)
                 putter_printf (p->putr, " %d", cur_param);
             }
           else
-            params[n_params++] = DEFAULT_PARAM;
+            {
+              params[n_params] = CSI_GET_DEFAULT (handler, n_params);
+              ++n_params;
+            }
 
           if (e)
             print_esc_char (p, c);
@@ -266,15 +206,15 @@ process_csi_sequence (struct processor *p)
   if (e)
     putter_finish (p->putr, "");
   if (config.labels)
-    print_csi_label (p, c, interm, intermsz, private_params);
-  if (c == 'm')
+    print_csi_label (p, handler, private_params);
+  if (config.descriptions && !private_params && handler->acro && handler->fn)
     {
-      if (config.descriptions && !private_params)
-        interpret_sgr_params (p, n_params, params);
+      init_csi_params (handler, &n_params, params);
+      handler->fn (p->putr, n_params, params);
     }
 }
 
-int
+struct csi_handler *
 read_csi_sequence (struct processor *p)
 {
   enum
@@ -285,12 +225,14 @@ read_csi_sequence (struct processor *p)
   } state = SEQ_CSI_PARAM_FIRST_CHAR;
   int c, col;
   int private_params = 0;
+  unsigned char interm = 0;
+  size_t intermsz = 0;
 
   while (1)
     {
       c = inputbuf_get (p->ibuf);
       if (c == EOF)
-        return 0;
+        return NULL;
       col = GET_COLUMN (c);
       switch (state)
         {
@@ -301,12 +243,11 @@ read_csi_sequence (struct processor *p)
           if (IS_CSI_INTERMEDIATE_COLUMN (col))
             {
               state = SEQ_CSI_INTERMEDIATE;
-              break;
             }
           else if (col == 3)
             {
               if (!private_params && IS_PRIVATE_PARAM_CHAR (c))
-                return 0;
+                return NULL;
               break;
             }
           /* Fall through */
@@ -314,11 +255,23 @@ read_csi_sequence (struct processor *p)
           if (IS_CSI_FINAL_COLUMN (col))
             {
               inputbuf_rewind (p->ibuf);
-              return 1;
+              if (col < 4 || col >= 7)
+                return &csi_no_handler;
+              if (intermsz == 0)
+                return &csi_handlers[c - 0x40];
+              else if (intermsz == 1 && interm == 0x20)
+                return &csi_spc_handlers[c - 0x40];
+              else
+                return &csi_no_handler;
             }
           else if (! IS_CSI_INTERMEDIATE_COLUMN (col))
             {
-              return 0;
+              return NULL;
+            }
+          else
+            {
+              interm = c;
+              ++intermsz;
             }
         }
     }
@@ -580,9 +533,10 @@ handle_c1 (struct processor *p, unsigned char c)
 {
   if (c == '[')
     {
-      if (read_csi_sequence (p))
+      struct csi_handler *h;
+      if ((h = read_csi_sequence (p)))
         {
-          process_csi_sequence (p);
+          process_csi_sequence (p, h);
           return 1;
         }
       else
