@@ -1,9 +1,7 @@
 TODO:
 
-Multibyte 94-set seqs with multiple intermediate bytes.
 Document CSI functions.
 Make Eseq handle sub-parameters (`:'-separated) properly.
-Make Eseq handle other _possible_ nF functions, including other intermediate-byte 02/xx combos, and multibyte 96-sets.
 Xterm extensions.
 
 Interpretation of graphical characters based on current state (translation to UF-8?).
