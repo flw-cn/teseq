@@ -46,7 +46,8 @@
 #define IS_CSI_FINAL_CHAR(c)        IS_CSI_FINAL_COLUMN (GET_COLUMN (c))
 
 #define IS_nF_INTERMEDIATE_CHAR(c)      (GET_COLUMN (c) == 2)
-#define IS_nF_FINAL_CHAR(c)     ((c) >= 0x30 || (c) < 0x7f)
+#define IS_nF_FINAL_CHAR(c)             ((c) >= 0x30 && (c) < 0x7f)
+#define IS_CONTROL(c)                   (GET_COLUMN (c) <= 1)
 
 /* 0x3a (:) is not actually a private parameter, but since it's not
  * used by any standard we're aware of, except ones that aren't used in
@@ -527,6 +528,7 @@ handle_nF (struct processor *p, unsigned char i)
 {
   int i1 = 0;
   int f;
+  int c;
 
   /* Esc already given. */
   f = inputbuf_get (p->ibuf);
@@ -534,22 +536,33 @@ handle_nF (struct processor *p, unsigned char i)
     {
       i1 = f;
       f = inputbuf_get (p->ibuf);
-      if (! IS_nF_FINAL_CHAR (f))
-        goto nothandled;
+      c = f;
+      while (IS_nF_INTERMEDIATE_CHAR (c))
+        c = inputbuf_get (p->ibuf);
+      if (c == EOF || IS_CONTROL (c))
+        return 0;
     }
   else if (! IS_nF_FINAL_CHAR (f))
-    goto nothandled;
+    return 0;
   
   if (config.escapes)
     {
+      inputbuf_rewind (p->ibuf);
+
       PUTTER_START_ESC;
       print_esc_char (p, C_ESC);
-      print_esc_char (p, i);
-      if (i1)
-        print_esc_char (p, i1);
-      print_esc_char (p, f);
+      do
+        {
+          c = inputbuf_get (p->ibuf);
+          print_esc_char (p, c);
+        }
+      while (! IS_nF_FINAL_CHAR (c));
+
       putter_finish (p->putr, "");
     }
+
+  if (! IS_nF_FINAL_CHAR (f))
+    return 1;
 
   if (i == 0x20 && config.labels)
     putter_single (p->putr, "& ACS: ANNOUNCE CODE STRUCTURE");
@@ -560,9 +573,6 @@ handle_nF (struct processor *p, unsigned char i)
   else if (i >= 0x27)
     print_gxd_info (p, i, f);
   return 1;
-
-nothandled:
-  return 0;
 }
 
 int
@@ -625,7 +635,6 @@ handle_escape_sequence (struct processor *p)
   if (handled)
     {
       inputbuf_forget (p->ibuf);
-      /* p->st = ST_INIT; */
       p->print_dot = 1;
     }
   else
