@@ -486,16 +486,21 @@ print_gxd_info (struct processor *p, int intermediate, int final)
 }
 
 void
-print_gxdm_info (struct processor *p, int i1)
+print_gxdm_info (struct processor *p, int i1, int f)
 {
   int designate;
   const char *desig_strs = "Z123";
   int set;
 
-  if (i1 == 0)
+  if (f == '\x40' || f == '\x41' || f == '\x42')
     {
-      designate = 0;
-      set = 4;
+      if (i1 == 0)
+        {
+          designate = 0;
+          set = 4;
+        }
+      else
+        return;
     }
   else if (i1 >= 0x2d && i1 <= 0x2f)
     {
@@ -551,7 +556,7 @@ handle_nF (struct processor *p, unsigned char i)
   else if (i == 0x21 || i == 0x22)
     print_cxd_info (p, i, f);
   else if (i == 0x24 && (i1 == 0 || i1 >= 0x27))
-    print_gxdm_info (p, i1);
+    print_gxdm_info (p, i1, f);
   else if (i >= 0x27)
     print_gxd_info (p, i, f);
   return 1;

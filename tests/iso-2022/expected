@@ -50,4 +50,5 @@
 " Designate 94-character set B (US-ASCII) to G0.
 : Esc $ ) D
 & G1DM4: G1-DESIGNATE MULTIBYTE 94-SET
+: Esc $ ( B
 . LF/^J
