@@ -34,8 +34,8 @@
 #include "sgr.h"
 
 
-#define CONTROL(c)      ((unsigned char)((c) - 0x40))
-#define UNCONTROL(c)    ((c) == '\x7f' ? '?' : (unsigned char)(c) | 0x40)
+#define CONTROL(c)      ((unsigned char)((c) - 0x40) & 0x7f)
+#define UNCONTROL(c)    ((unsigned char)((c) + 0x40) & 0x7f)
 #define C_ESC           CONTROL('[')
 
 #define GET_COLUMN(c)   (((c) & 0xf0) >> 4)
@@ -606,8 +606,6 @@ print_control (struct processor *p, unsigned char c)
       else
         putter_printf (p->putr, " %s", name);
     }
-  else if (c == 0x7f)
-    putter_printf (p->putr, " %s/^?", "DEL");
   else
     putter_printf (p->putr, " x%02X", (unsigned int) c);
   p->st = ST_CTRL;
