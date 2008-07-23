@@ -46,6 +46,16 @@ csi_do_cuu (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_cnl (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  const char *dir[] = {"down", "up"};
+  assert (n_params == 1);
+  putter_single (putr, "\" Move the cursor to the first column, %d line%s %s.",
+                 params[0], params[0] == 1 ? "" : "s", dir[ final - 0x45 ]);
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -101,8 +111,8 @@ struct csi_handler csi_handlers[] =
     {"CUD", "CURSOR DOWN", CSI_FUNC_PN, csi_do_cuu, 1 },
     {"CUF", "CURSOR RIGHT", CSI_FUNC_PN, csi_do_cuu, 1 },
     {"CUB", "CURSOR LEFT", CSI_FUNC_PN, csi_do_cuu, 1 },
-    {"CNL", "CURSOR NEXT LINE"},
-    {"CPL", "CURSOR PRECEDING LINE"},
+    {"CNL", "CURSOR NEXT LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
+    {"CPL", "CURSOR PRECEDING LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
     {"CHA", "CURSOR CHARACTER ABSOLUTE"},
     {"CUP", "CURSOR POSITION"},   /* x48 */
     {"CHT", "CURSOR FORWARD TABULATION"},

@@ -35,3 +35,16 @@
 & CUB: CURSOR LEFT
 " Move the cursor left 2 lines.
 . LF/^J
+: Esc [ E
+& CNL: CURSOR NEXT LINE
+" Move the cursor to the first column, 1 line down.
+: Esc [ 2 E
+& CNL: CURSOR NEXT LINE
+" Move the cursor to the first column, 2 lines down.
+: Esc [ F
+& CPL: CURSOR PRECEDING LINE
+" Move the cursor to the first column, 1 line up.
+: Esc [ 2 F
+& CPL: CURSOR PRECEDING LINE
+" Move the cursor to the first column, 2 lines up.
+. LF/^J
