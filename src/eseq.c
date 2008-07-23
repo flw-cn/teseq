@@ -485,32 +485,73 @@ print_gxd_info (struct processor *p, int intermediate, int final)
     }
 }
 
+void
+print_gxdm_info (struct processor *p, int i1)
+{
+  int designate;
+  const char *desig_strs = "Z123";
+  int set;
+
+  if (i1 == 0)
+    {
+      designate = 0;
+      set = 4;
+    }
+  else if (i1 >= 0x2d && i1 <= 0x2f)
+    {
+      set = 6;
+      designate = i1 - 0x2c;
+    }
+  else if (i1 != 0x27 && i1 != 0x2c)
+    {
+      set = 4;
+      designate = i1 - 0x28;
+    }
+  else
+    return;
+
+  if (config.labels)
+    {
+      putter_single (p->putr, "& G%cDM%d: G%d-DESIGNATE MULTIBYTE 9%d-SET",
+                     desig_strs[designate], set, designate, set);
+    }
+}
+
 int
 handle_nF (struct processor *p, unsigned char i)
 {
+  int i1 = 0;
   int f;
 
   /* Esc already given. */
-  if (!IS_nF_INTERMEDIATE_CHAR (i))
-    goto nothandled;
   f = inputbuf_get (p->ibuf);
-  if (!IS_nF_FINAL_CHAR (f))
+  if (IS_nF_INTERMEDIATE_CHAR (f)) 
+    {
+      i1 = f;
+      f = inputbuf_get (p->ibuf);
+      if (! IS_nF_FINAL_CHAR (f))
+        goto nothandled;
+    }
+  else if (! IS_nF_FINAL_CHAR (f))
     goto nothandled;
-
+  
   if (config.escapes)
     {
       PUTTER_START_ESC;
       print_esc_char (p, C_ESC);
       print_esc_char (p, i);
+      if (i1)
+        print_esc_char (p, i1);
       print_esc_char (p, f);
       putter_finish (p->putr, "");
     }
+
   if (i == 0x20 && config.labels)
     putter_single (p->putr, "& ACS: ANNOUNCE CODE STRUCTURE");
   else if (i == 0x21 || i == 0x22)
     print_cxd_info (p, i, f);
-  else if (i == 0x24)
-    putter_single (p->putr, "& GZDM4: G0-DESIGNATE MULTIBYTE 94-SET");
+  else if (i == 0x24 && (i1 == 0 || i1 >= 0x27))
+    print_gxdm_info (p, i1);
   else if (i >= 0x27)
     print_gxd_info (p, i, f);
   return 1;

@@ -48,4 +48,6 @@
 : Esc ( B
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
+: Esc $ ) D
+& G1DM4: G1-DESIGNATE MULTIBYTE 94-SET
 . LF/^J
