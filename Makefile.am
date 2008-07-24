@@ -19,7 +19,7 @@ src_test_inputbuf_SOURCES = src/test-inputbuf.c src/inputbuf.c src/ringbuf.c
 src_test_inputbuf_LDADD = -lcheck
 
 info_TEXINFOS = doc/teseq.texi
-doc_eseq_TEXINFOS = doc/fdl.texi
+doc_teseq_TEXINFOS = doc/fdl.texi
 dist_man_MANS = doc/teseq.1
 
 SUFFIXES = .cm
