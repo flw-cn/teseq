@@ -68,3 +68,10 @@
 & CUP: CURSOR POSITION
 " Move the cursor to line 1, column 5.
 . LF/^J
+: Esc [ I
+& CHT: CURSOR FORWARD TABULATION
+" Move the cursor forward 1 tab stops.
+: Esc [ 3 I
+& CHT: CURSOR FORWARD TABULATION
+" Move the cursor forward 3 tab stops.
+. LF/^J

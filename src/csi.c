@@ -73,6 +73,15 @@ csi_do_cup (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_cht (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  assert (n_params == 1);
+  putter_single (putr, "\" Move the cursor forward %d tab stops.",
+                 params[0]);
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -132,7 +141,7 @@ struct csi_handler csi_handlers[] =
     {"CPL", "CURSOR PRECEDING LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
     {"CHA", "CURSOR CHARACTER ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1 },
     {"CUP", "CURSOR POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },   /* x48 */
-    {"CHT", "CURSOR FORWARD TABULATION"},
+    {"CHT", "CURSOR FORWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
     {"ED", "ERASE IN PAGE"},
     {"EL", "ERASE IN LINE"},
     {"IL", "INSERT LINE"},
