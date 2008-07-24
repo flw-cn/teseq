@@ -923,6 +923,44 @@ control function labeled by that line. More than one description line
 may be used to describe a function, whereas only one label line is
 ever used for a control function.
 
+It is important to understand that the descriptions provided are only
+approximations and guesses, and suffer from various limitations. The
+behavior of many control functions are dependent on terminal state
+that Eseq does not track. Eseq chooses a common default setting for
+applicable terminal modes, and issues a description based on that. For
+instance, the @sc{insert line} function is described as follows:
+
+@example
+: Esc [ 2 L
+& IL: INSERT LINE
+" Shift lines after the cursor to make room for 2 new lines.
+@end example
+
+@noindent
+However, depending on the current setting of the
+@sc{line editing mode}, the actual behavior might be to shift the
+lines @emph{before} the cursor, rather than the ones after. Future
+versions of Eseq may track enough terminal state to improve the
+accuracy of these descriptions, but they would still need to
+guess at the initial state of the terminal, for any modes that had not
+been explicitly set or reset.
+
+Descriptions are also often inaccurate. For instance, the description
+for @sc{insert line} should really read ``shift the current line and
+the lines after the cursor@dots{}''. In addition, no mention is made of
+the fact that the extent of the shifted part is dependent on previous
+invocations of @sc{select editing extent}. A conscious decision has
+been made to value brevity over accuracy.
+
+Also, the descriptions are based (loosely) on the semantics defined by
+@fortyeight{}. There is no guarantee that this corresponds to the
+semantics defined for the actual terminal on which these functions
+were invoked. The terminal may have different behavior, or may not
+even accept the function. The descriptions are intended as a rough aid in
+remembering what a given function does; to really understand the
+actual semantics of a function, you should read the terminal device's
+documentation, and/or @fortyeight{}.
+
 Description lines currently are never wrapped; however, future
 versions of Eseq may wrap label lines. At such time, contunuation
 description lines will also begin with the double-quote
