@@ -21,11 +21,13 @@
 " Move the cursor to line 1, column 1.
 : Esc [ J
 & ED: ERASE IN PAGE
+" Clear the screen.
 : Esc [ H
 & CUP: CURSOR POSITION
 " Move the cursor to line 1, column 1.
 : Esc [ J
 & ED: ERASE IN PAGE
+" Clear the screen.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
 " Move the cursor down 50 lines.
@@ -87,6 +89,7 @@
 " Move the cursor to line 1, column 1.
 : Esc [ J
 & ED: ERASE IN PAGE
+" Clear the screen.
 : Esc [ 50 B
 & CUD: CURSOR DOWN
 " Move the cursor down 50 lines.
