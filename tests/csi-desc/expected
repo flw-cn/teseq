@@ -114,3 +114,13 @@
 & DL: DELETE LINE
 " Delete 3 lines, shifting the following lines up.
 . LF/^J
+: Esc [ N
+& EF: ERASE IN FIELD
+" Clear from the cursor to the next tab stop.
+: Esc [ 1 N
+& EF: ERASE IN FIELD
+" Clear from the previous tab stop to the cursor.
+: Esc [ 2 N
+& EF: ERASE IN FIELD
+" Clear from the previous tab stop to the next tab stop.
+. LF/^J
