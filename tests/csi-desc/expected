@@ -107,3 +107,10 @@
 & IL: INSERT LINE
 " Shift lines after the cursor to make room for 23 new lines.
 . LF/^J
+: Esc [ M
+& DL: DELETE LINE
+" Delete 1 line, shifting the following lines up.
+: Esc [ 3 M
+& DL: DELETE LINE
+" Delete 3 lines, shifting the following lines up.
+. LF/^J
