@@ -85,19 +85,20 @@ static void
 csi_do_ed (unsigned char final, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
+  const char *space = (final == 0x4A) ? "screen" : "line";
   assert (n_params == 1);
   switch (params[0])
     {
     case 0:
       putter_single (putr, ("\" Clear from the cursor to the end of "
-                            "the screen."));
+                            "the %s."), space);
       break;
     case 1:
-      putter_single (putr, ("\" Clear from the beginning of the screen "
-                            " to the cursor."));
+      putter_single (putr, ("\" Clear from the beginning of the %s "
+                            "to the cursor."), space);
       break;
     case 2:
-      putter_single (putr, "\" Clear the screen.");
+      putter_single (putr, "\" Clear the %s.", space);
       break;
     }
 }
@@ -164,7 +165,7 @@ struct csi_handler csi_handlers[] =
     {"CUP", "CURSOR POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },   /* x48 */
     {"CHT", "CURSOR FORWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
     {"ED", "ERASE IN PAGE", CSI_FUNC_PS, csi_do_ed, 0 },
-    {"EL", "ERASE IN LINE"},
+    {"EL", "ERASE IN LINE", CSI_FUNC_PS, csi_do_ed, 0 },
     {"IL", "INSERT LINE"},
     {"DL", "DELETE LINE"},
     {"EF", "ERASE IN FIELD"},

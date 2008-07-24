@@ -83,10 +83,20 @@
 " Clear from the cursor to the end of the screen.
 : Esc [ 1 J
 & ED: ERASE IN PAGE
-" Clear from the beginning of the screen  to the cursor.
+" Clear from the beginning of the screen to the cursor.
 : Esc [ 2 J
 & ED: ERASE IN PAGE
 " Clear the screen.
 : Esc [ 3 J
 & ED: ERASE IN PAGE
+. LF/^J
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 1 K
+& EL: ERASE IN LINE
+" Clear from the beginning of the line to the cursor.
+: Esc [ 2 K
+& EL: ERASE IN LINE
+" Clear the line.
 . LF/^J
