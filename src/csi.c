@@ -89,15 +89,15 @@ csi_do_ed (unsigned char final, struct putter *putr,
   switch (params[0])
     {
     case 0:
-      putter_single (putr, "\" Clear the screen.");
+      putter_single (putr, ("\" Clear from the cursor to the end of "
+                            "the screen."));
       break;
     case 1:
       putter_single (putr, ("\" Clear from the beginning of the screen "
                             " to the cursor."));
       break;
     case 2:
-      putter_single (putr, ("\" Clear from the cursor to the end of "
-                            "the screen."));
+      putter_single (putr, "\" Clear the screen.");
       break;
     }
 }
