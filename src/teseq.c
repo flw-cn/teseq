@@ -147,7 +147,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
   int e = config.escapes;
   int first_param_char_seen = 0;
   int private_params = 0;
-  int last_was_digit = 0;
+  int last = 0;
   size_t n_params = 0;
   size_t cur_param = 0;
   unsigned int params[255];
@@ -171,7 +171,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
         }
       if (is_ascii_digit (c))
         {
-          if (last_was_digit)
+          if (is_ascii_digit (last))
             {
               /* XXX: range check here. */
               cur_param *= 10;
@@ -181,18 +181,16 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
             {
               cur_param = c - '0';
             }
-          last_was_digit = 1;
         }
       else
         {
-          if (last_was_digit)
+          if (is_ascii_digit (last))
             {
               params[n_params++] = cur_param;
-              last_was_digit = 0;
               if (e)
                 putter_printf (p->putr, " %d", cur_param);
             }
-          else
+          else if (! IS_CSI_INTERMEDIATE_CHAR (last))
             {
               int param = CSI_GET_DEFAULT (handler, n_params);
               if (param >= 0)
@@ -205,6 +203,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
           if (e)
             print_esc_char (p, c);
         }
+      last = c;
     }
   while (!IS_CSI_FINAL_CHAR (c));
   if (e)

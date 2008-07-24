@@ -178,6 +178,38 @@ csi_do_cpr (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_su (unsigned char final, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  const char *dir, *unit;
+  assert (n_params == 1);
+  switch (final)
+    {
+    case 0x53:
+      dir = "up";
+      unit = "line";
+      break;
+    case 0x54:
+      dir = "down";
+      unit = "line";
+      break;
+    case 0x41:
+      dir = "right";
+      unit = "column";
+      break;
+    case 0x40:
+      dir = "left";
+      unit = "column";
+      break;
+    default:
+      assert (! "got here");
+    }
+  
+  putter_single (putr, "\" Scroll %s by %d %s%s", dir, params[0], unit,
+                 params[0] == 1 ? "" : "s");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -247,8 +279,8 @@ struct csi_handler csi_handlers[] =
     {"DCH", "DELETE CHARACTER", CSI_FUNC_PN, csi_do_dch, 1 },  /* x50 */
     {"SEE", "SELECT EDITING EXTENT"},
     {"CPR", "ACTIVE POSITION REPORT", CSI_FUNC_PN_PN, csi_do_cpr, 1, 1 },
-    {"SU", "SCROLL UP"},
-    {"SD", "SCROLL DOWN"},
+    {"SU", "SCROLL UP", CSI_FUNC_PN, csi_do_su, 1 },
+    {"SD", "SCROLL DOWN", CSI_FUNC_PN, csi_do_su, 1 },
     {"NP", "NEXT PAGE"},
     {"PP", "PRECEDING PAGE"},
     {"CTC", "CURSOR TABULATION CONTROL"},
@@ -280,8 +312,8 @@ struct csi_handler csi_handlers[] =
 
 struct csi_handler csi_spc_handlers[] = 
   {
-    {"SL", "SCROLL LEFT"},
-    {"SR", "SCROLL RIGHT"},
+    {"SL", "SCROLL LEFT", CSI_FUNC_PN, csi_do_su, 1 },
+    {"SR", "SCROLL RIGHT", CSI_FUNC_PN, csi_do_su, 1 },
     {"GSM", "GRAPHIC SIZE MODIFICATION"},
     {"GSS", "GRAPHIC SIZE SELECTION"},
     {"FNT", "FONT SELECTION"},

@@ -151,3 +151,28 @@
 & CPR: ACTIVE POSITION REPORT
 " Report that the cursor is located at line 2, column 4
 . LF/^J
+: Esc [ S
+& SU: SCROLL UP
+" Scroll up by 1 line
+: Esc [ 3 S
+& SU: SCROLL UP
+" Scroll up by 3 lines
+: Esc [ T
+& SD: SCROLL DOWN
+" Scroll down by 1 line
+: Esc [ 4 T
+& SD: SCROLL DOWN
+" Scroll down by 4 lines
+: Esc [ Spc @
+& SL: SCROLL LEFT
+" Scroll left by 1 column
+: Esc [ 15 Spc @
+& SL: SCROLL LEFT
+" Scroll left by 15 columns
+: Esc [ Spc A
+& SR: SCROLL RIGHT
+" Scroll right by 1 column
+: Esc [ 14 Spc A
+& SR: SCROLL RIGHT
+" Scroll right by 14 columns
+. LF/^J
