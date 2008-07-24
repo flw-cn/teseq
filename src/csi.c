@@ -210,6 +210,29 @@ csi_do_su (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_ctc (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  unsigned int *p = params, *pend = params + n_params;
+  const char *messages[] = 
+    {
+      "Set a horizontal tab stop at the cursor position.",
+      "Set a vertical tab stop at the current line.",
+      "Clear the horizontal tab stop at the cursor position.",
+      "Clear the vertical tab stop at the current line.",
+      "Clear all horizontal tab stops in the current line.",
+      "Clear all horizontal tab stops.",
+      "Clear all vertical tab stops."
+    };
+  
+  for (; p != pend; ++p)
+    {
+      if (*p < N_ARY_ELEMS (messages))
+        putter_single (putr, "\" %s", messages[*p]);
+    }
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -283,7 +306,7 @@ struct csi_handler csi_handlers[] =
     {"SD", "SCROLL DOWN", CSI_FUNC_PN, csi_do_su, 1 },
     {"NP", "NEXT PAGE"},
     {"PP", "PRECEDING PAGE"},
-    {"CTC", "CURSOR TABULATION CONTROL"},
+    {"CTC", "CURSOR TABULATION CONTROL", CSI_FUNC_PS_ANY, csi_do_ctc, 0 },
     {"ECH", "ERASE CHARACTER"},   /* x58 */
     {"CVT", "CURSOR LINE TABULATION"},
     {"CBT", "CURSOR BACKWARD TABULATION"},

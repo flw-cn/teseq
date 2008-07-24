@@ -176,3 +176,19 @@
 & SR: SCROLL RIGHT
 " Scroll right by 14 columns
 . LF/^J
+: Esc [ W
+& CTC: CURSOR TABULATION CONTROL
+" Set a horizontal tab stop at the cursor position.
+: Esc [ ; 2 ; 4 ; 5 ; W
+& CTC: CURSOR TABULATION CONTROL
+" Set a horizontal tab stop at the cursor position.
+" Clear the horizontal tab stop at the cursor position.
+" Clear all horizontal tab stops in the current line.
+" Clear all horizontal tab stops.
+" Set a horizontal tab stop at the cursor position.
+: Esc [ 1 ; 3 ; 6 W
+& CTC: CURSOR TABULATION CONTROL
+" Set a vertical tab stop at the current line.
+" Clear the vertical tab stop at the current line.
+" Clear all vertical tab stops.
+. LF/^J
