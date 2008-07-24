@@ -144,3 +144,10 @@
 & DCH: DELETE CHARACTER
 " Delete 42 characters, shifting the following characters left.
 . LF/^J
+: Esc [ R
+& CPR: ACTIVE POSITION REPORT
+" Report that the cursor is located at line 1, column 1
+: Esc [ 2 ; 4 R
+& CPR: ACTIVE POSITION REPORT
+" Report that the cursor is located at line 2, column 4
+. LF/^J

@@ -160,12 +160,21 @@ csi_do_ef (unsigned char final, struct putter *putr,
 
 static void
 csi_do_dch (unsigned char final, struct putter *putr,
-           size_t n_params, unsigned int *params)
+            size_t n_params, unsigned int *params)
 {
   assert (n_params == 1);
   putter_single (putr, ("\" Delete %d character%s, shifting the following "
                         "characters left."),
                  params[0], params[0] == 1 ? "" : "s");
+}
+
+static void
+csi_do_cpr (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  assert (n_params == 2);
+  putter_single (putr, ("\" Report that the cursor is located at line %d, "
+                        "column %d"), params[0], params[1]);
 }
 
 static void
@@ -237,7 +246,7 @@ struct csi_handler csi_handlers[] =
     {"EA", "ERASE IN AREA", CSI_FUNC_PS, csi_do_ed, 0 },
     {"DCH", "DELETE CHARACTER", CSI_FUNC_PN, csi_do_dch, 1 },  /* x50 */
     {"SEE", "SELECT EDITING EXTENT"},
-    {"CPR", "ACTIVE POSITION REPORT"},
+    {"CPR", "ACTIVE POSITION REPORT", CSI_FUNC_PN_PN, csi_do_cpr, 1, 1 },
     {"SU", "SCROLL UP"},
     {"SD", "SCROLL DOWN"},
     {"NP", "NEXT PAGE"},
