@@ -48,3 +48,10 @@
 & CPL: CURSOR PRECEDING LINE
 " Move the cursor to the first column, 2 lines up.
 . LF/^J
+: Esc [ G
+& CHA: CURSOR CHARACTER ABSOLUTE
+" Move the cursor to column 1.
+: Esc [ 5 G
+& CHA: CURSOR CHARACTER ABSOLUTE
+" Move the cursor to column 5.
+. LF/^J
