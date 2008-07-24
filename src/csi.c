@@ -85,8 +85,23 @@ static void
 csi_do_ed (unsigned char final, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
-  const char *space = (final == 0x4A) ? "screen" : "line";
+  const char *space;
   assert (n_params == 1);
+  switch (final)
+    {
+    case 0x4A:
+      space = "screen";
+      break;
+    case 0x4B:
+      space = "line";
+      break;
+    case 0x4F:
+      space = "qualified area";
+      break;
+    default:
+      assert (! "get here");
+    }
+  
   switch (params[0])
     {
     case 0:
@@ -209,7 +224,7 @@ struct csi_handler csi_handlers[] =
     {"IL", "INSERT LINE", CSI_FUNC_PN, csi_do_il, 1 },
     {"DL", "DELETE LINE", CSI_FUNC_PN, csi_do_dl, 1 },
     {"EF", "ERASE IN FIELD", CSI_FUNC_PS, csi_do_ef, 0 },
-    {"EA", "ERASE IN AREA"},
+    {"EA", "ERASE IN AREA", CSI_FUNC_PS, csi_do_ed, 0 },
     {"DCH", "DELETE CHARACTER"},  /* x50 */
     {"SEE", "SELECT EDITING EXTENT"},
     {"CPR", "ACTIVE POSITION REPORT"},
