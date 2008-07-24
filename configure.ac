@@ -2,9 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([eseq], [1.0-devel], [micah@cowan.name])
+AC_INIT([teseq], [1.0-devel], [micah@cowan.name])
 AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 dist-lzma gnu])
-AC_CONFIG_SRCDIR([src/eseq.c])
+AC_CONFIG_SRCDIR([src/teseq.c])
 AC_CONFIG_HEADER([src/config.h])
 
 # Checks for programs.

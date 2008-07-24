@@ -1,9 +1,9 @@
 /* csi.h */
 
-#ifndef ESEQ_CSI_H
-#define ESEQ_CSI_H
+#ifndef TESEQ_CSI_H
+#define TESEQ_CSI_H
 
-#include "eseq.h"
+#include "teseq.h"
 
 #include <stddef.h>
 
@@ -45,4 +45,4 @@ extern struct csi_handler csi_handlers[];
 extern struct csi_handler csi_spc_handlers[];
 extern struct csi_handler csi_no_handler;
 
-#endif /* ESEQ_CSI_H */
+#endif /* TESEQ_CSI_H */

@@ -8,7 +8,7 @@ syntax:glob
 **/.dirstamp
 **.o
 
-eseq
+teseq
 
 tags
 TAGS
@@ -29,17 +29,17 @@ install-sh
 missing
 stamp-h1
 run-tests
-eseq.aux
-eseq.cp
-eseq.cps
-eseq.fn
-eseq.ky
-eseq.log
-eseq.op
-eseq.pg
-eseq.toc
-eseq.tp
-eseq.vr
+teseq.aux
+teseq.cp
+teseq.cps
+teseq.fn
+teseq.ky
+teseq.log
+teseq.op
+teseq.pg
+teseq.toc
+teseq.tp
+teseq.vr
 mdate-sh
 texinfo.tex
 
@@ -50,12 +50,12 @@ src/test-inputbuf
 tests/*/output
 tests/*/r-output
 tests/cmdline--/-o
-doc/eseq.1
-doc/eseq.info
-doc/eseq.ps
-doc/eseq.html
-doc/eseq.pdf
+doc/teseq.1
+doc/teseq.info
+doc/teseq.ps
+doc/teseq.html
+doc/teseq.pdf
 doc/stamp-vti
 doc/version.texi
 
-eseq-*
+teseq-*

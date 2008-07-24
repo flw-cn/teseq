@@ -1,1 +1,1 @@
-invocation='"$ESEQ" -o "$testout"/output "$testin"/input'
+invocation='"$TESEQ" -o "$testout"/output "$testin"/input'

@@ -1,4 +1,4 @@
-/* eseq.c: Analysis of terminal controls and escape sequences. */
+/* teseq.c: Analysis of terminal controls and escape sequences. */
 
 /*
     Copyright (C) 2008 Micah Cowan
@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eseq.h"
+#include "teseq.h"
 
 #include <assert.h>
 #include <getopt.h>
@@ -708,9 +708,9 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
-Usage: eseq [-CLDE] [-o out] [in]\n\
-   or: eseq -h | --help\n\
-   or: eseq -V | --version\n\
+Usage: teseq [-CLDE] [-o out] [in]\n\
+   or: teseq -h | --help\n\
+   or: teseq -V | --version\n\
 Format text with terminal escapes and control sequences for human\n\
 consumption.\n\
 \n", f);
@@ -763,7 +763,7 @@ must_fopen (const char *fname, const char *mode)
   exit (EXIT_FAILURE);
 }
 
-struct option eseq_opts[] = {
+struct option teseq_opts[] = {
   { "help", 0, NULL, 'h' },
   { "version", 0, NULL, 'V' },
   { 0 }
@@ -779,7 +779,7 @@ configure_processor (struct processor *p, int argc, char **argv)
   config.descriptions = 1;
   config.labels = 1;
   config.escapes = 1;
-  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LE", eseq_opts, NULL))
+  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LE", teseq_opts, NULL))
          != -1)
     {
       switch (opt)

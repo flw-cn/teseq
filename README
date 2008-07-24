@@ -1,6 +1,6 @@
-This is the README file for Eseq.
+This is the README file for Teseq.
 
-Eseq is a tool for analyzing files that contain control characters
+Teseq is a tool for analyzing files that contain control characters
 terminal control sequences. It is intended to be useful for diagnosing
 terminal emulators, and programs that make heavy use of terminal
 features (such as those based on the Curses library).
@@ -25,14 +25,14 @@ See the file COPYING for the license details.
 See the INSTALL file for information on how to build and install this
 program.
 
-Eseq has no requirements beyond a normal Unix build environment.
+Teseq has no requirements beyond a normal Unix build environment.
 
-Eseq ships with a companion program, Reseq, which translates the
-output from Eseq back into its original source form.  Reseq is written
+Teseq ships with a companion program, Reseq, which translates the
+output from Teseq back into its original source form.  Reseq is written
 in the Perl programming language, and so requires perl in order to
 run.
 
-Eseq also ships with a suite of regression tests. Some of these are
+Teseq also ships with a suite of regression tests. Some of these are
 written in relatively portable POSIX sh; some others require the Check
 test library, available at http://check.sourceforge.net/. If changes
 are made to the Check-based test suite sources (*.cm files), the

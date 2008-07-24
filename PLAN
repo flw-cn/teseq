@@ -1,7 +1,7 @@
 TODO:
 
 Document CSI functions.
-Make Eseq handle sub-parameters (`:'-separated) properly.
+Make Teseq handle sub-parameters (`:'-separated) properly.
 Xterm extensions.
 
 Interpretation of graphical characters based on current state (translation to UF-8?).

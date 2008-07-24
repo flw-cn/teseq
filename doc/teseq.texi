@@ -1,8 +1,8 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
-@setfilename eseq.info
+@setfilename teseq.info
 @include version.texi
-@settitle Eseq @value{VERSION} Manual
+@settitle Teseq @value{VERSION} Manual
 @paragraphindent asis
 
 @macro six
@@ -43,12 +43,12 @@ Ecma-48@tie{}/ ISO/IEC@tie{}6429
 
 @dircategory Miscellaneous
 @direntry
-* eseq: (eseq).                   Terminal control sequence analyzer.
-* reseq: (eseq)Reseq.             Reverse-translate output from eseq.
+* teseq: (teseq).                   Terminal control sequence analyzer.
+* reseq: (teseq)Reseq.             Reverse-translate output from teseq.
 @end direntry
 
 @copying
-This manual is for Eseq, version @value{VERSION}.
+This manual is for Teseq, version @value{VERSION}.
 
 Copyright @copyright{} 2008 Micah Cowan <@email{micah@@cowan.name}>
 
@@ -63,7 +63,7 @@ Texts.  A copy of the license is included in the section entitled
 @end copying
 
 @titlepage
-@title Eseq @value{VERSION} Manual
+@title Teseq @value{VERSION} Manual
 @author by Micah Cowan <@email{micah@@cowan.name}>
 
 @c  The following two commands
@@ -79,33 +79,33 @@ Texts.  A copy of the license is included in the section entitled
 
 @ifnottex
 @node Top, Overview, (dir), (dir)
-@top Eseq
+@top Teseq
 
-This manual is for Eseq, version @value{VERSION}.
+This manual is for Teseq, version @value{VERSION}.
 
 @noindent
 Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 @end ifnottex
 
 @menu
-* Overview::                    What does Eseq do? (with example)
-* Invoking Eseq::               How to run Eseq, with options 'n' stuff.
+* Overview::                    What does Teseq do? (with example)
+* Invoking Teseq::               How to run Teseq, with options 'n' stuff.
 
 * Output Format::               
-* Reseq::                       Reversing Eseq's output.
+* Reseq::                       Reversing Teseq's output.
 
 * Copying::                     Copying and sharing this manual.
 * Index::                       Index of concepts.
 @end menu
 
-@node Overview, Invoking Eseq, Top, Top
+@node Overview, Invoking Teseq, Top, Top
 @chapter Overview
 @cindex control character
 @cindex control sequence
 @cindex terminal
 @cindex terminal emulator
 
-Eseq is a tool for translating files that contain control characters
+Teseq is a tool for translating files that contain control characters
 and terminal control sequences, into human-understandable text. It is
 intended to aid in debugging problems in terminal emulators, software
 that makes use of special terminal features, and interactions between
@@ -115,7 +115,7 @@ It is primarily targeted at individuals who possess a basic
 understanding of terminal control sequences, especially
 @cindex @sc{csi}
 @cindex Control Sequence Introducer
-@acronym{@sc{csi}} sequences; however, by default Eseq will try to
+@acronym{@sc{csi}} sequences; however, by default Teseq will try to
 identify the sequences that it encounters, and what behavior they
 might produce in a terminal.
 
@@ -168,8 +168,8 @@ editor, it might look something like this.
 @end example
 
 @noindent
-Not very readable, is it? That's where eseq comes in! When you run
-that gibberish through the @command{eseq} command with the default
+Not very readable, is it? That's where teseq comes in! When you run
+that gibberish through the @command{teseq} command with the default
 settings, you'll get the following output.
 
 @example
@@ -211,19 +211,19 @@ The @command{reseq} command may be used to reverse the procedure,
 accepting the above input and printing out the original set of escape
 sequences that produced it. @xref{Reseq}.
 
-@node Invoking Eseq, Output Format, Overview, Top
-@chapter Invoking Eseq
+@node Invoking Teseq, Output Format, Overview, Top
+@chapter Invoking Teseq
 @cindex invoking
 @cindex options
 @cindex usage
 @cindex help
 
-The format for running the @code{eseq} program is:
+The format for running the @code{teseq} program is:
 
 @example
-eseq @var{options} [-o @var{output-file}] [@var{input-file}]
-eseq -h | --help
-eseq -v | --version
+teseq @var{options} [-o @var{output-file}] [@var{input-file}]
+teseq -h | --help
+teseq -v | --version
 @end example
 
 @noindent
@@ -287,7 +287,7 @@ particular means that running the output through the
 Still, this option can be useful (in combination with @option{-L}) for
 those that don't care about the exact sequence of characters, or what
 their function is called, but just what their effects in the terminal
-are (those that Eseq understands). The output produced 
+are (those that Teseq understands). The output produced 
 
 @end table
 
@@ -316,13 +316,13 @@ character prefix used for those
 lines. However, while they may be more practical to remember, they
 will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
-in order to pass them to the @command{eseq} command.
+in order to pass them to the @command{teseq} command.
 
-@node Output Format, Reseq, Invoking Eseq, Top
+@node Output Format, Reseq, Invoking Teseq, Top
 @chapter Output Format
 
-Eseq produces output that is primarily intended to be read by humans
-(from input that is usually not). For this reason, Eseq's output
+Teseq produces output that is primarily intended to be read by humans
+(from input that is usually not). For this reason, Teseq's output
 follows the following principles:
 
 @itemize
@@ -406,7 +406,7 @@ escaped, so as to avoid confusion with the surrounding pipes. After
 all, in a C string literal, denoted by double-quotes, @samp{"}, one
 must escape literal double-quote characters by preceding them with a
 backslash (and must then also escape literal backslashes): @code{"She
-said \"no\""}. However, no such escaping mechanism is needed in Eseq.
+said \"no\""}. However, no such escaping mechanism is needed in Teseq.
 Input:
 
 @example
@@ -425,7 +425,7 @@ Output:
 @noindent
 No special treatment whatsoever!
 
-The reason Eseq can get away with this is that the pipe character only
+The reason Teseq can get away with this is that the pipe character only
 has its special ``mark the enclosed as normal text'' meaning, when it
 is the first and the last character on a line of output (aside from a
 possible prefacing dash to indicate a wrapped line, or a trailing dash
@@ -434,7 +434,7 @@ or period).
 A lot of the output lines you've seen so far have all ended with a
 period, denoting the linefeed character. However, this isn't always
 the case. For instance, if the input line contains a control
-character, Eseq will close the text line (with just a pipe, no
+character, Teseq will close the text line (with just a pipe, no
 period), print a control-character line with the control characters,
 and then finish up the rest of the text line. The following sample
 output represents a single line which contains a delete character and
@@ -476,7 +476,7 @@ ASCII (@six{})---and sometimes linefeed, represented by the special
 final-dot notation. This means that if the terminal was using a
 character set that high-value code points, all high-valued bytes will
 be represented in hexadecimal on control-character lines, and not
-displayed on a text line. Future versions of Eseq may provide options
+displayed on a text line. Future versions of Teseq may provide options
 allowing for these characters to be represented properly in text
 lines, but for now, the output format is ASCII characters only.
 
@@ -492,7 +492,7 @@ terminal might display (say, for ISO-646ES)
 the LATIN CAPITAL LETTER N WITH TILDE
 @end ifinfo
 instead of
-@samp{[}; but the output from Eseq will not change based on this (even
+@samp{[}; but the output from Teseq will not change based on this (even
 though it will recognize and identify the control sequences that
 invoke that character set for use).
 
@@ -673,7 +673,7 @@ Each character is represented by itself (including colon, as long as
 it's not at the start of the line), except the escape character, and
 the space character (represented as @samp{Spc}). Control characters
 and high-value bytes are not currently represented on escape-sequence
-lines (they are not part of any escape sequences Eseq recognizes), but
+lines (they are not part of any escape sequences Teseq recognizes), but
 if they are in the future (say, as part of non-standardized escape
 sequences), they will most likely be represented as @samp{xXX}
 hexadecimal strings (as high-value bytes are represented in
@@ -781,7 +781,7 @@ this document don't actually follow this format. For instance,
 
 @noindent
 According to the definition we just gave, @samp{[} should be the final
-byte of an escape sequence. So why does Eseq keep going until it
+byte of an escape sequence. So why does Teseq keep going until it
 reaches the @samp{m}?
 
 The answer is that the escape sequence @emph{does} end with the
@@ -793,7 +793,7 @@ marks the beginning of a different kind of sequence, called a
 @cindex control sequence
 ``control sequence''. Control sequences are described by the
 @fortyeight{} standard, which considers it to be a distinct concept
-from escape sequences; however, Eseq treats both types of sequences as
+from escape sequences; however, Teseq treats both types of sequences as
 ``escape sequences''.
 
 A control sequence starts with the two-character @sc{csi} escape
@@ -844,11 +844,11 @@ space character (@code{x20}) as the intermediate byte.
 
 @noindent
 @fortyeight{} describes an alternate representation for @sc{csi}; the
-8-bit byte value @code{x9B}. Eseq does not currently treat that value
+8-bit byte value @code{x9B}. Teseq does not currently treat that value
 specially, nor any of the other high-value bytes from the C1 set of
 control functions. This is because whether or not those bytes indicate
 control functions is dependent upon what character encoding is in
-use. Future versions of Eseq may support an option to interpret these
+use. Future versions of Teseq may support an option to interpret these
 forms as well, at which time control sequences using the single-byte
 @sc{csi} control will probably be rendered like:
 
@@ -859,12 +859,12 @@ forms as well, at which time control sequences using the single-byte
 @noindent
 @fortyeight{} also describes another kind of sequence called
 @cindex control string
-``control strings''. These are not interpreted by Eseq; the
+``control strings''. These are not interpreted by Teseq; the
 control characters involved (for example, @samp{SOS/^X} and
 @samp{ST/^\} will be printed on control-character lines, and any text
 characters will be displayed on text lines.
 
-Future versions of Eseq will probably not depart from this display
+Future versions of Teseq will probably not depart from this display
 behavior; however, support for some common interpretations for control
 strings may be added, in which case a label line and/or description
 line might follow the control string, describing its usual
@@ -893,12 +893,12 @@ The format of a label line's content is always @var{acronym}:
 by @fortyeight{}.
 
 Label lines currently are never wrapped; however, future
-versions of Eseq may wrap label lines. At that time, continuation
+versions of Teseq may wrap label lines. At that time, continuation
 label lines will probably consist of an extra space after the
 ampersand (similar to how escape-sequence lines are wrapped). Lines
 will never be split in the middle of a word.
 
-Future versions of Eseq may use label lines to describe things besides
+Future versions of Teseq may use label lines to describe things besides
 escape sequences; for instance, control characters or control strings,
 or other strings that may be interpreted specially by some devices or
 applications.
@@ -926,7 +926,7 @@ ever used for a control function.
 It is important to understand that the descriptions provided are only
 approximations and guesses, and suffer from various limitations. The
 behavior of many control functions are dependent on terminal state
-that Eseq does not track. Eseq chooses a common default setting for
+that Teseq does not track. Teseq chooses a common default setting for
 applicable terminal modes, and issues a description based on that. For
 instance, the @sc{insert line} function is described as follows:
 
@@ -940,7 +940,7 @@ instance, the @sc{insert line} function is described as follows:
 However, depending on the current setting of the
 @sc{line editing mode}, the actual behavior might be to shift the
 lines @emph{before} the cursor, rather than the ones after. Future
-versions of Eseq may track enough terminal state to improve the
+versions of Teseq may track enough terminal state to improve the
 accuracy of these descriptions, but they would still need to
 guess at the initial state of the terminal, for any modes that had not
 been explicitly set or reset.
@@ -962,12 +962,12 @@ actual semantics of a function, you should read the terminal device's
 documentation, and/or @fortyeight{}.
 
 Description lines currently are never wrapped; however, future
-versions of Eseq may wrap label lines. At such time, contunuation
+versions of Teseq may wrap label lines. At such time, contunuation
 description lines will also begin with the double-quote
 character, but an extra space will probably not be printed. Lines will
 never be split in the middle of a word.
 
-Future versions of Eseq may use description lines to describe thigns
+Future versions of Teseq may use description lines to describe thigns
 besides escape sequences; for instance, control characters or control
 strings, or other strings that may be interpreted specially by some
 devices or applications. Some description lines may appear without a
@@ -977,8 +977,8 @@ event that no standard designation for the function is known.
 @node Reseq, Copying, Output Format, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
-@cindex Reversing the output of @command{eseq}
-@cindex @command{eseq}, reversing the output
+@cindex Reversing the output of @command{teseq}
+@cindex @command{teseq}, reversing the output
 
 Synopsis:
 
@@ -987,14 +987,14 @@ reseq [@var{input}] > @var{output}
 @end example
 
 @noindent
-Eseq also comes with a @command{reseq} command, which essentially
-does the reverse of @command{eseq}. If you feed it the output from
-@command{eseq}, it will generate the corresponding escape
+Teseq also comes with a @command{reseq} command, which essentially
+does the reverse of @command{teseq}. If you feed it the output from
+@command{teseq}, it will generate the corresponding escape
 sequences---that is, it will generate the same content that was fed to
-@command{eseq} to produce that output. The shell command
+@command{teseq} to produce that output. The shell command
 
 @example
-$ eseq foo | reseq
+$ teseq foo | reseq
 @end example
 
 @noindent
@@ -1007,11 +1007,11 @@ $ cat foo
 @noindent
 The @command{reseq} command is written in
 @cindex Perl
-Perl, unlike @command{eseq}
+Perl, unlike @command{teseq}
 which is compiled from C-language sources, and so requires a Perl
 interpreter to be present in order to function.
 
-Of the various types of lines output by the @command{eseq} command,
+Of the various types of lines output by the @command{teseq} command,
 @command{reseq} only understands three;
 @cpindex text line
 text lines:

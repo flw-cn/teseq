@@ -8,7 +8,7 @@ builddir=@abs_builddir@
 
 get_vars()
 {
-	eseq_options=''
+	teseq_options=''
 	input=input
 	output=output
 	expected=expected
@@ -22,7 +22,7 @@ get_vars()
 	then
 		. "$testin/vars"
 	fi
-	invocation=${invocation:-'"$ESEQ" $eseq_options < \
+	invocation=${invocation:-'"$TESEQ" $teseq_options < \
 	                          "$testin/$input" > "$testout/$output"'}
 	diffcmd=${diffcmd:-'diff -u "$testin/$expected" "$testout/$output"'}
 	r_invocation=${r_invocation:-'"$RESEQ" < "$testin/$r_input" \
@@ -63,9 +63,9 @@ then
 	)
 else
 	echo
-	echo "RUNNING ESEQ TESTS"
+	echo "RUNNING TESEQ TESTS"
 	echo
-	# Test eseq
+	# Test teseq
 	run_test()
 	(
 		test="$1"
@@ -88,9 +88,9 @@ fi
 
 ########################################
 
-: ${ESEQ=${builddir}/eseq}
+: ${TESEQ=${builddir}/teseq}
 : ${RESEQ=${srcdir}/reseq}
-: ${ESEQ_TESTS='
+: ${TESEQ_TESTS='
 	empty
 	cmdline-in-out
 	cmdline--
@@ -116,7 +116,7 @@ nt=0
 np=0
 nf=0
 ft=''
-for test in $ESEQ_TESTS
+for test in $TESEQ_TESTS
 do
 	echo $test
 	if run_test $test

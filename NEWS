@@ -1,5 +1,5 @@
                                                                 -*- text -*
-NEWS file for Eseq
+NEWS file for Teseq
 
 Copyright (C) 2008  Micah Cowan  <micah@cowan.name>
 
@@ -11,6 +11,6 @@ Version 1.0-devel
 
 * Initial release!
 
-* Eseq recognizes the various control characters and sequences
+* Teseq recognizes the various control characters and sequences
   described by Ecma-35 and Ecma-48, and outputs them in a friendly format,
   describing their effects.
