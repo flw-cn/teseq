@@ -100,3 +100,10 @@
 & EL: ERASE IN LINE
 " Clear the line.
 . LF/^J
+: Esc [ L
+& IL: INSERT LINE
+" Shift lines after the cursor to make room for 1 new line.
+: Esc [ 23 L
+& IL: INSERT LINE
+" Shift lines after the cursor to make room for 23 new lines.
+. LF/^J

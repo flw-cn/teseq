@@ -104,6 +104,16 @@ csi_do_ed (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_il (unsigned char final, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  assert (n_params == 1);
+  putter_single (putr, ("\" Shift lines after the cursor to make room "
+                        "for %d new line%s."), params[0],
+                 params[0] == 1 ? "" : "s");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -166,7 +176,7 @@ struct csi_handler csi_handlers[] =
     {"CHT", "CURSOR FORWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
     {"ED", "ERASE IN PAGE", CSI_FUNC_PS, csi_do_ed, 0 },
     {"EL", "ERASE IN LINE", CSI_FUNC_PS, csi_do_ed, 0 },
-    {"IL", "INSERT LINE"},
+    {"IL", "INSERT LINE", CSI_FUNC_PN, csi_do_il, 1 },
     {"DL", "DELETE LINE"},
     {"EF", "ERASE IN FIELD"},
     {"EA", "ERASE IN AREA"},
