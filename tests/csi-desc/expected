@@ -134,3 +134,13 @@
 & EA: ERASE IN AREA
 " Clear the qualified area.
 . LF/^J
+: Esc [ P
+& DCH: DELETE CHARACTER
+" Delete 1 character, shifting the following characters left.
+: Esc [ 1 P
+& DCH: DELETE CHARACTER
+" Delete 1 character, shifting the following characters left.
+: Esc [ 42 P
+& DCH: DELETE CHARACTER
+" Delete 42 characters, shifting the following characters left.
+. LF/^J

@@ -159,6 +159,16 @@ csi_do_ef (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_dch (unsigned char final, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  assert (n_params == 1);
+  putter_single (putr, ("\" Delete %d character%s, shifting the following "
+                        "characters left."),
+                 params[0], params[0] == 1 ? "" : "s");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -225,7 +235,7 @@ struct csi_handler csi_handlers[] =
     {"DL", "DELETE LINE", CSI_FUNC_PN, csi_do_dl, 1 },
     {"EF", "ERASE IN FIELD", CSI_FUNC_PS, csi_do_ef, 0 },
     {"EA", "ERASE IN AREA", CSI_FUNC_PS, csi_do_ed, 0 },
-    {"DCH", "DELETE CHARACTER"},  /* x50 */
+    {"DCH", "DELETE CHARACTER", CSI_FUNC_PN, csi_do_dch, 1 },  /* x50 */
     {"SEE", "SELECT EDITING EXTENT"},
     {"CPR", "ACTIVE POSITION REPORT"},
     {"SU", "SCROLL UP"},
