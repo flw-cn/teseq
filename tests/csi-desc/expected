@@ -55,3 +55,16 @@
 & CHA: CURSOR CHARACTER ABSOLUTE
 " Move the cursor to column 5.
 . LF/^J
+: Esc [ H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ 5 ; H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 5 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ ; 5 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 5.
+. LF/^J

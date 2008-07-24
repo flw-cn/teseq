@@ -134,9 +134,9 @@ init_csi_params (struct csi_handler *handler, size_t *n_params,
   if (handler->acro)
     {
       if (*n_params == 0)
-        params[*n_params++] = handler->default0;
+        params[(*n_params)++] = handler->default0;
       if (*n_params == 1 && CSI_USE_DEFAULT1 (handler->type))
-        params[*n_params++] = handler->default1;
+        params[(*n_params)++] = handler->default1;
     }
 }
 
@@ -194,8 +194,12 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
             }
           else
             {
-              params[n_params] = CSI_GET_DEFAULT (handler, n_params);
-              ++n_params;
+              int param = CSI_GET_DEFAULT (handler, n_params);
+              if (param >= 0)
+                {
+                  params[n_params] = param;
+                  ++n_params;
+                }
             }
 
           if (e)
@@ -212,10 +216,11 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
       int wrong_num_params = 0;
       init_csi_params (handler, &n_params, params);
       wrong_num_params = ((handler->type == CSI_FUNC_PN
-                           || handler->type == CSI_FUNC_PS) && n_params != 1);
+                           || handler->type == CSI_FUNC_PS)
+                          && n_params != 1);
       wrong_num_params |= ((handler->type == CSI_FUNC_PN_PN
                             || handler->type == CSI_FUNC_PS_PS)
-                            && n_params != 2);
+                           && n_params != 2);
       if (! wrong_num_params)
         {
           handler->fn (c, p->putr, n_params, params);

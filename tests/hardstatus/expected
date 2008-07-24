@@ -18,10 +18,12 @@
 : Esc [ 1 ; 51 r
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ J
 & ED: ERASE IN PAGE
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ J
 & ED: ERASE IN PAGE
 : Esc [ 50 B
@@ -34,6 +36,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -47,6 +50,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -60,6 +64,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -73,11 +78,13 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ J
 & ED: ERASE IN PAGE
 : Esc [ 50 B
@@ -90,6 +97,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -103,6 +111,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -116,6 +125,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -129,6 +139,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -144,6 +155,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -157,6 +169,7 @@
 -|     |
 : Esc [ H
 & CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -171,6 +184,7 @@
 -|     |
 : Esc [ 2 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 2, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -184,6 +198,7 @@
 -|     |
 : Esc [ 2 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 2, column 1.
 : Esc [ 23 m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
@@ -244,9 +259,11 @@
 : Esc [ 1 ; 50 r
 : Esc [ 50 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 50, column 1.
 . LF
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -260,6 +277,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -275,6 +293,7 @@
 . CR
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -288,6 +307,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -303,6 +323,7 @@
 . CR
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -316,6 +337,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -330,6 +352,7 @@
 . LF
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -343,6 +366,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -361,6 +385,7 @@
 : Esc >
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 : Esc [ 3 m
 & SGR: SELECT GRAPHIC RENDITION
 " Set italicized text.
@@ -371,6 +396,7 @@
 " Clear italicized or fraktur text.
 : Esc [ 51 ; 1 H
 & CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
 . CR LF
 : Esc [ ? 1049 l
 & RM: RESET MODE (private params)

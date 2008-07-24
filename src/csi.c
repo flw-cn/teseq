@@ -64,6 +64,15 @@ csi_do_cha (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_cup (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  assert (n_params == 2);
+  putter_single (putr, "\" Move the cursor to line %d, column %d.",
+                 params[0], params[1]);
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -122,7 +131,7 @@ struct csi_handler csi_handlers[] =
     {"CNL", "CURSOR NEXT LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
     {"CPL", "CURSOR PRECEDING LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
     {"CHA", "CURSOR CHARACTER ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1 },
-    {"CUP", "CURSOR POSITION"},   /* x48 */
+    {"CUP", "CURSOR POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },   /* x48 */
     {"CHT", "CURSOR FORWARD TABULATION"},
     {"ED", "ERASE IN PAGE"},
     {"EL", "ERASE IN LINE"},
