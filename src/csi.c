@@ -233,6 +233,14 @@ csi_do_ctc (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_ech (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  putter_single (putr, "\" Erase %d character%s, starting at the cursor.",
+                 params[0], params[0] == 1 ? "" : "s");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -307,7 +315,7 @@ struct csi_handler csi_handlers[] =
     {"NP", "NEXT PAGE"},
     {"PP", "PRECEDING PAGE"},
     {"CTC", "CURSOR TABULATION CONTROL", CSI_FUNC_PS_ANY, csi_do_ctc, 0 },
-    {"ECH", "ERASE CHARACTER"},   /* x58 */
+    {"ECH", "ERASE CHARACTER", CSI_FUNC_PN, csi_do_ech, 1 },   /* x58 */
     {"CVT", "CURSOR LINE TABULATION"},
     {"CBT", "CURSOR BACKWARD TABULATION"},
     {"SRS", "START REVERSED STRING"},

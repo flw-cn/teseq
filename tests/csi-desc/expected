@@ -192,3 +192,10 @@
 " Clear the vertical tab stop at the current line.
 " Clear all vertical tab stops.
 . LF/^J
+: Esc [ X
+& ECH: ERASE CHARACTER
+" Erase 1 character, starting at the cursor.
+: Esc [ 10 X
+& ECH: ERASE CHARACTER
+" Erase 10 characters, starting at the cursor.
+. LF/^J
