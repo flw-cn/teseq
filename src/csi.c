@@ -243,6 +243,15 @@ csi_do_ech (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_da (unsigned char final, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  if (params[0] != 0)
+    return;
+  putter_single (putr, "\" Request terminal identification.");
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -329,7 +338,7 @@ struct csi_handler csi_handlers[] =
                                                             /* ^ x60 */
     {"HPR", "CHARACTER POSITION FORWARD"},
     {"REP", "REPEAT"},
-    {"DA", "DEVICE ATTRIBUTES"},
+    {"DA", "DEVICE ATTRIBUTES", CSI_FUNC_PS, csi_do_da, 0 },
     {"VPA", "LINE POSITION ABSOLUTE"},
     {"VPR", "LINE POSITION FORWARD"},
     {"HVP", "CHARACTER AND LINE POSITION"},
