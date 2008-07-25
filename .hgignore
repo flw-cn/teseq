@@ -51,6 +51,7 @@ src/test-inputbuf
 tests/*/output
 tests/*/r-output
 tests/cmdline--/-o
+doc/reseq.1
 doc/teseq.1
 doc/teseq.info
 doc/teseq.ps

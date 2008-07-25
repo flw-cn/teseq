@@ -20,12 +20,15 @@ src_test_inputbuf_LDADD = -lcheck
 
 info_TEXINFOS = doc/teseq.texi
 doc_teseq_TEXINFOS = doc/fdl.texi
-dist_man_MANS = doc/teseq.1
+dist_man_MANS = doc/teseq.1 doc/reseq.1
 
 SUFFIXES = .cm
 
 doc/teseq.1: ./teseq
-	help2man ./teseq -p teseq -o doc/teseq.1
+	help2man ./teseq -o doc/teseq.1
+
+doc/reseq.1: ./reseq
+	help2man ./reseq -o doc/reseq.1
 
 .cm.c:
 	$(CHECKMK) $< > $@
