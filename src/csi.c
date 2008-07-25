@@ -76,10 +76,11 @@ static void
 csi_do_cht (unsigned char final, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
-  const char *dir = (final == 0x59) ? "vertical " : "";
+  const char *hv = (final == 0x59) ? "vertical " : "";
+  const char *dir = (final == 0x5A) ? "back" : "forward";
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor forward %d %stab stop%s.",
-                 params[0], dir, params[0] == 1 ? "" : "s");
+  putter_single (putr, "\" Move the cursor %s %d %stab stop%s.",
+                 dir, params[0], hv, params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -318,13 +319,14 @@ struct csi_handler csi_handlers[] =
     {"CTC", "CURSOR TABULATION CONTROL", CSI_FUNC_PS_ANY, csi_do_ctc, 0 },
     {"ECH", "ERASE CHARACTER", CSI_FUNC_PN, csi_do_ech, 1 },   /* x58 */
     {"CVT", "CURSOR LINE TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
-    {"CBT", "CURSOR BACKWARD TABULATION"},
+    {"CBT", "CURSOR BACKWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
     {"SRS", "START REVERSED STRING"},
     {"PTX", "PARALLEL TEXTS"},
     {"SDS", "START DIRECTED STRING"},
     {"SIMD", "SELECT IMPLICIT MOVEMENT DIRECTION"},
     {NULL, NULL},
-    {"HPA", "CHARACTER POSITION ABSOLUTE"},       /* x60 */
+    {"HPA", "CHARACTER POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1 },
+                                                            /* ^ x60 */
     {"HPR", "CHARACTER POSITION FORWARD"},
     {"REP", "REPEAT"},
     {"DA", "DEVICE ATTRIBUTES"},

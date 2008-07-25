@@ -196,3 +196,17 @@
 & CVT: CURSOR LINE TABULATION
 " Move the cursor forward 3 vertical tab stops.
 . LF/^J
+: Esc [ Z
+& CBT: CURSOR BACKWARD TABULATION
+" Move the cursor back 1 tab stop.
+: Esc [ 3 Z
+& CBT: CURSOR BACKWARD TABULATION
+" Move the cursor back 3 tab stops.
+. LF/^J
+: Esc [ `
+& HPA: CHARACTER POSITION ABSOLUTE
+" Move the cursor to column 1.
+: Esc [ 5 `
+& HPA: CHARACTER POSITION ABSOLUTE
+" Move the cursor to column 5.
+. LF/^J
