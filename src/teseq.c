@@ -707,7 +707,7 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
-Usage: teseq [-CLDE] [-o out] [in]\n\
+Usage: teseq [-CLDE] [in] [out]\n\
    or: teseq -h | --help\n\
    or: teseq -V | --version\n\
 Format text with terminal escapes and control sequences for human\n\
@@ -716,7 +716,6 @@ consumption.\n\
   fputs ("\
  -h, --help     Display usage information (this message).\n\
  -V, --version  Display version and warrantee.\n\
- -o             Send output to OUT rather than standard output.\n\
  -C             Don't print ^X for C0 controls.\n\
  -L             Don't print labels.\n\
  -D             Don't print descriptions.\n\
@@ -789,9 +788,6 @@ configure_processor (struct processor *p, int argc, char **argv)
         case 'V':
           version ();
           break;
-        case 'o':
-          outf = must_fopen (optarg, "w");
-          break;
         case '^':
         case 'C':
           config.control_hats = 0;
@@ -824,7 +820,11 @@ configure_processor (struct processor *p, int argc, char **argv)
     }
   if (argv[optind] != NULL)
     {
-      inf = must_fopen (argv[optind], "r");
+      inf = must_fopen (argv[optind++], "r");
+    }
+  if (argv[optind] != NULL)
+    {
+      outf = must_fopen (argv[optind++], "w");
     }
   setvbuf (inf, NULL, _IONBF, 0);
   setvbuf (outf, NULL, _IOLBF, BUFSIZ);

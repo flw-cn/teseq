@@ -232,15 +232,15 @@ sequences that produced it. @xref{Reseq}.
 The format for running the @code{teseq} program is:
 
 @example
-teseq @var{options} [-o @var{output-file}] [@var{input-file}]
+teseq @var{options} [@var{input-file}] [@var{output-file}]
 teseq -h | --help
 teseq -V | --version
 @end example
 
 @noindent
-If @var{input-file} isn't specified, standard input will be
-used. Output is written to standard output by default, but see the
-@option{-o} option.
+If @var{input-file} or @var{output-file} is unspecified, or specified
+as @samp{-}, standard input/output is used. Output is written to
+standard output by default, but see the @option{-o} option.
 
 @table @option
 @item --help
@@ -255,10 +255,6 @@ Print usage information on standard output and exit successfully.
 @opindex -v
 Print the version number and licensing information of @code{hello} on
 standard output and then exit successfully.
-
-@item -o @var{file}
-@opindex -o
-Write output to @var{file} instead of standard output.
 
 @item -C
 @opindex -C

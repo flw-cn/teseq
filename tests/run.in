@@ -22,8 +22,8 @@ get_vars()
 	then
 		. "$testin/vars"
 	fi
-	invocation=${invocation:-'"$TESEQ" $teseq_options < \
-	                          "$testin/$input" > "$testout/$output"'}
+	invocation=${invocation:-'"$TESEQ" $teseq_options \
+	                          "$testin/$input" "$testout/$output"'}
 	diffcmd=${diffcmd:-'diff -u "$testin/$expected" "$testout/$output"'}
 	r_invocation=${r_invocation:-'"$RESEQ" -- "$testin/$r_input" \
 	                              "$testout/$r_output"'}

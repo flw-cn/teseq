@@ -1,1 +1,1 @@
-invocation='"$TESEQ" -o "$testout"/output "$testin"/input'
+invocation='"$TESEQ" < "$testin"/input > "$testout"/output'
