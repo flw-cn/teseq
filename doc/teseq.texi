@@ -973,7 +973,7 @@ actual semantics of a function, you should read the terminal device's
 documentation, and/or @fortyeight{}.
 
 Description lines currently are never wrapped; however, future
-versions of Teseq may wrap label lines. At such time, contunuation
+versions of Teseq may wrap label lines. At such time, continuation
 description lines will also begin with the double-quote
 character, but an extra space will probably not be printed. Lines will
 never be split in the middle of a word.
