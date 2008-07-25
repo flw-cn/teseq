@@ -70,7 +70,7 @@
 . LF/^J
 : Esc [ I
 & CHT: CURSOR FORWARD TABULATION
-" Move the cursor forward 1 tab stops.
+" Move the cursor forward 1 tab stop.
 : Esc [ 3 I
 & CHT: CURSOR FORWARD TABULATION
 " Move the cursor forward 3 tab stops.
@@ -198,4 +198,11 @@
 : Esc [ 10 X
 & ECH: ERASE CHARACTER
 " Erase 10 characters, starting at the cursor.
+. LF/^J
+: Esc [ Y
+& CVT: CURSOR LINE TABULATION
+" Move the cursor forward 1 vertical tab stop.
+: Esc [ 3 Y
+& CVT: CURSOR LINE TABULATION
+" Move the cursor forward 3 vertical tab stops.
 . LF/^J

@@ -76,9 +76,10 @@ static void
 csi_do_cht (unsigned char final, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  const char *dir = (final == 0x59) ? "vertical " : "";
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor forward %d tab stops.",
-                 params[0]);
+  putter_single (putr, "\" Move the cursor forward %d %stab stop%s.",
+                 params[0], dir, params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -316,7 +317,7 @@ struct csi_handler csi_handlers[] =
     {"PP", "PRECEDING PAGE"},
     {"CTC", "CURSOR TABULATION CONTROL", CSI_FUNC_PS_ANY, csi_do_ctc, 0 },
     {"ECH", "ERASE CHARACTER", CSI_FUNC_PN, csi_do_ech, 1 },   /* x58 */
-    {"CVT", "CURSOR LINE TABULATION"},
+    {"CVT", "CURSOR LINE TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
     {"CBT", "CURSOR BACKWARD TABULATION"},
     {"SRS", "START REVERSED STRING"},
     {"PTX", "PARALLEL TEXTS"},
