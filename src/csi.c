@@ -252,6 +252,13 @@ csi_do_da (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_vpa (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  putter_single (putr, "\" Move the cursor to line %d.", params[0]);
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -339,7 +346,7 @@ struct csi_handler csi_handlers[] =
     {"HPR", "CHARACTER POSITION FORWARD"},
     {"REP", "REPEAT"},
     {"DA", "DEVICE ATTRIBUTES", CSI_FUNC_PS, csi_do_da, 0 },
-    {"VPA", "LINE POSITION ABSOLUTE"},
+    {"VPA", "LINE POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_vpa, 1},
     {"VPR", "LINE POSITION FORWARD"},
     {"HVP", "CHARACTER AND LINE POSITION"},
     {"TBC", "TABULATION CLEAR"},
