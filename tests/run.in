@@ -25,8 +25,8 @@ get_vars()
 	invocation=${invocation:-'"$TESEQ" $teseq_options < \
 	                          "$testin/$input" > "$testout/$output"'}
 	diffcmd=${diffcmd:-'diff -u "$testin/$expected" "$testout/$output"'}
-	r_invocation=${r_invocation:-'"$RESEQ" < "$testin/$r_input" \
-	                              > "$testout/$r_output"'}
+	r_invocation=${r_invocation:-'"$RESEQ" -- "$testin/$r_input" \
+	                              "$testout/$r_output"'}
 	r_diffcmd=${r_diffcmd:-'cmp -- "$testin/$r_expected" \
 	                        "$testout/$r_output"'}
 	r_input="${r_input:-$expected}"
