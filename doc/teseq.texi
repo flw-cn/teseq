@@ -234,7 +234,7 @@ The format for running the @code{teseq} program is:
 @example
 teseq @var{options} [-o @var{output-file}] [@var{input-file}]
 teseq -h | --help
-teseq -v | --version
+teseq -V | --version
 @end example
 
 @noindent
@@ -1012,7 +1012,9 @@ These standards are available, ``free of charge and copyright'', at@*
 Synopsis:
 
 @example
-reseq [@var{input}] > @var{output}
+reseq @var{input} @var{output}
+reseq -h | --help
+reseq -V | --version
 @end example
 
 @noindent
@@ -1023,7 +1025,7 @@ sequences---that is, it will generate the same content that was fed to
 @command{teseq} to produce that output. The shell command
 
 @example
-$ teseq foo | reseq
+$ teseq foo | reseq - -
 @end example
 
 @noindent
