@@ -30,6 +30,7 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strchr])
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([reseq],[chmod +x reseq])
 AC_CONFIG_FILES([run-tests:tests/run.in],[chmod +x run-tests])
 AC_CONFIG_COMMANDS([src/test-inputbuf.inf],
                    [test "$srcdir" = . || \

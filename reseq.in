@@ -57,6 +57,7 @@ are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.
 There is NO WARANTEE, to the extent permitted by law.
 END_VERSION
+    exit (0);
 }
 
 sub process_control {

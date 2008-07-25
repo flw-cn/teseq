@@ -9,6 +9,7 @@ syntax:glob
 **.o
 
 teseq
+reseq
 
 tags
 TAGS
