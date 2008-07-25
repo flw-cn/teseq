@@ -307,7 +307,7 @@ struct csi_handler csi_handlers[] =
     {"IL", "INSERT LINE", CSI_FUNC_PN, csi_do_il, 1 },
     {"DL", "DELETE LINE", CSI_FUNC_PN, csi_do_dl, 1 },
     {"EF", "ERASE IN FIELD", CSI_FUNC_PS, csi_do_ef, 0 },
-    {"EA", "ERASE IN AREA", CSI_FUNC_PS, csi_do_ed, 0 },
+    {"EA", "ERASE IN AREA"},
     {"DCH", "DELETE CHARACTER", CSI_FUNC_PN, csi_do_dch, 1 },  /* x50 */
     {"SEE", "SELECT EDITING EXTENT"},
     {"CPR", "ACTIVE POSITION REPORT", CSI_FUNC_PN_PN, csi_do_cpr, 1, 1 },

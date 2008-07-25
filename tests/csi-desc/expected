@@ -124,16 +124,6 @@
 & EF: ERASE IN FIELD
 " Clear from the previous tab stop to the next tab stop.
 . LF/^J
-: Esc [ O
-& EA: ERASE IN AREA
-" Clear from the cursor to the end of the qualified area.
-: Esc [ 1 O
-& EA: ERASE IN AREA
-" Clear from the beginning of the qualified area to the cursor.
-: Esc [ 2 O
-& EA: ERASE IN AREA
-" Clear the qualified area.
-. LF/^J
 : Esc [ P
 & DCH: DELETE CHARACTER
 " Delete 1 character, shifting the following characters left.
