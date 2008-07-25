@@ -89,9 +89,10 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 
 @menu
 * Overview::                    What does Teseq do? (with example)
-* Invoking Teseq::               How to run Teseq, with options 'n' stuff.
+* Invoking Teseq::              How to run Teseq, with options 'n' stuff.
+* Output Format::               How Teseq's output looks.
+* Standards::                   The official word on control functions.
 
-* Output Format::               
 * Reseq::                       Reversing Teseq's output.
 
 * Copying::                     Copying and sharing this manual.
@@ -116,8 +117,18 @@ understanding of terminal control sequences, especially
 @cindex @sc{csi}
 @cindex Control Sequence Introducer
 @acronym{@sc{csi}} sequences; however, by default Teseq will try to
-identify the sequences that it encounters, and what behavior they
-might produce in a terminal.
+identify and describe the sequences that it encounters, and the
+behavior they might produce in a terminal.
+
+Teseq describes control functions as they are interpreted by
+VT100-compatible terminals, and/or terminals compliant with the
+@fortyeight{} standard. Teseq does @emph{not} support describing
+control functions according to terminal-specific definitions in a
+database such as termcap or terminfo, though future versions may
+include limited support for that. Therefore, the descriptions Teseq
+uses for control functions may not necessarily match their actual
+interpretation by whatever terminal device the characters were
+actually intended for.
 
 @unnumberedsec A Quick Example
 @cindex examples
@@ -318,7 +329,7 @@ will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
 in order to pass them to the @command{teseq} command.
 
-@node Output Format, Reseq, Invoking Teseq, Top
+@node Output Format, Standards, Invoking Teseq, Top
 @chapter Output Format
 
 Teseq produces output that is primarily intended to be read by humans
@@ -974,7 +985,25 @@ devices or applications. Some description lines may appear without a
 preceding label line (even when @option{-L} was not specified), in the
 event that no standard designation for the function is known.
 
-@node Reseq, Copying, Output Format, Top
+@node Standards, Reseq, Output Format, Top
+@chapter Standards
+
+The most authoritative source of information on control functions,
+their representations in bytes, and their intended meaning, is the
+@fortyeight{} standard. Also related is the @thirtyfive{} standard,
+which describes control functions for switching the character
+encoding, and defines the possible forms of escape sequence (note
+that, in Teseq, 
+@cindex escape sequence
+``escape sequence'' refers to both the Ecma-48 concept of
+@cindex control sequence
+``control sequences'', and the official Ecma-35 meaning of ``escape
+sequence''.
+
+These standards are available, ``free of charge and copyright'', at@*
+@uref{http://www.ecma-international.org/}.
+
+@node Reseq, Copying, Standards, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{teseq}
