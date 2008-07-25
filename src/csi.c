@@ -348,7 +348,7 @@ struct csi_handler csi_handlers[] =
     {"DA", "DEVICE ATTRIBUTES", CSI_FUNC_PS, csi_do_da, 0 },
     {"VPA", "LINE POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_vpa, 1},
     {"VPR", "LINE POSITION FORWARD"},
-    {"HVP", "CHARACTER AND LINE POSITION"},
+    {"HVP", "CHARACTER AND LINE POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },
     {"TBC", "TABULATION CLEAR"},
     {"SM", "SET MODE"},           /* x68 */
     {"MC", "MEDIA COPY"},
