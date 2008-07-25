@@ -1,9 +1,20 @@
 #!/usr/bin/env perl
+
+# @configure_input@
+
+# Copyright (C) 2008  Micah Cowan <micah@cowan.name>
+# 
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.
+
 use strict;
 use warnings;
 
-our $inf = \*ARGV;
-our $outf = \*STDOUT;
+our $VERSION = '@VERSION@';
+
+our $inf;
+our $outf;
 
 our @controls = (
 	"NUL", "SOH", "STX", "ETX",
@@ -18,6 +29,35 @@ our @controls = (
 our %controls;
 $controls{$controls[$_]} = chr($_) for (0 .. $#controls);
 $controls{'DEL'} = chr(0x7f);
+
+sub usage {
+    my $status = shift;
+    my $f = $status == 0 ? \*STDOUT : \*STDERR;
+
+    print $f <<END_USAGE;
+Usage: reseq INPUT OUTPUT
+   or: reseq -h | --help
+   or: reseq -V | --version
+Reverse the translations made by teseq.
+
+ -h, --help         Print usage information (this message).
+ -V, --version      Display version and warrantee
+
+Report bugs to micah\@cowan.name
+END_USAGE
+    exit ($status);
+}
+
+sub version {
+    print <<END_VERSION;
+reseq (eseq) $VERSION
+Copyright (C) 2008  Micah Cowan <micah\@cowan.name>.
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+There is NO WARANTEE, to the extent permitted by law.
+END_VERSION
+}
 
 sub process_control {
     my $control = shift;
@@ -55,6 +95,43 @@ sub process_line {
     elsif (/^:/g) {
         &process_sequence ($1) while /\G\s*(\S+)/g;
     }
+}
+
+if (grep (($_ eq '--help' || $_ eq '-h'), @ARGV)) {
+    &usage (0);
+}
+
+if (grep (($_ eq '--version' || $_ eq '-V'), @ARGV)) {
+    &version ();
+}
+
+# Ensure that there are no other options specified.
+my $i = 0;
+while ($i < @ARGV) {
+    if ($ARGV[$i] eq '--') {
+        splice (@ARGV, $i, 1);
+        last;
+    }
+    elsif ($ARGV[$i] =~ /^-(.)/) {
+        print STDERR "Unrecognized option -\1\n\n";
+        &usage (1);
+    }
+    ++$i;
+}
+
+&usage (1) unless @ARGV == 2;
+if ($ARGV[0] eq '-') {
+    $inf = \*STDIN;
+}
+else {
+    open ($inf, '<', $ARGV[0]) or die "Couldn't open $ARGV[0]: $!\n";
+}
+
+if ($ARGV[1] eq '-') {
+    $outf = \*STDOUT;
+}
+else {
+    open ($outf, '>', $ARGV[1]) or die "Couldn't open $ARGV[1]: $!\n";
 }
 
 my $line;
