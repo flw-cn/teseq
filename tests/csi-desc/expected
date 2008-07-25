@@ -228,3 +228,26 @@
 & HVP: CHARACTER AND LINE POSITION
 " Move the cursor to line 2, column 2.
 . LF/^J
+: Esc [ g
+& TBC: TABULATION CLEAR
+" Clear the horizontal tab stop at the cursor position.
+: Esc [ 1 g
+& TBC: TABULATION CLEAR
+" Clear the vertical tab stop at the current line.
+: Esc [ 2 g
+& TBC: TABULATION CLEAR
+" Clear all horizontal tab stops in the current line.
+: Esc [ 3 g
+& TBC: TABULATION CLEAR
+" Clear all horizontal tab stops.
+: Esc [ 4 g
+& TBC: TABULATION CLEAR
+" Clear all vertical tab stops.
+: Esc [ 5 g
+& TBC: TABULATION CLEAR
+" Clear all tab stops.
+: Esc [ 6 g
+& TBC: TABULATION CLEAR
+: Esc [ 1 ; 1 g
+& TBC: TABULATION CLEAR
+. LF/^J

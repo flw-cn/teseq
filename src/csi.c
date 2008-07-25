@@ -259,6 +259,24 @@ csi_do_vpa (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_tbc (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  const char *messages[] = 
+    {
+      "Clear the horizontal tab stop at the cursor position.",
+      "Clear the vertical tab stop at the current line.",
+      "Clear all horizontal tab stops in the current line.",
+      "Clear all horizontal tab stops.",
+      "Clear all vertical tab stops.",
+      "Clear all tab stops."
+    };
+
+  if (params[0] < N_ARY_ELEMS (messages))
+    putter_single (putr, "\" %s", messages[params[0]]);
+}
+
+static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
@@ -349,7 +367,7 @@ struct csi_handler csi_handlers[] =
     {"VPA", "LINE POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_vpa, 1},
     {"VPR", "LINE POSITION FORWARD"},
     {"HVP", "CHARACTER AND LINE POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },
-    {"TBC", "TABULATION CLEAR"},
+    {"TBC", "TABULATION CLEAR", CSI_FUNC_PS, csi_do_tbc, 0 },
     {"SM", "SET MODE"},           /* x68 */
     {"MC", "MEDIA COPY"},
     {"HPB", "CHARACTER POSITION BACKWARD"},
