@@ -6,9 +6,10 @@ bin_PROGRAMS = teseq
 dist_bin_SCRIPTS  = reseq
 dist_libexec_SCRIPTS = src/teseq-post.sed
 
-teseq_SOURCES = src/teseq.c src/inputbuf.c src/ringbuf.c src/putter.c src/csi.c \
-               src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h \
-               src/c1.h src/teseq.h
+teseq_SOURCES = src/teseq.c src/inputbuf.c src/ringbuf.c src/putter.c \
+                src/csi.c \
+                src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h \
+                src/c1.h src/teseq.h src/modes.h
 
 check_PROGRAMS = src/test-ringbuf src/test-inputbuf
 check_DATA = src/test-inputbuf.inf
@@ -41,7 +42,7 @@ check-teseq: teseq run-tests
 check-reseq: reseq run-tests
 	./run-tests -r
 
-EXTRA_DIST=src/test-inputbuf.inf doc/teseq.1
+EXTRA_DIST=src/test-inputbuf.inf
 
 dist-hook:
 	cp -R -- `find $(srcdir)/tests -type d ! -name tests` $(distdir)/tests
@@ -49,6 +50,7 @@ dist-hook:
 clean-local:
 	find tests -name r-output -o -name output | xargs rm -f
 	rm -f tests/cmdline--/-o
-	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf doc/teseq.1
+	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf doc/teseq.1 \
+	                              doc/reseq.1
 
 CLEANFILES = teseq.dvi
