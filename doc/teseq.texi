@@ -43,8 +43,8 @@ Ecma-48@tie{}/ ISO/IEC@tie{}6429
 
 @dircategory Miscellaneous
 @direntry
-* teseq: (teseq).                   Terminal control sequence analyzer.
-* reseq: (teseq)Reseq.             Reverse-translate output from teseq.
+* teseq: (teseq).               Terminal control sequence analyzer.
+* reseq: (teseq)Reseq.          Reverse-translate output from teseq.
 @end direntry
 
 @copying
