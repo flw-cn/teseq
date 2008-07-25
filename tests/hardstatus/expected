@@ -6,6 +6,7 @@
 " Designate 94-character set 0 (private) to G1.
 : Esc [ 4 l
 & RM: RESET MODE
+" INSERTION REPLACEMENT MODE (IRM) -> REPLACE
 : Esc [ ? 1 h
 & SM: SET MODE (private params)
 : Esc =

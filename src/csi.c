@@ -23,6 +23,7 @@
 
 #include "csi.h"
 #include "sgr.h"
+#include "modes.h"
 
 static void
 csi_do_ich (unsigned char final, struct putter *putr,
@@ -259,6 +260,25 @@ csi_do_vpa (unsigned char final, struct putter *putr,
 }
 
 static void
+csi_do_sm (unsigned char final, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  unsigned int *p, *pend = params + n_params;
+  for (p=params; p != pend; ++p)
+    {
+      struct mode_info *m;
+      if (*p >= N_ARY_ELEMS (modes))
+        continue;
+      m = &modes[*p];
+      if (m->acro)
+        {
+          const char *arg = (final == 0x68) ? m->set : m->reset;
+          putter_single (putr, "\" %s (%s) -> %s", m->name, m->acro, arg);
+        }
+    }
+}
+
+static void
 csi_do_tbc (unsigned char final, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
@@ -368,11 +388,11 @@ struct csi_handler csi_handlers[] =
     {"VPR", "LINE POSITION FORWARD"},
     {"HVP", "CHARACTER AND LINE POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },
     {"TBC", "TABULATION CLEAR", CSI_FUNC_PS, csi_do_tbc, 0 },
-    {"SM", "SET MODE"},           /* x68 */
+    {"SM", "SET MODE", CSI_FUNC_PS_ANY, csi_do_sm },           /* x68 */
     {"MC", "MEDIA COPY"},
     {"HPB", "CHARACTER POSITION BACKWARD"},
     {"VPB", "LINE POSITION BACKWARD"},
-    {"RM", "RESET MODE"},
+    {"RM", "RESET MODE", CSI_FUNC_PS_ANY, csi_do_sm },
     {"SGR", "SELECT GRAPHIC RENDITION", CSI_FUNC_PS_ANY, csi_do_sgr, 0 },
     {"DSR", "DEVICE STATUS REPORT"},
     {"DAQ", "DEFINE AREA QUALIFICATION"}

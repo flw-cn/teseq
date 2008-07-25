@@ -110,6 +110,7 @@ fi
 	controls
         csi-interm
         csi-desc
+        modes
 '}
 
 nt=0
