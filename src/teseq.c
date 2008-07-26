@@ -89,6 +89,7 @@ struct
   int descriptions;
   int labels;
   int escapes;
+  int extensions;
 } config;
 
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
@@ -615,6 +616,24 @@ handle_Fp (struct processor *p, unsigned char c)
 {
   if (config.escapes)
     putter_single (p->putr, ": Esc %c", c);
+  if (config.extensions)
+    {
+      switch (c)
+        {
+        case '7':
+          maybe_print_label (p, "DECSC", "SAVE CURSOR");
+          break;
+        case '8':
+          maybe_print_label (p, "DECRC", "RESTORE CURSOR");
+          break;
+        case '=':
+          maybe_print_label (p, "DECKPAM", "KEYPAD APPLICATION MODE");
+          break;
+        case '>':
+          maybe_print_label (p, "DECKPNM", "KEYPAD NORMAL MODE");
+          break;
+        }
+    }
   return 1;
 }
 
@@ -804,7 +823,7 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
-Usage: teseq [-CLDE] [in] [out]\n\
+Usage: teseq [-CLDEx] [in] [out]\n\
    or: teseq -h | --help\n\
    or: teseq -V | --version\n\
 Format text with terminal escapes and control sequences for human\n\
@@ -817,6 +836,7 @@ consumption.\n\
  -L             Don't print labels.\n\
  -D             Don't print descriptions.\n\
  -E             Don't print escape sequences.\n\
+ -x             Identify control sequences from VT100/Xterm\n\
 \n\
 Report bugs to micah@cowan.name.\n\
 ", f);
@@ -875,8 +895,9 @@ configure (struct processor *p, int argc, char **argv)
   config.descriptions = 1;
   config.labels = 1;
   config.escapes = 1;
+  config.extensions = 0;
 
-  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LE", teseq_opts, NULL))
+  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEx", teseq_opts, NULL))
          != -1)
     {
       switch (opt)
@@ -901,6 +922,9 @@ configure (struct processor *p, int argc, char **argv)
           break;
         case 'E':
           config.escapes = 0;
+          break;
+        case 'x':
+          config.extensions = 1;
           break;
         case ':':
           fprintf (stderr, "Option -%c requires an argument.\n\n", optopt);
