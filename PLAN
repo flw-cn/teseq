@@ -1,6 +1,7 @@
 TODO:
 
 Code cleanup.
+Implement handling of Fs sequence.
 VT100/Xterm extensions.
 Gettext.
 
