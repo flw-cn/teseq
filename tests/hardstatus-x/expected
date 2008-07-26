@@ -390,7 +390,7 @@
 : Esc [ 1 ; 51 r
 : Esc [ ? 1 l
 & RM: RESET MODE (private params)
-" VT100: Turn OFF Cursor Key Mode (DECCKM)
+" VT100: Turn off cursor key mode (DECCKM)
 : Esc >
 & DECKPNM: KEYPAD NORMAL MODE
 : Esc [ 51 ; 1 H

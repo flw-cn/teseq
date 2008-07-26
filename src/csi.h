@@ -46,7 +46,8 @@ enum csi_func_type
 
 #define CSI_DEFAULT_NONE        -1
 
-typedef void (*csi_handler_func) (unsigned char, struct putter *,
+typedef void (*csi_handler_func) (unsigned char, unsigned char,
+                                  struct putter *,
                                   size_t, unsigned int []);
 
 struct csi_handler
@@ -59,8 +60,8 @@ struct csi_handler
   int                   default1;
 };
 
-extern struct csi_handler csi_handlers[];
-extern struct csi_handler csi_spc_handlers[];
-extern struct csi_handler csi_no_handler;
+struct csi_handler *
+get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
+                 int interm, unsigned char final);
 
 #endif /* TESEQ_CSI_H */

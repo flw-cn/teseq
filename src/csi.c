@@ -26,9 +26,10 @@
 #include "modes.h"
 
 static void
-csi_do_ich (unsigned char final, struct putter *putr,
+csi_do_ich (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   assert (n_params == 1);
   putter_single (putr, ("\" Shift characters after the cursor to make room "
                         "for %d new character%s."), params[0],
@@ -36,10 +37,11 @@ csi_do_ich (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_cuu (unsigned char final, struct putter *putr,
+csi_do_cuu (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   const char *dir[] = {"up", "down", "right", "left"};
+  if (priv) return;
   assert (n_params == 1);
   putter_single (putr, "\" Move the cursor %s %d line%s.",
                  dir[ final - 0x41 ],
@@ -47,48 +49,53 @@ csi_do_cuu (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_cnl (unsigned char final, struct putter *putr,
+csi_do_cnl (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   const char *dir[] = {"down", "up"};
+  if (priv) return;
   assert (n_params == 1);
   putter_single (putr, "\" Move the cursor to the first column, %d line%s %s.",
                  params[0], params[0] == 1 ? "" : "s", dir[ final - 0x45 ]);
 }
 
 static void
-csi_do_cha (unsigned char final, struct putter *putr,
+csi_do_cha (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   assert (n_params == 1);
   putter_single (putr, "\" Move the cursor to column %d.", params[0]);
 }
 
 static void
-csi_do_cup (unsigned char final, struct putter *putr,
+csi_do_cup (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   assert (n_params == 2);
   putter_single (putr, "\" Move the cursor to line %d, column %d.",
                  params[0], params[1]);
 }
 
 static void
-csi_do_cht (unsigned char final, struct putter *putr,
+csi_do_cht (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   const char *hv = (final == 0x59) ? "vertical " : "";
   const char *dir = (final == 0x5A) ? "back" : "forward";
+  if (priv) return;
   assert (n_params == 1);
   putter_single (putr, "\" Move the cursor %s %d %stab stop%s.",
                  dir, params[0], hv, params[0] == 1 ? "" : "s");
 }
 
 static void
-csi_do_ed (unsigned char final, struct putter *putr,
+csi_do_ed (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   const char *space;
+  if (priv) return;
   assert (n_params == 1);
   switch (final)
     {
@@ -122,29 +129,32 @@ csi_do_ed (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_il (unsigned char final, struct putter *putr,
+csi_do_il (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   assert (n_params == 1);
+  if (priv) return;
   putter_single (putr, ("\" Shift lines after the cursor to make room "
                         "for %d new line%s."), params[0],
                  params[0] == 1 ? "" : "s");
 }
 
 static void
-csi_do_dl (unsigned char final, struct putter *putr,
+csi_do_dl (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   assert (n_params == 1);
+  if (priv) return;
   putter_single (putr, "\" Delete %d line%s, shifting the following lines up.",
                  params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
-csi_do_ef (unsigned char final, struct putter *putr,
+csi_do_ef (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   assert (n_params == 1);
+  if (priv) return;
   switch (params[0])
     {
     case 0:
@@ -162,29 +172,32 @@ csi_do_ef (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_dch (unsigned char final, struct putter *putr,
+csi_do_dch (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   assert (n_params == 1);
+  if (priv) return;
   putter_single (putr, ("\" Delete %d character%s, shifting the following "
                         "characters left."),
                  params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
-csi_do_cpr (unsigned char final, struct putter *putr,
+csi_do_cpr (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   assert (n_params == 2);
   putter_single (putr, ("\" Report that the cursor is located at line %d, "
                         "column %d"), params[0], params[1]);
 }
 
 static void
-csi_do_su (unsigned char final, struct putter *putr,
+csi_do_su (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   const char *dir, *unit;
+  if (priv) return;
   assert (n_params == 1);
   switch (final)
     {
@@ -213,7 +226,7 @@ csi_do_su (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_ctc (unsigned char final, struct putter *putr,
+csi_do_ctc (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   unsigned int *p = params, *pend = params + n_params;
@@ -228,6 +241,7 @@ csi_do_ctc (unsigned char final, struct putter *putr,
       "Clear all vertical tab stops."
     };
   
+  if (priv) return;
   for (; p != pend; ++p)
     {
       if (*p < N_ARY_ELEMS (messages))
@@ -236,37 +250,72 @@ csi_do_ctc (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_ech (unsigned char final, struct putter *putr,
+csi_do_ech (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   putter_single (putr, "\" Erase %d character%s, starting at the cursor.",
                  params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
-csi_do_da (unsigned char final, struct putter *putr,
+csi_do_da (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   if (params[0] != 0)
     return;
   putter_single (putr, "\" Request terminal identification.");
 }
 
 static void
-csi_do_vpa (unsigned char final, struct putter *putr,
+csi_do_vpa (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
+  if (priv) return;
   putter_single (putr, "\" Move the cursor to line %d.", params[0]);
 }
 
+void
+handle_private_mode (struct putter *putr, unsigned int param, int set)
+{
+  const char *msg = NULL;
+  
+  switch (param)
+    {
+    case 1:
+      if (set)
+        msg = "\" VT100: Turn on cursor key mode (DECCKM)";
+      else
+        msg = "\" VT100: Turn off cursor key mode (DECCKM)";
+      break;
+    case 1049:
+      if (set)
+        msg = "\
+\" Save the cursor position and use the alternate screen buffer,\n\
+\"  clearing it first.";
+      else
+        msg = "\" Leave the alternate screen buffer and restore the cursor.";
+      break;
+    }
+
+  if (msg)
+    putter_single (putr, "%s", msg);
+}
+
 static void
-csi_do_sm (unsigned char final, struct putter *putr,
+csi_do_sm (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   unsigned int *p, *pend = params + n_params;
   for (p=params; p != pend; ++p)
     {
       struct mode_info *m;
+      if (priv)
+        {
+          handle_private_mode (putr, *p, final == 0x68);
+          continue;
+        }
       if (*p >= N_ARY_ELEMS (modes))
         continue;
       m = &modes[*p];
@@ -279,7 +328,7 @@ csi_do_sm (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_tbc (unsigned char final, struct putter *putr,
+csi_do_tbc (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   static const char *messages[] = 
@@ -292,12 +341,13 @@ csi_do_tbc (unsigned char final, struct putter *putr,
       "Clear all tab stops."
     };
 
+  if (priv) return;
   if (params[0] < N_ARY_ELEMS (messages))
     putter_single (putr, "\" %s", messages[params[0]]);
 }
 
 static void
-csi_do_mc (unsigned char final, struct putter *putr,
+csi_do_mc (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
   unsigned int p = *params;
@@ -313,6 +363,7 @@ csi_do_mc (unsigned char final, struct putter *putr,
       "Start relay to a secondary auxiliary device."
     };
 
+  if (priv) return;
   if (p < N_ARY_ELEMS (messages))
     {
       putter_single (putr, "\" %s", messages[params[0]]);
@@ -350,12 +401,13 @@ print_t416_description (struct putter *putr, unsigned char n_params,
 }
 
 static void
-csi_do_sgr (unsigned char final, struct putter *putr,
+csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   unsigned int *pend = params + n_params;
   unsigned int *param;
   
+  if (priv) return;
   assert (n_params > 0);
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
     print_t416_description (putr, n_params, params);
@@ -367,7 +419,7 @@ csi_do_sgr (unsigned char final, struct putter *putr,
 }
 
 static void
-csi_do_dsr (unsigned char final, struct putter *putr,
+csi_do_dsr (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   unsigned int p = *params;
@@ -381,13 +433,14 @@ csi_do_dsr (unsigned char final, struct putter *putr,
       "DSR requested.",
       "Request cursor position report."
     };
+  if (priv) return;
   if (p < N_ARY_ELEMS (messages))
     putter_single (putr, "\" %s", messages[p]);
 }
 
-struct csi_handler csi_no_handler = { NULL, NULL };
+static struct csi_handler csi_no_handler = { NULL, NULL };
 
-struct csi_handler csi_handlers[] =
+static struct csi_handler csi_handlers[] =
   {
     {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1 },  /* x40 */
     {"CUU", "CURSOR UP", CSI_FUNC_PN, csi_do_cuu, 1 },
@@ -440,7 +493,7 @@ struct csi_handler csi_handlers[] =
     {"DAQ", "DEFINE AREA QUALIFICATION"}
   };
 
-struct csi_handler csi_spc_handlers[] = 
+static struct csi_handler csi_spc_handlers[] = 
   {
     {"SL", "SCROLL LEFT", CSI_FUNC_PN, csi_do_su, 1 },
     {"SR", "SCROLL RIGHT", CSI_FUNC_PN, csi_do_su, 1 },
@@ -492,3 +545,16 @@ struct csi_handler csi_spc_handlers[] =
     {NULL, NULL}
   };
 
+struct csi_handler *
+get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
+                 int interm, unsigned char final)
+{
+  if (final >= 0x70)
+    return &csi_no_handler;
+  else if (intermsz == 0)
+    return &csi_handlers[final - 0x40];
+  else if (intermsz == 1 && interm == 0x20)
+    return &csi_spc_handlers[final - 0x40];
+  else
+    return &csi_no_handler;
+}

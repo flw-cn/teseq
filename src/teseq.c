@@ -83,14 +83,8 @@ const char *control_names[] = {
   "IS4", "IS3", "IS2", "IS1"
 };
 
-struct
-{
-  int control_hats;
-  int descriptions;
-  int labels;
-  int escapes;
-  int extensions;
-} config;
+struct config configuration = { 0 };
+
 
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
 #define is_ascii_digit(x)       ((x) >= 0x30 && (x) <= 0x39)
@@ -109,7 +103,7 @@ print_esc_char (struct processor *p, unsigned char c)
 void
 maybe_print_label (struct processor *p, const char *acro, const char *name)
 {
-  if (config.labels)
+  if (configuration.labels)
     putter_single (p->putr, "& %s: %s", acro, name);
 }
 
@@ -157,8 +151,7 @@ void
 process_csi_sequence (struct processor *p, struct csi_handler *handler)
 {
   int c;
-  int e = config.escapes;
-  int first_param_char_seen = 0;
+  int e = configuration.escapes;
   int private_params = 0;
   int last = 0;
   size_t n_params = 0;
@@ -174,14 +167,16 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
   assert (c == '[');
   if (e)
     putter_printf (p->putr, " [", c);
-  do
+  c = inputbuf_get (p->ibuf);
+  if (!IS_CSI_FINAL_CHAR (c))
     {
-      c = inputbuf_get (p->ibuf);
-      if (!first_param_char_seen && !IS_CSI_FINAL_CHAR (c))
+      if (IS_PRIVATE_PARAM_CHAR (c))
         {
-          first_param_char_seen = 1;
-          private_params = IS_PRIVATE_PARAM_CHAR (c);
+          private_params = c;
         }
+    }
+  for (;;)
+    {
       if (is_ascii_digit (c))
         {
           if (is_ascii_digit (last))
@@ -203,7 +198,8 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
               if (e)
                 putter_printf (p->putr, " %d", cur_param);
             }
-          else if (! IS_CSI_INTERMEDIATE_CHAR (last))
+          else if ((last != 0 || private_params == 0)
+                   && ! IS_CSI_INTERMEDIATE_CHAR (last))
             {
               int param = CSI_GET_DEFAULT (handler, n_params);
               if (param >= 0)
@@ -217,13 +213,16 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
             print_esc_char (p, c);
         }
       last = c;
+      if (IS_CSI_FINAL_CHAR (c)) break;
+      c = inputbuf_get (p->ibuf);
     }
-  while (!IS_CSI_FINAL_CHAR (c));
   if (e)
     putter_finish (p->putr, "");
-  if (config.labels)
+  if (configuration.labels)
     print_csi_label (p, handler, private_params);
-  if (config.descriptions && !private_params && handler->acro && handler->fn)
+
+  if (configuration.descriptions && handler->acro && handler->fn
+      && (configuration.extensions || !private_params))
     {
       int wrong_num_params = 0;
       init_csi_params (handler, &n_params, params);
@@ -235,7 +234,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
                            && n_params != 2);
       if (! wrong_num_params)
         {
-          handler->fn (c, p->putr, n_params, params);
+          handler->fn (c, private_params, p->putr, n_params, params);
         }
     }
 }
@@ -267,7 +266,8 @@ read_csi_sequence (struct processor *p)
         {
         case SEQ_CSI_PARAM_FIRST_CHAR:
           state = SEQ_CSI_PARAMETER;
-          private_params = IS_PRIVATE_PARAM_CHAR (c);
+          if (IS_PRIVATE_PARAM_CHAR (c))
+            private_params = c;
         case SEQ_CSI_PARAMETER:
           if (IS_CSI_INTERMEDIATE_COLUMN (col))
             {
@@ -275,7 +275,7 @@ read_csi_sequence (struct processor *p)
             }
           else if (col == 3)
             {
-              if (!private_params && IS_PRIVATE_PARAM_CHAR (c))
+              if (private_params == 0 && IS_PRIVATE_PARAM_CHAR (c))
                 return NULL;
               break;
             }
@@ -284,14 +284,8 @@ read_csi_sequence (struct processor *p)
           if (IS_CSI_FINAL_COLUMN (col))
             {
               inputbuf_rewind (p->ibuf);
-              if (col < 4 || col >= 7)
-                return &csi_no_handler;
-              if (intermsz == 0)
-                return &csi_handlers[c - 0x40];
-              else if (intermsz == 1 && interm == 0x20)
-                return &csi_spc_handlers[c - 0x40];
-              else
-                return &csi_no_handler;
+              return get_csi_handler (configuration.extensions, private_params,
+                                      intermsz, interm, c);
             }
           else if (! IS_CSI_INTERMEDIATE_COLUMN (col))
             {
@@ -424,13 +418,13 @@ print_cxd_info (struct processor *p, int intermediate, int final)
   if (intermediate == 0x21)
     {
       maybe_print_label (p, "CZD", "C0-DESIGNATE");
-      if (config.descriptions && final == 0x40)
+      if (configuration.descriptions && final == 0x40)
         putter_single (p->putr, "\" Designate C0 Set of ISO-646.");
     }
   else
     {
       maybe_print_label (p, "C1D", "C1-DESIGNATE");
-      if (config.descriptions && final == 0x43)
+      if (configuration.descriptions && final == 0x43)
         putter_single (p->putr, "\" Designate C1 Control Set of ISO 6429-1983.");
     }
 }
@@ -456,12 +450,12 @@ print_gxd_info (struct processor *p, int intermediate, int final)
   else
     return;
 
-  if (config.labels)
+  if (configuration.labels)
     {
       putter_single (p->putr, "& G%cD%d: G%d-DESIGNATE 9%d-SET",
                      desig_strs[designate], set, designate, set);
     }
-  if (config.descriptions)
+  if (configuration.descriptions)
     {
       putter_single (p->putr, "\" Designate 9%d-character set "
                      "%c%s to G%d.",
@@ -500,7 +494,7 @@ print_gxdm_info (struct processor *p, int i1, int f)
   else
     return;
 
-  if (config.labels)
+  if (configuration.labels)
     {
       putter_single (p->putr, "& G%cDM%d: G%d-DESIGNATE MULTIBYTE 9%d-SET",
                      desig_strs[designate], set, designate, set);
@@ -538,7 +532,7 @@ handle_nF (struct processor *p, unsigned char i)
   else if (! IS_nF_FINAL_CHAR (f))
     return 0;
   
-  if (config.escapes)
+  if (configuration.escapes)
     {
       inputbuf_rewind (p->ibuf);
 
@@ -596,9 +590,9 @@ handle_c1 (struct processor *p, unsigned char c)
         }
     }
 
-  if (config.escapes)
+  if (configuration.escapes)
     putter_single (p->putr, ": Esc %c", c);
-  if (config.labels)
+  if (configuration.labels)
     print_c1_label (p, c);
   return 1;
 }
@@ -614,9 +608,9 @@ handle_c1 (struct processor *p, unsigned char c)
 int
 handle_Fp (struct processor *p, unsigned char c)
 {
-  if (config.escapes)
+  if (configuration.escapes)
     putter_single (p->putr, ": Esc %c", c);
-  if (config.extensions)
+  if (configuration.extensions)
     {
       switch (c)
         {
@@ -645,7 +639,7 @@ handle_Fp (struct processor *p, unsigned char c)
 int
 handle_Fs (struct processor *p, unsigned char c)
 {
-  if (config.escapes)
+  if (configuration.escapes)
     putter_single (p->putr, ": Esc %c", c);
   switch (c)
     {
@@ -737,7 +731,7 @@ print_control (struct processor *p, unsigned char c)
       const char *name = "DEL";
       if (c < 0x20)
         name = control_names[c];
-      if (config.control_hats)
+      if (configuration.control_hats)
         putter_printf (p->putr, " %s/^%c", name, UNCONTROL (c));
       else
         putter_printf (p->putr, " %s", name);
@@ -891,11 +885,11 @@ configure (struct processor *p, int argc, char **argv)
   FILE *inf = stdin;
   FILE *outf = stdout;
 
-  config.control_hats = 1;
-  config.descriptions = 1;
-  config.labels = 1;
-  config.escapes = 1;
-  config.extensions = 0;
+  configuration.control_hats = 1;
+  configuration.descriptions = 1;
+  configuration.labels = 1;
+  configuration.escapes = 1;
+  configuration.extensions = 0;
 
   while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEx", teseq_opts, NULL))
          != -1)
@@ -910,21 +904,21 @@ configure (struct processor *p, int argc, char **argv)
           break;
         case '^':
         case 'C':
-          config.control_hats = 0;
+          configuration.control_hats = 0;
           break;
         case '"':
         case 'D':
-          config.descriptions = 0;
+          configuration.descriptions = 0;
           break;
         case '&':
         case 'L':
-          config.labels = 0;
+          configuration.labels = 0;
           break;
         case 'E':
-          config.escapes = 0;
+          configuration.escapes = 0;
           break;
         case 'x':
-          config.extensions = 1;
+          configuration.extensions = 1;
           break;
         case ':':
           fprintf (stderr, "Option -%c requires an argument.\n\n", optopt);
@@ -933,7 +927,7 @@ configure (struct processor *p, int argc, char **argv)
         default:
           if (optopt == ':')
             {
-              config.escapes = 0;
+              configuration.escapes = 0;
               break;
             }
           fprintf (stderr, "Unrecognized option -%c.\n\n", optopt);

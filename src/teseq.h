@@ -24,4 +24,15 @@
 
 #define N_ARY_ELEMS(ary)        (sizeof (ary) / sizeof (ary)[0])
 
+struct config
+{
+  int control_hats;
+  int descriptions;
+  int labels;
+  int escapes;
+  int extensions;
+};
+
+extern struct config configuration;
+
 #endif /* TESEQ_H_ */
