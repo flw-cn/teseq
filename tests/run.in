@@ -107,6 +107,7 @@ fi
 	cntrl-esc
 	high-val
 	hardstatus
+	hardstatus-x
 	controls
         csi-interm
         csi-desc
