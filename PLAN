@@ -1,16 +1,13 @@
-TODO:
+TODO:                                                   -*- text -*-
 
-Code cleanup.
-Implement handling of Fs sequence.
 VT100/Xterm extensions.
+
+Report bugs to teseq@addictivecode.org.
+
+Reseq should complain about lines it doesn't recognize, so it can't
+silently generate incomplete data from the output of future versions
+of Teseq.
+
+Timing support?
+
 Gettext.
-
-Interpretation of graphical characters based on current state
-(translation to UTF-8?).
-
-FUTURE IDEAS:
-
-Eventual support for matching control sequences against simpler entries
-in the terminfo databases? Trivially, ones that do not rely on
-parameters; next step would be ones that contain trivial parameter use
-such as %p1%d.

@@ -95,6 +95,8 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 
 * Reseq::                       Reversing Teseq's output.
 
+* Future Directions::           Future features under consideration.
+
 * Copying::                     Copying and sharing this manual.
 * Index::                       Index of concepts.
 @end menu
@@ -124,11 +126,15 @@ Teseq describes control functions as they are interpreted by
 VT100-compatible terminals, and/or terminals compliant with the
 @fortyeight{} standard. Teseq does @emph{not} support describing
 control functions according to terminal-specific definitions in a
-database such as termcap or terminfo, though future versions may
-include limited support for that. Therefore, the descriptions Teseq
-uses for control functions may not necessarily match their actual
-interpretation by whatever terminal device the characters were
-actually intended for.
+database such as
+@cindex termcap
+termcap or
+@cindex terminfo
+terminfo, though future versions may
+include limited support for that (@pxref{Future Directions}).
+Therefore, the descriptions Teseq uses for control functions may not
+necessarily match their actual interpretation by whatever terminal
+device the characters were actually intended for.
 
 @unnumberedsec A Quick Example
 @cindex examples
@@ -488,6 +494,7 @@ be represented in hexadecimal on control-character lines, and not
 displayed on a text line. Future versions of Teseq may provide options
 allowing for these characters to be represented properly in text
 lines, but for now, the output format is ASCII characters only.
+@xref{Future Directions}.
 
 Note that even characters falling in the normal range of ASCII
 printable characters may not necessarily be represented correctly: for
@@ -1001,7 +1008,7 @@ sequence''.
 These standards are available, ``free of charge and copyright'', at@*
 @uref{http://www.ecma-international.org/}.
 
-@node Reseq, Copying, Standards, Top
+@node Reseq, Future Directions, Standards, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{teseq}
@@ -1071,7 +1078,98 @@ escape-sequence lines:
 Any other sorts of lines encountered are ignored and discarded, and
 have no effect on the output.
 
-@node Copying, Index, Reseq, Top
+@node Future Directions, Copying, Reseq, Top
+@chapter Future Directions
+
+Here are some potential additions that may appear in future versions of
+Teseq.
+
+@unnumberedsec Unicode Output
+Currently, all output from @command{teseq} is in US
+@cindex standards
+@cindex ASCII
+ASCII; but future versions of Teseq might support output in more
+extensive character encodings, such as
+@cindex UTF-8
+UTF-8 or other Unicode-based encodings. If that happens, Teseq might
+also add support for the handling of @thirtyfive{} character
+code-switching sequences, such that the characters given in
+@cindex text line
+text lines would reflect the actual characters as they would actually
+appear in the terminal device, depending on the current encoding
+state.
+
+@unnumberedsec Terminal Database Awareness
+
+Future versions of Teseq may allow the user to specify the name of the
+terminal for which the input was intended, which Teseq will then use
+to detect when a feature from that terminal's entry in the terminal
+database (for example, the
+@cindex terminfo
+terminfo database) has been invoked.
+
+Since features from terminal database entries often involve multiple
+@fortyeight{} controls, Teseq would probably need to indicate out-of-band
+``start'' and ``end'' markers for the feature. For instance, if the
+definition for the @samp{clear} feature for the specified terminal
+is @samp{\E[H\E[J}, then an input string of @samp{\E[m\E[H\E[J\E(B}
+might result in output like:
+
+@example
+: Esc [ m
+# start: clear
+: Esc [ H
+: Esc [ J
+# end: clear
+: Esc ( B
+@end example
+
+@noindent
+(Label and description lines have been removed from this example.)
+
+No commitment has been made to any particular output format for this
+feature; the above is intended purely as an example of one possible
+approach.
+
+@unnumberedsec Timing Information
+
+One of the useful ways in which @command{teseq} and
+@cindex @command{reseq}
+@command{reseq} can be used in combination in diagnosing terminal
+problems, is to make manual modifications to @command{teseq}'s output,
+feeding it back to @command{reseq} to see if there's improvement.
+
+The problem is that, if the input to @command{teseq} was an
+interactive terminal session, then simply spitting all of it back out
+via @command{reseq} may make it hard to see the trouble spot, if later
+controls clear the screen or otherwise obliterate the results you were
+trying to see.
+
+Some versions of the @command{script} command (at least, the one from
+@uref{ftp://ftp.kernel.org/pub/linux/utils/util-linux/, util-linux})
+support an option to produce timing information about a session, so
+that it can be replayed (with @command{scriptreplay}) with realistic
+timings, so you can actually see everything happening as if it were a
+video.
+
+It would be useful for Teseq to handle timing information as well, so
+that @command{teseq} could have the option of reading in timing files
+from @command{script}, and @command{reseq} would honor these timings,
+to produce suitable ``terminal videos''. Even when you're not using
+@command{script} timing files, you might want the option of manually
+inserting timing information at key locations in @command{teseq}
+output files, so you can have @command{reseq} pause long enough for
+you to see what's happening.
+
+At such a time that this feature is added, the format of timing lines
+will most likely be an initial ``at'' sign @samp{@@}, followed by the
+number of seconds to pause:
+
+@example
+@@ 3.0051
+@end example
+
+@node Copying, Index, Future Directions, Top
 @appendix Copying
 @include fdl.texi
 
