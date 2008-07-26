@@ -9,11 +9,11 @@
 . LF/^J
 : Esc [ ? 1 ; 1049 h
 & SM: SET MODE (private params)
-" VT100: Turn on cursor key mode (DECCKM)
+" (DEC) Cursor key mode.
 " Save the cursor position and use the alternate screen buffer,
 "  clearing it first.
 : Esc [ ? 1 ; 1049 l
 & RM: RESET MODE (private params)
-" VT100: Turn off cursor key mode (DECCKM)
+" (DEC) Cursor key mode off.
 " Leave the alternate screen buffer and restore the cursor.
 . LF/^J

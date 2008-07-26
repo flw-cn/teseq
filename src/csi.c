@@ -276,6 +276,10 @@ csi_do_vpa (unsigned char final, unsigned char priv, struct putter *putr,
   putter_single (putr, "\" Move the cursor to line %d.", params[0]);
 }
 
+/* Describe private mode sets. Based on information from the
+   VT220 Programmer Reference Manual (http://vt100.net/docs/vt220-rm/),
+   and the Xterm Control Sequences document at
+   http://invisible-island.net/xterm/ctlseqs/ctlseqs.html. */
 void
 handle_private_mode (struct putter *putr, unsigned int param, int set)
 {
@@ -284,18 +288,43 @@ handle_private_mode (struct putter *putr, unsigned int param, int set)
   switch (param)
     {
     case 1:
-      if (set)
-        msg = "\" VT100: Turn on cursor key mode (DECCKM)";
-      else
-        msg = "\" VT100: Turn off cursor key mode (DECCKM)";
+      if (set) msg = "\" (DEC) Cursor key mode.";
+      else     msg = "\" (DEC) Cursor key mode off.";
+      break;
+    case 2:
+      if (set) msg = ("\" (XTerm) Designate US-ASCII for charater sets G0-G3, "
+                      "and set VT100 mode.");
+      else     msg = "\" (DEC) Designate VT52 mode.";
+      break;
+    case 3:
+      if (set) msg = "\" (DEC) 132 columns per line.";
+      else     msg = "\" (DEC) 80 columns per line.";
+      break;
+    case 4:
+      if (set) msg = "\
+\" (DEC) Smooth scrolling: allow no more than 6 lines to be added\n\
+\"  to the screen per second.";
+      else     msg = "\
+\" (DEC) Fast scrolling: lines are added to the screen as fast as possible.";
+      break;
+    case 5:
+      if (set) msg = "\" (DEC) Reverse video (dark on light).";
+      else     msg = "\" (DEC) Normal video (light on dark).";
+      break;
+    case 7:
+      if (set) msg = "\" (DEC) Text auto-wrap mode.";
+      else     msg = "\" (DEC) Text auto-wrap mode off.";
+      break;
+    case 9:
+      if (set) msg = "\" (xterm) Send mouse X & Y on button press.";
+      else     msg = "\" (xterm) Don't send mouse X & Y on button press.";
       break;
     case 1049:
-      if (set)
-        msg = "\
+      if (set) msg = "\
 \" Save the cursor position and use the alternate screen buffer,\n\
 \"  clearing it first.";
-      else
-        msg = "\" Leave the alternate screen buffer and restore the cursor.";
+      else msg = ("\" Leave the alternate screen buffer and "
+                  "restore the cursor.");
       break;
     }
 

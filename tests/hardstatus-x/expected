@@ -11,7 +11,7 @@
 " INSERTION REPLACEMENT MODE (IRM) -> REPLACE
 : Esc [ ? 1 h
 & SM: SET MODE (private params)
-" VT100: Turn on cursor key mode (DECCKM)
+" (DEC) Cursor key mode.
 : Esc =
 & DECKPAM: KEYPAD APPLICATION MODE
 : Esc [ m
@@ -390,7 +390,7 @@
 : Esc [ 1 ; 51 r
 : Esc [ ? 1 l
 & RM: RESET MODE (private params)
-" VT100: Turn off cursor key mode (DECCKM)
+" (DEC) Cursor key mode off.
 : Esc >
 & DECKPNM: KEYPAD NORMAL MODE
 : Esc [ 51 ; 1 H
