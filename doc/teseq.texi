@@ -199,7 +199,7 @@ settings, you'll get the following output.
 @cindex line prefixes
 @cindex prefixes
 @noindent
-Note that the special conrol sequences that tell the terminal to start
+Note that the special control sequences that tell the terminal to start
 and stop writing in boldface text are separated out on their own lines
 (prefixed with a colon @samp{:}), and followed by an identification
 (prefixed with an ampersand @samp{&}) and a description of what it
