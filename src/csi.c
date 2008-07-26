@@ -217,7 +217,7 @@ csi_do_ctc (unsigned char final, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   unsigned int *p = params, *pend = params + n_params;
-  const char *messages[] = 
+  static const char *messages[] = 
     {
       "Set a horizontal tab stop at the cursor position.",
       "Set a vertical tab stop at the current line.",
@@ -282,7 +282,7 @@ static void
 csi_do_tbc (unsigned char final, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
-  const char *messages[] = 
+  static const char *messages[] = 
     {
       "Clear the horizontal tab stop at the cursor position.",
       "Clear the vertical tab stop at the current line.",
@@ -294,6 +294,29 @@ csi_do_tbc (unsigned char final, struct putter *putr,
 
   if (params[0] < N_ARY_ELEMS (messages))
     putter_single (putr, "\" %s", messages[params[0]]);
+}
+
+static void
+csi_do_mc (unsigned char final, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  unsigned int p = *params;
+  static const char *messages[] =
+    {
+      "Initiate transfer to a primary auxiliary device.",
+      "Initiate transfer from a primary auxiliary device.",
+      "Initiate transfer to a secondary auxiliary device.",
+      "Initiate transfer from a secondary auxiliary device.",
+      "Stop relay to a primary auxiliary device.",
+      "Start relay to a primary auxiliary device.",
+      "Stop relay to a secondary auxiliary device.",
+      "Start relay to a secondary auxiliary device."
+    };
+
+  if (p < N_ARY_ELEMS (messages))
+    {
+      putter_single (putr, "\" %s", messages[params[0]]);
+    }
 }
 
 static void
@@ -389,7 +412,7 @@ struct csi_handler csi_handlers[] =
     {"HVP", "CHARACTER AND LINE POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },
     {"TBC", "TABULATION CLEAR", CSI_FUNC_PS, csi_do_tbc, 0 },
     {"SM", "SET MODE", CSI_FUNC_PS_ANY, csi_do_sm },           /* x68 */
-    {"MC", "MEDIA COPY"},
+    {"MC", "MEDIA COPY", CSI_FUNC_PS, csi_do_mc, 0 },
     {"HPB", "CHARACTER POSITION BACKWARD"},
     {"VPB", "LINE POSITION BACKWARD"},
     {"RM", "RESET MODE", CSI_FUNC_PS_ANY, csi_do_sm },

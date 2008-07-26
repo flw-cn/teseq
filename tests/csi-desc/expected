@@ -251,3 +251,30 @@
 : Esc [ 1 ; 1 g
 & TBC: TABULATION CLEAR
 . LF/^J
+: Esc [ i
+& MC: MEDIA COPY
+" Initiate transfer to a primary auxiliary device.
+: Esc [ 1 i
+& MC: MEDIA COPY
+" Initiate transfer from a primary auxiliary device.
+: Esc [ 2 i
+& MC: MEDIA COPY
+" Initiate transfer to a secondary auxiliary device.
+: Esc [ 3 i
+& MC: MEDIA COPY
+" Initiate transfer from a secondary auxiliary device.
+: Esc [ 4 i
+& MC: MEDIA COPY
+" Stop relay to a primary auxiliary device.
+: Esc [ 5 i
+& MC: MEDIA COPY
+" Start relay to a primary auxiliary device.
+: Esc [ 6 i
+& MC: MEDIA COPY
+" Stop relay to a secondary auxiliary device.
+: Esc [ 7 i
+& MC: MEDIA COPY
+" Start relay to a secondary auxiliary device.
+: Esc [ 8 i
+& MC: MEDIA COPY
+. LF/^J
