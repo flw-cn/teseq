@@ -111,6 +111,7 @@ fi
         csi-interm
         csi-desc
         modes
+        single-functions
 '}
 
 nt=0

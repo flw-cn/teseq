@@ -35,7 +35,8 @@
 
 #define CONTROL(c)      ((unsigned char)((c) - 0x40) & 0x7f)
 #define UNCONTROL(c)    ((unsigned char)((c) + 0x40) & 0x7f)
-#define C_ESC           CONTROL('[')
+#define C_ESC           (CONTROL ('['))
+#define C_DEL           (CONTROL ('?'))
 
 #define GET_COLUMN(c)   (((c) & 0xf0) >> 4)
 #define IS_CSI_FINAL_COLUMN(col)    ((col) >= 4 && (col) <= 7)
@@ -102,6 +103,13 @@ print_esc_char (struct processor *p, unsigned char c)
       putter_puts (p->putr, " Spc");
     else
       putter_printf (p->putr, " %c", c);
+}
+
+void
+maybe_print_label (struct processor *p, const char *acro, const char *name)
+{
+  if (config.labels)
+    putter_single (p->putr, "& %s: %s", acro, name);
 }
 
 void
@@ -414,15 +422,13 @@ print_cxd_info (struct processor *p, int intermediate, int final)
 {
   if (intermediate == 0x21)
     {
-      if (config.labels)
-        putter_single (p->putr, "& CZD: C0-DESIGNATE");
+      maybe_print_label (p, "CZD", "C0-DESIGNATE");
       if (config.descriptions && final == 0x40)
         putter_single (p->putr, "\" Designate C0 Set of ISO-646.");
     }
   else
     {
-      if (config.labels)
-        putter_single (p->putr, "& C1D: C1-DESIGNATE");
+      maybe_print_label (p, "C1D", "C1-DESIGNATE");
       if (config.descriptions && final == 0x43)
         putter_single (p->putr, "\" Designate C1 Control Set of ISO 6429-1983.");
     }
@@ -550,8 +556,8 @@ handle_nF (struct processor *p, unsigned char i)
   if (! IS_nF_FINAL_CHAR (f))
     return 1;
 
-  if (i == 0x20 && config.labels)
-    putter_single (p->putr, "& ACS: ANNOUNCE CODE STRUCTURE");
+  if (i == 0x20)
+    maybe_print_label (p, "ACS", "ANNOUNCE CODE STRUCTURE");
   else if (i == 0x21 || i == 0x22)
     print_cxd_info (p, i, f);
   else if (i == 0x24 && (i1 == 0 || i1 >= 0x27))
@@ -612,6 +618,52 @@ handle_Fp (struct processor *p, unsigned char c)
   return 1;
 }
 
+/*
+  handle_Fs: Standardized single function control, in the format "Esc Fs",
+  where Fs is a byte in the 0x60-0x7e range, and designates a control
+  function registered with ISO.
+*/
+int
+handle_Fs (struct processor *p, unsigned char c)
+{
+  if (config.escapes)
+    putter_single (p->putr, ": Esc %c", c);
+  switch (c)
+    {
+    case 0x60:
+      maybe_print_label (p, "DMI", "DISABLE MANUAL INPUT");
+      break;
+    case 0x61:
+      maybe_print_label (p, "INT", "INTERRUPT");
+      break;
+    case 0x62:
+      maybe_print_label (p, "EMI", "END OF MEDIUM");
+      break;
+    case 0x63:
+      maybe_print_label (p, "RIS", "RESET TO INITIAL STATE");
+      break;
+    case 0x64:
+      maybe_print_label (p, "CMD", "CODING METHOD DELIMITER");
+      break;
+    case 0x6e:
+      maybe_print_label (p, "LS2", "LOCKING-SHIFT TWO");
+      break;
+    case 0x6f:
+      maybe_print_label (p, "LS3", "LOCKING-SHIFT THREE");
+      break;
+    case 0x7c:
+      maybe_print_label (p, "LS3R", "LOCKING-SHIFT THREE RIGHT ");
+      break;
+    case 0x7d:
+      maybe_print_label (p, "LS2R", "LOCKING-SHIFT TWO RIGHT ");
+      break;
+    case 0x7e:
+      maybe_print_label (p, "LS1R", "LOCKING-SHIFT ONE RIGHT ");
+      break;
+    }
+  return 1;
+}
+
 int
 handle_escape_sequence (struct processor *p)
 {
@@ -635,6 +687,11 @@ handle_escape_sequence (struct processor *p)
       case 5:
         handled = handle_c1 (p, c);
         break;
+      case 6:
+      case 7:
+        if (c != C_DEL)
+          handled = handle_Fs (p, c);
+        break;
       }
 
   if (handled)
@@ -656,7 +713,7 @@ print_control (struct processor *p, unsigned char c)
       p->print_dot = 0;
       putter_start (p->putr, ".", "", ".");
     }
-  if (c < 0x20 || c == 0x7f)
+  if (IS_CONTROL (c) || c == C_DEL)
     {
       const char *name = "DEL";
       if (c < 0x20)
