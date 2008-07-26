@@ -366,6 +366,25 @@ csi_do_sgr (unsigned char final, struct putter *putr,
       }
 }
 
+static void
+csi_do_dsr (unsigned char final, struct putter *putr,
+            size_t n_params, unsigned int *params)
+{
+  unsigned int p = *params;
+  static const char *messages[] =
+    {
+      "Device reports ready.",
+      "Device reports ready, send DSR request later.",
+      "Device reports ready, will send DSR later.",
+      "Device reports error, send DSR request later.",
+      "Device reports error, will send DSR later.",
+      "DSR requested.",
+      "Request cursor position report."
+    };
+  if (p < N_ARY_ELEMS (messages))
+    putter_single (putr, "\" %s", messages[p]);
+}
+
 struct csi_handler csi_no_handler = { NULL, NULL };
 
 struct csi_handler csi_handlers[] =
@@ -417,7 +436,7 @@ struct csi_handler csi_handlers[] =
     {"VPB", "LINE POSITION BACKWARD"},
     {"RM", "RESET MODE", CSI_FUNC_PS_ANY, csi_do_sm },
     {"SGR", "SELECT GRAPHIC RENDITION", CSI_FUNC_PS_ANY, csi_do_sgr, 0 },
-    {"DSR", "DEVICE STATUS REPORT"},
+    {"DSR", "DEVICE STATUS REPORT", CSI_FUNC_PS, csi_do_dsr, 0 },
     {"DAQ", "DEFINE AREA QUALIFICATION"}
   };
 

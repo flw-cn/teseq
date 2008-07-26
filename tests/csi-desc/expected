@@ -278,3 +278,27 @@
 : Esc [ 8 i
 & MC: MEDIA COPY
 . LF/^J
+: Esc [ n
+& DSR: DEVICE STATUS REPORT
+" Device reports ready.
+: Esc [ 1 n
+& DSR: DEVICE STATUS REPORT
+" Device reports ready, send DSR request later.
+: Esc [ 2 n
+& DSR: DEVICE STATUS REPORT
+" Device reports ready, will send DSR later.
+: Esc [ 3 n
+& DSR: DEVICE STATUS REPORT
+" Device reports error, send DSR request later.
+: Esc [ 4 n
+& DSR: DEVICE STATUS REPORT
+" Device reports error, will send DSR later.
+: Esc [ 5 n
+& DSR: DEVICE STATUS REPORT
+" DSR requested.
+: Esc [ 6 n
+& DSR: DEVICE STATUS REPORT
+" Request cursor position report.
+: Esc [ 7 n
+& DSR: DEVICE STATUS REPORT
+. LF/^J
