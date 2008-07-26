@@ -1,10 +1,11 @@
 TODO:
 
-Document CSI functions.
-Make Teseq handle sub-parameters (`:'-separated) properly.
-Xterm extensions.
+Code cleanup.
+VT100/Xterm extensions.
+Gettext.
 
-Interpretation of graphical characters based on current state (translation to UF-8?).
+Interpretation of graphical characters based on current state
+(translation to UTF-8?).
 
 FUTURE IDEAS:
 
