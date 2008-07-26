@@ -112,6 +112,7 @@ fi
         csi-desc
         modes
         single-functions
+        extensions
 '}
 
 nt=0
