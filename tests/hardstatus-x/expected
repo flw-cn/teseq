@@ -1,6 +1,8 @@
 |Script started on Mon 07 Jul 2008 06:54:59 PM PDT|.
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
+" Save the cursor position and use the alternate screen buffer,
+"  clearing it first.
 : Esc ) 0
 & G1D4: G1-DESIGNATE 94-SET
 " Designate 94-character set 0 (private) to G1.
@@ -9,6 +11,7 @@
 " INSERTION REPLACEMENT MODE (IRM) -> REPLACE
 : Esc [ ? 1 h
 & SM: SET MODE (private params)
+" VT100: Turn on cursor key mode (DECCKM)
 : Esc =
 & DECKPAM: KEYPAD APPLICATION MODE
 : Esc [ m
@@ -387,6 +390,7 @@
 : Esc [ 1 ; 51 r
 : Esc [ ? 1 l
 & RM: RESET MODE (private params)
+" VT100: Turn OFF Cursor Key Mode (DECCKM)
 : Esc >
 & DECKPNM: KEYPAD NORMAL MODE
 : Esc [ 51 ; 1 H
@@ -406,6 +410,7 @@
 . CR LF
 : Esc [ ? 1049 l
 & RM: RESET MODE (private params)
+" Leave the alternate screen buffer and restore the cursor.
 |[screen is terminating]|
 . CR LF LF
 |Script done on Mon 07 Jul 2008 06:55:05 PM PDT|.
