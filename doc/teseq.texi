@@ -319,8 +319,10 @@ mnemonic equivalents of
 respectively, corresponding to the
 @cindex line prefix
 @cindex prefix, line
-character prefix used for those
-lines. However, while they may be more practical to remember, they
+character prefixes for the lines they suppress; and @option{-C} has an
+@opindex -^
+@option{-^} equivalent, for the @samp{^X}-style control
+representations it suppresses. However, while they may be more practical to remember, they
 will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
 in order to pass them to the @command{teseq} command.
