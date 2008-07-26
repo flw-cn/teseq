@@ -17,6 +17,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+    Input buffer.
+
+    Fetches characters one at a time from an input stream.  The
+    inputbuf_saving function is used to initiate "look-ahead" mode, to
+    begin saving the characters into a buffer. The inputbuf_rewind
+    function is used to re-read the saved characters; and
+    inputbuf_forget is used to indicate that we are done processing
+    the saved characters, and they should be forgotten.
+
+    See test-inputbuf.cm for usage.
+*/
 
 #ifndef INPUTBUF_H
 #define INPUTBUF_H

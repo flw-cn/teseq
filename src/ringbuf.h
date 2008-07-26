@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* See test-ringbuf.cm for usage. */
 
 #ifndef RINGBUF_H
 #define RINGBUF_H

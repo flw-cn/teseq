@@ -17,6 +17,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+    The putter handles automatic line-length tracking, and splits the
+    line where appropriate. Via the arguments to the putter_start
+    function, the user tells putter what should go at the beginning
+    and ends of continuation lines.
+*/
 
 #ifndef PUTTER_H
 #define PUTTER_H
