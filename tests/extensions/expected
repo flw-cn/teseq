@@ -10,10 +10,10 @@
 : Esc [ ? 1 ; 1049 h
 & SM: SET MODE (private params)
 " (DEC) Cursor key mode.
-" Save the cursor position and use the alternate screen buffer,
+" (Xterm) Save the cursor position and use the alternate screen buffer,
 "  clearing it first.
 : Esc [ ? 1 ; 1049 l
 & RM: RESET MODE (private params)
 " (DEC) Cursor key mode off.
-" Leave the alternate screen buffer and restore the cursor.
+" (Xterm) Leave the alternate screen buffer and restore the cursor.
 . LF/^J

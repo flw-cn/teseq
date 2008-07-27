@@ -316,15 +316,153 @@ handle_private_mode (struct putter *putr, unsigned int param, int set)
       else     msg = "\" (DEC) Text auto-wrap mode off.";
       break;
     case 9:
-      if (set) msg = "\" (xterm) Send mouse X & Y on button press.";
-      else     msg = "\" (xterm) Don't send mouse X & Y on button press.";
+      if (set) msg = "\" (XTerm) Send mouse X & Y on button press.";
+      else     msg = "\" (XTerm) Don't send mouse X & Y on button press.";
+      break;
+    case 10:
+      if (set) msg = "\" (Rxvt) Show toolbar.";
+      else     msg = "\" (Rxvt) Hide toolbar.";
+      break;
+    case 12:
+      if (set) msg = "\" (Att610) Start blinking cursor.";
+      else     msg = "\" (Att610) Stop blinkin cursor.";
+      break;
+    case 25:
+      if (set) msg = "\" (DEC) Show cursor.";
+      else     msg = "\" (DEC) Hide cursor.";
+      break;
+    case 30:
+      if (set) msg = "\" (Rxvt) Show scrollbar.";
+      else     msg = "\" (Rxvt) Don't show scrollbar.";
+      break;
+    case 40:
+      if (set) msg = "\" (Xterm) Allow 80 -> 132 mode.";
+      else     msg = "\" (Xterm) Disallow 80 -> 132 mode.";
+      break;
+    case 41:
+      if (set) msg = "\" (Xterm) Activate workaround for more(1) bug.";
+      else     msg = "\" (Xterm) Disable workaround for more(1) bug.";
+      break;
+    case 42:
+      if (set) msg = "\" (DEC) National character set mode.";
+      else     msg = "\" (DEC) Multinational character set mode.";
+      break;
+    case 44:
+      if (set) msg = "\" (Xterm) Turn on margin bell.";
+      else     msg = "\" (Xterm) Turn off margin bell.";
+      break;
+    case 45:
+      if (set) msg = "\" (Xterm) Reverse-wraparound mode.";
+      else     msg = "\" (Xterm) Reverse-wraparound mode off.";
+      break;
+    case 46:
+      if (set) msg = "\" (Xterm) Start logging.";
+      if (set) msg = "\" (Xterm) Stop logging.";
+      break;
+    case 47:
+      if (set) msg = "\" (Xterm) Use alternate screen buffer.";
+      else     msg = "\" (Xterm) Use normal screen buffer.";
+      break;
+    case 66:
+      if (set) msg = "\" (DEC) Application keypad.";
+      else     msg = "\" (DEC) Numeric keypad.";
+      break;
+    case 67:
+      if (set) msg = "\" (DEC) Backarrow key sends backspace.";
+      else     msg = "\" (DEC) Backarrow key sends delete.";
+      break;
+    case 1000:
+      if (set) msg = ("\" (Xterm) Send mouse X & Y on button press and "
+                      "release.");
+      else     msg = ("\" (Xterm) Don't send mouse X & Y on button press "
+                      "and release.");
+      break;
+    case 1001:
+      if (set) msg = "\" (Xterm) Activate hilite mouse tracking.";
+      else     msg = "\" (Xterm) Disable hilite mouse tracking.";
+      break;
+    case 1002:
+      if (set) msg = "\" (Xterm) Activate cell motion mouse tracking.";
+      else     msg = "\" (Xterm) Disable cell motion mouse tracking.";
+      break;
+    case 1003:
+      if (set) msg = "\" (Xterm) Activate all motion mouse tracking.";
+      else     msg = "\" (Xterm) Disable all motion mouse tracking.";
+      break;
+    case 1004:
+      if (set) msg = "\" (Xterm) Send FocusIn/FocusOut events.";
+      else     msg = "\" (Xterm) Don't send FocusIn/FocusOut events.";
+      break;
+    case 1010:
+      if (set) msg = "\" (Rxvt) Scroll to bottom on tty output.";
+      else     msg = "\" (Rxvt) Don't scroll to bottom on tty output.";
+      break;
+    case 1011:
+      if (set) msg = "\" (Rxvt) Scroll to bottom on key press.";
+      else     msg = "\" (Rxvt) Don't scroll to bottom on key press.";
+      break;
+    case 1034:
+      if (set) msg = "\" (Xterm) Interpret meta key, sets eighth bit.";
+      else     msg = "\" (Xterm) Don't interpret meta key.";
+      break;
+    case 1035:
+      if (set) msg = ("\" (Xterm) Enable special modifiers for Alt "
+                      "and NumLock keys.");
+      else     msg = ("\" (Xterm) Disable special modifiers for Alt "
+                      "and NumLock keys.");
+      break;
+    case 1036:
+      if (set) msg = "\" (Xterm) Send ESC when Meta modifies a key.";
+      else     msg = "\" (Xterm) Don't send ESC when Meta modifies a key.";
+      break;
+    case 1037:
+      if (set) msg = "\" (Xterm) Send DEL from the editing-keypad Delete key.";
+      else     msg = ("\" (Xterm) Send VT220 Remove from the "
+                      "editing-keypad Delete key.");
+      break;
+    case 1039:
+      if (set) msg = "\" (Xterm) Send ESC when Alt modifies a key.";
+      else     msg = "\" (Xterm) Don't send ESC when Alt modifies a key.";
+      break;
+    case 1040:
+      if (set) msg = "\" (Xterm) Keep selection even if not highlighted.";
+      else     msg = ("\" (Xterm) Do not keep selection even if not "
+                      "highlighted.");
+      break;
+    case 1041:
+      if (set) msg = "\" (Xterm) Use the CLIPBOARD selection.";
+      else     msg = "\" (Xterm) Don't use the CLIPBOARD selection.";
+      break;
+    case 1042:
+      if (set) msg = "\
+\" (Xterm) Enable Urgency window manager hint when BEL is received.";
+      else     msg = "\
+\" (Xterm) Disable Urgency window manager hint when BEL is received.";
+      break;
+    case 1043:
+      if (set) msg = "\
+\" (Xterm) Enable raising of the window when BEL is received.";
+      else     msg = "\
+\" (Xterm) Disable raising of the window when BEL is received.";
+      break;
+    case 1047:
+      if (set) msg = "\" (Xterm) Use the alternate screen buffer.";
+      else     msg = "\" (Xterm) Use the normal screen buffer.";
+      break;
+    case 1048:
+      if (set) msg = "\" (Xterm) Save the cursor position.";
+      else     msg = "\" (Xterm) Restore the cursor position.";
       break;
     case 1049:
       if (set) msg = "\
-\" Save the cursor position and use the alternate screen buffer,\n\
+\" (Xterm) Save the cursor position and use the alternate screen buffer,\n\
 \"  clearing it first.";
-      else msg = ("\" Leave the alternate screen buffer and "
+      else msg = ("\" (Xterm) Leave the alternate screen buffer and "
                   "restore the cursor.");
+      break;
+    case 2004:
+      if (set) msg = "\" (Xterm) Set bracketed paste mode.";
+      else     msg = "\" (Xterm) Reset bracketed paste mode.";
       break;
     }
 

@@ -1,7 +1,7 @@
 |Script started on Mon 07 Jul 2008 06:54:59 PM PDT|.
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
-" Save the cursor position and use the alternate screen buffer,
+" (Xterm) Save the cursor position and use the alternate screen buffer,
 "  clearing it first.
 : Esc ) 0
 & G1D4: G1-DESIGNATE 94-SET
@@ -410,7 +410,7 @@
 . CR LF
 : Esc [ ? 1049 l
 & RM: RESET MODE (private params)
-" Leave the alternate screen buffer and restore the cursor.
+" (Xterm) Leave the alternate screen buffer and restore the cursor.
 |[screen is terminating]|
 . CR LF LF
 |Script done on Mon 07 Jul 2008 06:55:05 PM PDT|.
