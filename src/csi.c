@@ -631,7 +631,7 @@ csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
   if (priv == '>')
     {
       const char *res = NULL;
-      int on = 0;
+      int arg = 0;
       switch (params[0])
         {
         case 1: res = "modifyCursorKeys"; break;
@@ -639,9 +639,9 @@ csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
         case 4: res = "modifyOtherKeys"; break;
         }
       if (n_params > 1 && params[1] > 0)
-        on = 1;
+        arg = params[1];
       if (res)
-        putter_single (putr, "\" (Xterm) Set %s: %s.", res, on ? "on" : "off");
+        putter_single (putr, "\" (Xterm) Set %s to %d.", res, arg);
     }
   else if (priv) return;
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
