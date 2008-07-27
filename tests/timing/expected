@@ -1,0 +1,1275 @@
+|Script started on Sun 27 Jul 2008 01:24:21 AM PDT|.
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|micah-laptop|
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|$ |
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|clear|
+. CR/^M LF/^J
+: Esc [ H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ J
+& ED: ERASE IN PAGE
+" Clear from the cursor to the end of the screen.
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|micah-laptop|
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|$ |
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|vim|
+. CR/^M LF/^J
+: Esc [ ? 1002 h
+& SM: SET MODE (private params)
+: Esc [ ? 1049 h
+& SM: SET MODE (private params)
+: Esc [ ? 1 h
+& SM: SET MODE (private params)
+: Esc =
+: Esc [ 1 ; 51 r
+: Esc [ 34 l
+& RM: RESET MODE
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ 23 m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear italicized or fraktur text.
+: Esc [ 24 m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear underlining.
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+: Esc [ H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ J
+& ED: ERASE IN PAGE
+" Clear from the cursor to the end of the screen.
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 2 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 2, column 1.
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|~                                                                          |-
+-|     |
+: Esc [ 3 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 4 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 4, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 6 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 6, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 7 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 7, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 8 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 8, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 9 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 9, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 10 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 10, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 11 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 11, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 12 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 12, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 13 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 13, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 14 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 14, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 15 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 15, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 16 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 16, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 17 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 17, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 18 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 18, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 19 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 19, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 20 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 20, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 21 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 21, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 22 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 22, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 23 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 23, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 24 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 24, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 25 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 25, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 26 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 26, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 27 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 27, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 28 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 28, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 29 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 29, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 30 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 30, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 31 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 31, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 32 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 32, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 33 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 33, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 34 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 34, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 35 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 35, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 36 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 36, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 37 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 37, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 38 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 38, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 39 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 39, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 40 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 40, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 41 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 41, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 42 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 42, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 43 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 43, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 44 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 44, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 45 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 45, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 46 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 46, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 47 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 47, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 48 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 48, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 49 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 49, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ 50 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 50, column 1.
+|~                                                                          |-
+-|     |
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|0,0-1         All|
+: Esc [ 20 ; 32 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 20, column 32.
+|VIM - Vi IMproved|
+: Esc [ 22 ; 33 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 22, column 33.
+|version 7.1.138|
+: Esc [ 23 ; 29 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 23, column 29.
+|by Bram Moolenaar et al.|
+: Esc [ 24 ; 19 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 24, column 19.
+|Vim is open source and freely distributable|
+: Esc [ 26 ; 26 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 26, column 26.
+|Help poor children in Uganda!|
+: Esc [ 27 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 27, column 18.
+|type  :help iccf|
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|<Enter>|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|       for information |
+: Esc [ 29 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 29, column 18.
+|type  :q|
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|<Enter>|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|               to exit         |
+: Esc [ 30 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 30, column 18.
+|type  :help|
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|<Enter>|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|  or  |
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|<F1>|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|  for on-line help|
+: Esc [ 31 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 31, column 18.
+|type  :help version7|
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|<Enter>|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|   for version info|
+: Esc [ 1 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+|i         |
+: Esc [ 1 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+|          |
+: Esc [ 1 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+|-- INSERT --|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|0,1           All|
+: Esc [ 1 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 1, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 2 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 2, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 20 ; 32 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 20, column 32.
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|                 |
+: Esc [ 22 ; 33 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 22, column 33.
+|               |
+: Esc [ 23 ; 29 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 23, column 29.
+|                        |
+: Esc [ 24 ; 19 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 24, column 19.
+|                                           |
+: Esc [ 26 ; 26 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 26, column 26.
+|                             |
+: Esc [ 27 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 27, column 18.
+|                                              |
+: Esc [ 29 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 29, column 18.
+|                                              |
+: Esc [ 30 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 30, column 18.
+|                                              |
+: Esc [ 31 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 31, column 18.
+|                                              |
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|2,1           All|
+: Esc [ 2 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 2, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 3 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,1           All|
+: Esc [ 3 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|T|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,2           All|
+: Esc [ 3 ; 2 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 2.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|h|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,3           All|
+: Esc [ 3 ; 3 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 3.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|i|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,4           All|
+: Esc [ 3 ; 4 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 4.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|s|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,5           All|
+: Esc [ 3 ; 5 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 5.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,6           All|
+: Esc [ 3 ; 6 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 6.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|i|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,7           All|
+: Esc [ 3 ; 7 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 7.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|s|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,8           All|
+: Esc [ 3 ; 8 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 8.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,9           All|
+: Esc [ 3 ; 9 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 9.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|t|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,10          All|
+: Esc [ 3 ; 10 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 10.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|h|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,11          All|
+: Esc [ 3 ; 11 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 11.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|e|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,12          All|
+: Esc [ 3 ; 12 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 12.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,13          All|
+: Esc [ 3 ; 13 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 13.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|s|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,14          All|
+: Esc [ 3 ; 14 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 14.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|o|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,15          All|
+: Esc [ 3 ; 15 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 15.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|n|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,16          All|
+: Esc [ 3 ; 16 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 16.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|g|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,17          All|
+: Esc [ 3 ; 17 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 17.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,18          All|
+: Esc [ 3 ; 18 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 18.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|t|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,19          All|
+: Esc [ 3 ; 19 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 19.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|h|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,20          All|
+: Esc [ 3 ; 20 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 20.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|a|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,21          All|
+: Esc [ 3 ; 21 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 21.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|t|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,22          All|
+: Esc [ 3 ; 22 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 22.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,23          All|
+: Esc [ 3 ; 23 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 23.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|n|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,24          All|
+: Esc [ 3 ; 24 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 24.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|e|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,25          All|
+: Esc [ 3 ; 25 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 25.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|v|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,26          All|
+: Esc [ 3 ; 26 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 26.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|e|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,27          All|
+: Esc [ 3 ; 27 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 27.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|r|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,28          All|
+: Esc [ 3 ; 28 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 28.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,29          All|
+: Esc [ 3 ; 29 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 29.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|e|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,30          All|
+: Esc [ 3 ; 30 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 30.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|n|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,31          All|
+: Esc [ 3 ; 31 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 31.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|d|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,32          All|
+: Esc [ 3 ; 32 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 32.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|s|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,33          All|
+: Esc [ 3 ; 33 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 33.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|.|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|3,34          All|
+: Esc [ 3 ; 34 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 3, column 34.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 4 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 4, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|4,1           All|
+: Esc [ 4 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 4, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|.|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|4,2           All|
+: Esc [ 4 ; 2 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 4, column 2.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|5,1           All|
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+|.|
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|5,2           All|
+: Esc [ 5 ; 2 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 2.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+|^[        |
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+|          |
+: Esc [ 5 ; 2 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 2.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|5,1           All|
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+|:         |
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+|:|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+|w|
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+. CR/^M
+|:w|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+|q|
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+. CR/^M
+|:wq|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+. CR/^M
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 37 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color white.
+: Esc [ 41 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set background color red.
+|E32: No file name|
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+: Esc [ 35 C
+& CUF: CURSOR RIGHT
+" Move the cursor right 35 lines.
+|          |
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 51 ; 63 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 63.
+|5,1           All|
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 53 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 53.
+|:         |
+: Esc [ 5 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 5, column 1.
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+|:|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+|q|
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+. CR/^M
+|:q|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+|a|
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+. CR/^M
+|:qa|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+|!|
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+. CR/^M
+|:qa!|
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+. CR/^M
+: Esc [ ? 25 l
+& RM: RESET MODE (private params)
+: Esc [ ? 1002 l
+& RM: RESET MODE (private params)
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+: Esc [ K
+& EL: ERASE IN LINE
+" Clear from the cursor to the end of the line.
+: Esc [ 51 ; 1 H
+& CUP: CURSOR POSITION
+" Move the cursor to line 51, column 1.
+: Esc [ ? 1 l
+& RM: RESET MODE (private params)
+: Esc >
+: Esc [ 34 h
+& SM: SET MODE
+: Esc [ ? 25 h
+& SM: SET MODE (private params)
+: Esc [ ? 1049 l
+& RM: RESET MODE (private params)
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|micah-laptop|
+: Esc [ 1 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set bold text.
+: Esc [ 34 m
+& SGR: SELECT GRAPHIC RENDITION
+" Set foreground color blue.
+|$ |
+: Esc [ m
+& SGR: SELECT GRAPHIC RENDITION
+" Clear graphic rendition to defaults.
+|exit|
+. CR/^M LF/^J LF/^J
+|Script done on Sun 27 Jul 2008 01:24:44 AM PDT|.
