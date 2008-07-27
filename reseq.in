@@ -11,10 +11,13 @@
 use strict;
 use warnings;
 
+use Getopt::Long;
+
 our $VERSION = '@VERSION@';
 
 our $inf;
 our $outf;
+our $replay = 0;
 
 our @controls = (
 	"NUL", "SOH", "STX", "ETX",
@@ -100,32 +103,15 @@ sub process_line {
     elsif (/^:/g) {
         &process_sequence ($1) while /\G\s*(\S+)/g;
     }
-    elsif (/^@ (.*)$/) {
-        &process_delay ($1);
+    elsif (/^@ +(.*)$/) {
+        &process_delay ($1) if $replay;
     }
 }
 
-if (grep (($_ eq '--help' || $_ eq '-h'), @ARGV)) {
-    &usage (0);
-}
-
-if (grep (($_ eq '--version' || $_ eq '-V'), @ARGV)) {
-    &version ();
-}
-
-# Ensure that there are no other options specified.
-my $i = 0;
-while ($i < @ARGV) {
-    if ($ARGV[$i] eq '--') {
-        splice (@ARGV, $i, 1);
-        last;
-    }
-    elsif ($ARGV[$i] =~ /^-(.)/) {
-        print STDERR "Unrecognized option -\1\n\n";
-        &usage (1);
-    }
-    ++$i;
-}
+&Getopt::Long::Configure ('bundling');
+&GetOptions ('help|h' => sub { &usage (0); },
+             'version|V' => \&version,
+             'replay' => \$replay);
 
 &usage (1) unless @ARGV == 2;
 if ($ARGV[0] eq '-') {
