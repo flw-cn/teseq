@@ -39,6 +39,7 @@ sub usage {
 
     print $f <<END_USAGE;
 Usage: reseq INPUT OUTPUT
+   or: reseq --replay INPUT [OUTPUT]
    or: reseq -h | --help
    or: reseq -V | --version
 Reverse the translations made by teseq.
@@ -113,7 +114,12 @@ sub process_line {
              'version|V' => \&version,
              'replay' => \$replay);
 
-&usage (1) unless @ARGV == 2;
+if ($replay) {
+    &usage (1) unless @ARGV == 1 || @ARGV == 2;
+}
+else {
+    &usage (1) unless @ARGV == 2;
+}
 if ($ARGV[0] eq '-') {
     $inf = \*STDIN;
 }
@@ -121,7 +127,7 @@ else {
     open ($inf, '<', $ARGV[0]) or die "Couldn't open $ARGV[0]: $!\n";
 }
 
-if ($ARGV[1] eq '-') {
+if ($replay && @ARGV < 2 || $ARGV[1] eq '-') {
     $outf = \*STDOUT;
 }
 else {
