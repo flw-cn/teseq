@@ -1,0 +1,21 @@
+: Esc [ 90 ; 91 ; 92 ; 93 ; 94 ; 95 ; 96 ; 97 ; 100 ; 101 ; 102 ; 103 ; 104 ;
+:  105 ; 106 ; 107 m
+& SGR: SELECT GRAPHIC RENDITION
+" (Xterm) Set foreground color gray.
+" (Xterm) Set foreground color bright red.
+" (Xterm) Set foreground color bright green.
+" (Xterm) Set foreground color bright yellow.
+" (Xterm) Set foreground color bright blue.
+" (Xterm) Set foreground color bright magenta.
+" (Xterm) Set foreground color bright cyan.
+" (Xterm) Set foreground color bright white.
+" (Xterm) Set background color gray.
+" (Rxvt) Set foreground and background color to default.
+" (Xterm) Set background color bright red.
+" (Xterm) Set background color bright green.
+" (Xterm) Set background color bright yellow.
+" (Xterm) Set background color bright blue.
+" (Xterm) Set background color bright magenta.
+" (Xterm) Set background color bright cyan.
+" (Xterm) Set background color bright white.
+. LF/^J
