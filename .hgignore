@@ -2,8 +2,8 @@ syntax:glob
 
 **.swp
 **~
-**/.#*
-**/#*
+**/.\#*
+**/\#*
 **/tags
 **/TAGS
 **/cscope.out

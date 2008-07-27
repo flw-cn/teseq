@@ -114,6 +114,8 @@ fi
         modes
         single-functions
         extensions
+        sgr-no-x
+        sgr-x
 '}
 
 nt=0

@@ -564,11 +564,41 @@ static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
-  if (param < N_ARY_ELEMS (sgr_param_descriptions))
+  if (configuration.extensions && param >= 90 && param <= 107)
+    {
+      const char *messages[] =
+        {
+          "(Xterm) Set foreground color gray.",
+          "(Xterm) Set foreground color bright red.",
+          "(Xterm) Set foreground color bright green.",
+          "(Xterm) Set foreground color bright yellow.",
+          "(Xterm) Set foreground color bright blue.",
+          "(Xterm) Set foreground color bright magenta.",
+          "(Xterm) Set foreground color bright cyan.",
+          "(Xterm) Set foreground color bright white.",
+          NULL,
+          NULL,
+          "(Xterm) Set background color gray.",
+          "(Xterm) Set background color bright red.",
+          "(Xterm) Set background color bright green.",
+          "(Xterm) Set background color bright yellow.",
+          "(Xterm) Set background color bright blue.",
+          "(Xterm) Set background color bright magenta.",
+          "(Xterm) Set background color bright cyan.",
+          "(Xterm) Set background color bright white.",
+        };
+      msg = messages[param - 90];
+    }
+  else if (param < N_ARY_ELEMS (sgr_param_descriptions))
     msg = sgr_param_descriptions[param];
   if (msg)
     {
       putter_single (putr, "\" %s", msg);
+    }
+  if (configuration.extensions && param == 100)
+    {
+      putter_single (putr, "\" %s", ("(Rxvt) Set foreground and background "
+                                     "color to default."));
     }
 }
 
