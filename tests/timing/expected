@@ -16,6 +16,7 @@
 : Esc [ m
 & SGR: SELECT GRAPHIC RENDITION
 " Clear graphic rendition to defaults.
+@                                       0.660985
 |clear|
 . CR/^M LF/^J
 : Esc [ H
