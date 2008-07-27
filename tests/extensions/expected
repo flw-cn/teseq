@@ -28,30 +28,30 @@
 : Esc [ > 1 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
 " (Xterm) Set modifyCursorKeys to 0.
-" Set bold text.
 : Esc [ > 2 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
 " (Xterm) Set modifyFunctionKeys to 0.
-" Set dim text.
 : Esc [ > 4 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
 " (Xterm) Set modifyOtherKeys to 0.
-" Set underlined text.
 : Esc [ > 1 ; 1 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
 " (Xterm) Set modifyCursorKeys to 1.
-" Set bold text.
-" Set bold text.
 : Esc [ > 2 ; 1 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
 " (Xterm) Set modifyFunctionKeys to 1.
-" Set dim text.
-" Set bold text.
 : Esc [ > 4 ; 1 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
 " (Xterm) Set modifyOtherKeys to 1.
-" Set underlined text.
-" Set bold text.
 : Esc [ ? 1 m
 & SGR: SELECT GRAPHIC RENDITION (private params)
+: Esc [ > 1 n
+& DSR: DEVICE STATUS REPORT (private params)
+" (Xterm) Disable modifyCursorKeys.
+: Esc [ > 2 n
+& DSR: DEVICE STATUS REPORT (private params)
+" (Xterm) Disable modifyFunctionKeys.
+: Esc [ > 4 n
+& DSR: DEVICE STATUS REPORT (private params)
+" (Xterm) Disable modifyOtherKeys.
 . LF/^J

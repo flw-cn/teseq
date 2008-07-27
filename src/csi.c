@@ -643,7 +643,7 @@ csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
       if (res)
         putter_single (putr, "\" (Xterm) Set %s to %d.", res, arg);
     }
-  else if (priv) return;
+  if (priv) return;
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
     print_t416_description (putr, n_params, params);
   else
@@ -668,6 +668,18 @@ csi_do_dsr (unsigned char final, unsigned char priv, struct putter *putr,
       "DSR requested.",
       "Request cursor position report."
     };
+  if (priv == '>')
+    {
+      const char *res = NULL;
+      switch (params[0])
+        {
+        case 1: res = "modifyCursorKeys"; break;
+        case 2: res = "modifyFunctionKeys"; break;
+        case 4: res = "modifyOtherKeys"; break;
+        }
+      if (res)
+        putter_single (putr, "\" (Xterm) Disable %s.", res);
+    }
   if (priv) return;
   if (p < N_ARY_ELEMS (messages))
     putter_single (putr, "\" %s", messages[p]);
