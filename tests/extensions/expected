@@ -25,3 +25,33 @@
 : Esc [ > 4 i
 & MC: MEDIA COPY (private params)
 . LF/^J
+: Esc [ > 1 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+" (Xterm) Set modifyCursorKeys: off.
+" Set bold text.
+: Esc [ > 2 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+" (Xterm) Set modifyFunctionKeys: off.
+" Set dim text.
+: Esc [ > 4 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+" (Xterm) Set modifyOtherKeys: off.
+" Set underlined text.
+: Esc [ > 1 ; 1 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+" (Xterm) Set modifyCursorKeys: on.
+" Set bold text.
+" Set bold text.
+: Esc [ > 2 ; 1 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+" (Xterm) Set modifyFunctionKeys: on.
+" Set dim text.
+" Set bold text.
+: Esc [ > 4 ; 1 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+" (Xterm) Set modifyOtherKeys: on.
+" Set underlined text.
+" Set bold text.
+: Esc [ ? 1 m
+& SGR: SELECT GRAPHIC RENDITION (private params)
+. LF/^J

@@ -627,8 +627,23 @@ csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
   unsigned int *pend = params + n_params;
   unsigned int *param;
   
-  if (priv) return;
   assert (n_params > 0);
+  if (priv == '>')
+    {
+      const char *res = NULL;
+      int on = 0;
+      switch (params[0])
+        {
+        case 1: res = "modifyCursorKeys"; break;
+        case 2: res = "modifyFunctionKeys"; break;
+        case 4: res = "modifyOtherKeys"; break;
+        }
+      if (n_params > 1 && params[1] > 0)
+        on = 1;
+      if (res)
+        putter_single (putr, "\" (Xterm) Set %s: %s.", res, on ? "on" : "off");
+    }
+  else if (priv) return;
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
     print_t416_description (putr, n_params, params);
   else
