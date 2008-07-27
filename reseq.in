@@ -84,6 +84,10 @@ sub process_sequence {
     }
 }
 
+sub process_delay {
+    select (undef, undef, undef, $_[0]);
+}
+
 sub process_line {
     local $_ = shift;
     if (/^-?\|(.*)\|([-.]?)$/) {
@@ -95,6 +99,9 @@ sub process_line {
     }
     elsif (/^:/g) {
         &process_sequence ($1) while /\G\s*(\S+)/g;
+    }
+    elsif (/^@ (.*)$/) {
+        &process_delay ($1);
     }
 }
 
@@ -136,6 +143,7 @@ else {
 }
 
 my $line;
+$| = 1;
 while (defined ($line = <$inf>)) {
     &process_line ("$line");
 }
