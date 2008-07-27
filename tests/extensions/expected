@@ -16,4 +16,12 @@
 & RM: RESET MODE (private params)
 " (DEC) Cursor key mode off.
 " (Xterm) Leave the alternate screen buffer and restore the cursor.
+: Esc [ > 1049 h
+& SM: SET MODE (private params)
+. LF/^J
+: Esc [ ? 4 i
+& MC: MEDIA COPY (private params)
+" (DEC) Turn off autoprint mode.
+: Esc [ > 4 i
+& MC: MEDIA COPY (private params)
 . LF/^J

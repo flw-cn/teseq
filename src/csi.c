@@ -478,11 +478,14 @@ csi_do_sm (unsigned char final, unsigned char priv, struct putter *putr,
   for (p=params; p != pend; ++p)
     {
       struct mode_info *m;
-      if (priv)
+      if (priv == '?')
         {
           handle_private_mode (putr, *p, final == 0x68);
           continue;
         }
+      else if (priv)
+        return;
+
       if (*p >= N_ARY_ELEMS (modes))
         continue;
       m = &modes[*p];
@@ -530,10 +533,30 @@ csi_do_mc (unsigned char final, unsigned char priv, struct putter *putr,
       "Start relay to a secondary auxiliary device."
     };
 
-  if (priv) return;
+  if (priv == '?')
+    {
+      const char *msg = NULL;
+      
+      switch (p)
+        {
+        case 1:
+          msg = "(DEC) Print current line.";
+          break;
+        case 4:
+          msg = "(DEC) Turn off autoprint mode.";
+          break;
+        case 5:
+          msg = "(DEC) Turn on autoprint mode.";
+          break;
+        }
+
+      putter_single (putr, "\" %s", msg);
+      return;
+    }
+  else if (priv) return;
   if (p < N_ARY_ELEMS (messages))
     {
-      putter_single (putr, "\" %s", messages[params[0]]);
+      putter_single (putr, "\" %s", messages[p]);
     }
 }
 
