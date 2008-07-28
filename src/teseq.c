@@ -877,7 +877,7 @@ consumption.\n\
  -E             Don't print escape sequences.\n\
  -L             Don't print labels.\n\
  -V, --version  Display version and warrantee.\n\
- -t TIMINGS     Read timing info from TIMINGS and emit delay lins.\n\
+ -t TIMINGS     Read timing info from TIMINGS and emit delay lines.\n\
  -x             Identify control sequences from VT100/Xterm\n\
 \n\
 Report bugs to micah@cowan.name.\n\
