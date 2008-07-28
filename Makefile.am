@@ -50,6 +50,7 @@ dist-hook:
 clean-local:
 	find tests -name r-output -o -name output | xargs rm -f
 	rm -f tests/cmdline--/-o
+	rm -f tests/timing/timing-out
 	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf doc/teseq.1 \
 	                              doc/reseq.1
 
