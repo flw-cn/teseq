@@ -1,7 +1,5 @@
 TODO:                                                   -*- text -*-
 
-Timing support?
-
 CSI ? n (DEC DSR)
 CSI > p (Xterm pointer hiding)
 CSI ! p Soft terminal reset (DECSTR)
@@ -16,8 +14,6 @@ CSI Pm ' {   Select Locator events
 CSI Ps ' |   Request Locator Position.
 
 Other mouse stuff.
-
-Report bugs to bug-teseq@gnu.org.
 
 Reseq should complain about lines it doesn't recognize, so it can't
 silently generate incomplete data from the output of future versions
