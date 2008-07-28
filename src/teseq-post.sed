@@ -1,5 +1,9 @@
 #!/bin/sed -f
 
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.
+
 # Text: reverse-video content
 /^-\{0,1\}|/ {
 	s/^-\{0,1\}|/&[7m/ ; s/|.\{0,1\}$/[m&/
