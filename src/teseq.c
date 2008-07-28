@@ -1061,14 +1061,14 @@ main (int argc, char **argv)
           process (&p, c);
           if (c == '\n') break;
         }
+      inputbuf_reset_count (p.ibuf);
     }
   for (;;)
     {
-      if (SHOULD_EMIT_DELAY (&p))
-        emit_delay (&p);
-
       c = inputbuf_get (p.ibuf);
       if (c == EOF) break;
+      if (SHOULD_EMIT_DELAY (&p))
+        emit_delay (&p);
       process (&p, c);
     }
   finish (&p);
