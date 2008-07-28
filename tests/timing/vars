@@ -1,5 +1,6 @@
-teseq_options='-CLD -t timing-info'
-r_invocation='"$RESEQ" -t timing-out "$testin/$r_input" "$testout/$r_output"'
+teseq_options="-CLD -t $testin/timing-info"
+r_invocation='"$RESEQ" -t "$testout/timing-out" "$testin/$r_input" \
+              "$testout/$r_output"'
 
 r_diffcmd='cmp -- "$testin/$r_expected" "$testout/$r_output" && \
            diff -- "$testin/timing-info" "$testout/timing-out"'
