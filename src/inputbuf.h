@@ -44,5 +44,7 @@ int inputbuf_get (struct inputbuf *);
 int inputbuf_saving (struct inputbuf *);
 int inputbuf_rewind (struct inputbuf *);
 int inputbuf_forget (struct inputbuf *);
+size_t inputbuf_get_count (struct inputbuf *);
+void inputbuf_reset_count (struct inputbuf *);
 
 #endif

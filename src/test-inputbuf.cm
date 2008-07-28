@@ -31,19 +31,29 @@ struct inputbuf *the_buffer;
         /* Reading from the file. */
         fail_unless (inputbuf_get (the_buffer) == 'a');
         fail_unless (inputbuf_get (the_buffer) == 'b');
+        fail_unless (inputbuf_get_count (the_buffer) == 2);
         fail_unless (inputbuf_saving (the_buffer) == 0);
         /* Reading from the file, and filling the buffer. */
         fail_unless (inputbuf_get (the_buffer) == 'c');
         fail_unless (inputbuf_get (the_buffer) == 'd');
         fail_unless (inputbuf_get (the_buffer) == 'e');
+        /* Count doesn't increment during a save; still 2. */
+        fail_unless (inputbuf_get_count (the_buffer) == 2);
         fail_unless (inputbuf_rewind (the_buffer) == 0);
         /* Consuming the save buffer. */
         fail_unless (inputbuf_get (the_buffer) == 'c');
         fail_unless (inputbuf_get (the_buffer) == 'd');
+        fail_unless (inputbuf_get_count (the_buffer) == 4);
         fail_unless (inputbuf_saving (the_buffer) == 0);
         /* Reading from the buffer, but not consuming. */
         fail_unless (inputbuf_get (the_buffer) == 'e');
+        fail_unless (inputbuf_get_count (the_buffer) == 4);
         fail_unless (inputbuf_forget (the_buffer) == 0);
+        /* Count is incremented to the total read characters upon
+           inputbuf_forget. */
+        fail_unless (inputbuf_get_count (the_buffer) == 5);
+        inputbuf_reset_count (the_buffer);
+        fail_unless (inputbuf_get_count (the_buffer) == 0);
         /* Reading from the file. */
         fail_unless (inputbuf_get (the_buffer) == 'f');
         fail_unless (inputbuf_get (the_buffer) == 'g');

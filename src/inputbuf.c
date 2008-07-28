@@ -29,6 +29,8 @@ struct inputbuf
   FILE *file;
   int last;
   int saving;
+  size_t count;
+  size_t saved_count;
   struct ringbuf *rb;
   struct ringbuf_reader *reader;
 };
@@ -54,6 +56,7 @@ inputbuf_new (FILE * f, size_t bufsz)
   ret->reader = reader;
   ret->file = f;
   ret->last = EOF;
+  ret->count = 0;
   return ret;
 
 cleanup:
@@ -81,8 +84,12 @@ inputbuf_get (struct inputbuf *ib)
         {
           c = getc (ib->file);
           if (c != EOF)
-            ringbuf_put (ib->rb, c);
+            {
+              ringbuf_put (ib->rb, c);
+            }
         }
+      if (c != EOF)
+        ++ib->saved_count;
     }
   else
     {
@@ -90,6 +97,8 @@ inputbuf_get (struct inputbuf *ib)
       if (c == EOF)
         c = getc (ib->file);
       ib->last = c;
+      if (c != EOF)
+        ++ib->count;
     }
   return c;
 }
@@ -100,6 +109,7 @@ inputbuf_saving (struct inputbuf *ib)
   if (ib->saving)
     return 1;
   ib->saving = 1;
+  ib->saved_count = 0;
   ringbuf_reader_reset (ib->reader);
   return 0;
 }
@@ -119,5 +129,20 @@ inputbuf_forget (struct inputbuf *ib)
     return 1;
   ringbuf_reader_consume (ib->reader);
   ib->saving = 0;
+  ib->count += ib->saved_count;
   return 0;
 }
+
+size_t
+inputbuf_get_count (struct inputbuf *ib)
+{
+  return ib->count;
+}
+
+void
+inputbuf_reset_count (struct inputbuf *ib)
+{
+  ib->count = 0;
+  ib->saved_count = 0;
+}
+

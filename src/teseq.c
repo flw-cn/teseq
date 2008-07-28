@@ -70,6 +70,13 @@ struct processor
   struct putter *putr;
   enum processor_state st;
   int print_dot;
+  size_t mark;
+};
+
+struct delay
+{
+  double time;
+  size_t chars;
 };
 
 const char *control_names[] = {
@@ -88,6 +95,27 @@ struct config configuration = { 0 };
 
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
 #define is_ascii_digit(x)       ((x) >= 0x30 && (x) <= 0x39)
+
+void
+delay_read (FILE *f, struct delay *d)
+{
+  double time;
+  unsigned int chars;
+  int converted;
+  
+  converted = fscanf (f, "%lf %u", &time, &chars);
+  if (converted != 2)
+    {
+      d->time = 0.0;
+      d->chars = 0;
+      configuration.timings = NULL;
+    }
+  else
+    {
+      d->time = time;
+      d->chars = chars;
+    }
+}
 
 void
 print_esc_char (struct processor *p, unsigned char c)
@@ -757,6 +785,27 @@ init_state (struct processor *p, unsigned char c)
     }
 }
 
+/* Finish the current state and return to ST_INIT. */
+void
+finish_state (struct processor *p)
+{
+  switch (p->st)
+    {
+    case ST_TEXT:
+      putter_finish (p->putr, "|");
+      break;
+    case ST_CTRL:
+      putter_finish (p->putr, "");
+      break;
+    case ST_INIT:
+      break;
+    default:
+      assert (!"Can't get here!");
+    }
+  
+  p->st = ST_INIT;
+}
+
 void
 process (struct processor *p, unsigned char c)
 {
@@ -779,8 +828,7 @@ process (struct processor *p, unsigned char c)
             }
           else if (!is_normal_text (c))
             {
-              putter_finish (p->putr, "|");
-              p->st = ST_INIT;
+              finish_state (p);
               continue;
             }
           else
@@ -791,8 +839,7 @@ process (struct processor *p, unsigned char c)
         case ST_CTRL:
           if (is_normal_text (c))
             {
-              putter_finish (p->putr, "");
-              p->st = ST_INIT;
+              finish_state (p);
               continue;
             }
           else if (c != C_ESC || !handle_escape_sequence (p))
@@ -825,11 +872,12 @@ consumption.\n\
 \n", f);
   fputs ("\
  -h, --help     Display usage information (this message).\n\
- -V, --version  Display version and warrantee.\n\
  -C             Don't print ^X for C0 controls.\n\
- -L             Don't print labels.\n\
  -D             Don't print descriptions.\n\
  -E             Don't print escape sequences.\n\
+ -L             Don't print labels.\n\
+ -V, --version  Display version and warrantee.\n\
+ -t TIMINGS     Read timing info from TIMINGS and emit delay lins.\n\
  -x             Identify control sequences from VT100/Xterm\n\
 \n\
 Report bugs to micah@cowan.name.\n\
@@ -854,10 +902,10 @@ There is NO WARRANTY, to the extent permitted by law.\
   
 
 FILE *
-must_fopen (const char *fname, const char *mode)
+must_fopen (const char *fname, const char *mode, int dash)
 {
   FILE *f;
-  if (fname[0] == '-' && fname[1] == '\0')
+  if (dash && fname[0] == '-' && fname[1] == '\0')
     {
       if (strchr (mode, 'w'))
         return stdout;
@@ -882,6 +930,7 @@ void
 configure (struct processor *p, int argc, char **argv)
 {
   int opt;
+  const char *timings_fname = NULL;
   FILE *inf = stdin;
   FILE *outf = stdout;
 
@@ -890,8 +939,10 @@ configure (struct processor *p, int argc, char **argv)
   configuration.labels = 1;
   configuration.escapes = 1;
   configuration.extensions = 0;
+  configuration.timings = NULL;
 
-  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEx", teseq_opts, NULL))
+  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEt:x",
+                             teseq_opts, NULL))
          != -1)
     {
       switch (opt)
@@ -917,6 +968,9 @@ configure (struct processor *p, int argc, char **argv)
         case 'E':
           configuration.escapes = 0;
           break;
+        case 't':
+          timings_fname = optarg;
+          break;
         case 'x':
           configuration.extensions = 1;
           break;
@@ -937,12 +991,17 @@ configure (struct processor *p, int argc, char **argv)
     }
   if (argv[optind] != NULL)
     {
-      inf = must_fopen (argv[optind++], "r");
+      inf = must_fopen (argv[optind++], "r", 1);
     }
   if (argv[optind] != NULL)
     {
-      outf = must_fopen (argv[optind++], "w");
+      outf = must_fopen (argv[optind++], "w", 1);
     }
+  if (timings_fname != NULL)
+    {
+      configuration.timings = must_fopen (timings_fname, "r", 0);
+    }
+
   setvbuf (inf, NULL, _IONBF, 0);
   setvbuf (outf, NULL, _IOLBF, BUFSIZ);
   p->ibuf = inputbuf_new (inf, 1024);
@@ -954,6 +1013,37 @@ configure (struct processor *p, int argc, char **argv)
     }
 }
 
+void
+emit_delay (struct processor *p)
+{
+  struct delay total = { 0, 0 };
+  size_t count = inputbuf_get_count (p->ibuf);
+  do
+    {
+      struct delay d;
+      delay_read (configuration.timings, &d);
+      total.time += d.time;
+      total.chars += d.chars;
+      p->mark += d.chars;
+    }
+  while (configuration.timings && p->mark < count);
+
+  if (total.time != 0)
+    {
+      finish_state (p);
+      putter_single (p->putr, "@ %f", total.time);
+    }
+  
+  /* Following couple lines aren't strictly necessary,
+     but keep the count/mark from getting huge, and avoid the
+     unlikely potential for overflow. */
+  p->mark -= count;
+  inputbuf_reset_count (p->ibuf);
+}
+
+#define SHOULD_EMIT_DELAY(p)    (configuration.timings && \
+                                 (p)->mark <= inputbuf_get_count ((p)->ibuf))
+
 int
 main (int argc, char **argv)
 {
@@ -961,8 +1051,26 @@ main (int argc, char **argv)
   struct processor p = { 0, 0, ST_INIT };
 
   configure (&p, argc, argv);
-  while ((c = inputbuf_get (p.ibuf)) != EOF)
-    process (&p, c);
+  /* If we're in timings mode, we need to handle up to the first
+     newline without checking the delay, because that's the timestamp
+     line from script, and the delays don't start until after that. */
+  if (configuration.timings) 
+    {
+      while ((c = inputbuf_get (p.ibuf)) != EOF)
+        {
+          process (&p, c);
+          if (c == '\n') break;
+        }
+    }
+  for (;;)
+    {
+      if (SHOULD_EMIT_DELAY (&p))
+        emit_delay (&p);
+
+      c = inputbuf_get (p.ibuf);
+      if (c == EOF) break;
+      process (&p, c);
+    }
   finish (&p);
   return EXIT_SUCCESS;
 }

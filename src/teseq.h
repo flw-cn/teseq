@@ -22,6 +22,8 @@
 
 #define _XOPEN_SOURCE 600
 
+#include <stdio.h>
+
 #define N_ARY_ELEMS(ary)        (sizeof (ary) / sizeof (ary)[0])
 
 struct config
@@ -31,6 +33,7 @@ struct config
   int labels;
   int escapes;
   int extensions;
+  FILE *timings;
 };
 
 extern struct config configuration;
