@@ -116,6 +116,7 @@ fi
         extensions
         sgr-no-x
         sgr-x
+        timing
 '}
 
 nt=0
