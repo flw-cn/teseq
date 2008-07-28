@@ -882,7 +882,8 @@ consumption.\n\
  -L             Don't print labels.\n\
  -V, --version  Display version and warrantee.\n\
  -t TIMINGS     Read timing info from TIMINGS and emit delay lines.\n\
- -x             Identify control sequences from VT100/Xterm\n\
+ -x             Identify control sequences from VT100/Xterm\n", f);
+  fputs ("\
 \n\
 The GNU Teseq home page is at http://www.gnu.org/software/teseq/.\n\
 Report all bugs to bug-teseq@gnu.org.\n\
