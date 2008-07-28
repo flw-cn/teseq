@@ -14,7 +14,7 @@ features (such as those based on the Curses library).
 See the INSTALL file for information on how to build and install this
 program.
 
-Please report all bugs to micah@cowan.name.
+Please report all bugs to bug-teseq@gnu.org.
 
 Teseq has no requirements beyond a normal Unix build environment.
 

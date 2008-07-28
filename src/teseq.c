@@ -884,7 +884,8 @@ consumption.\n\
  -t TIMINGS     Read timing info from TIMINGS and emit delay lines.\n\
  -x             Identify control sequences from VT100/Xterm\n\
 \n\
-Report bugs to micah@cowan.name.\n\
+The GNU Teseq home page is at http://www.gnu.org/software/teseq/.
+Report all bugs to bug-teseq@gnu.org.\n\
 ", f);
   exit (status);
 }
