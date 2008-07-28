@@ -1022,6 +1022,12 @@ emit_delay (struct processor *p)
   finish_state (p);
   do
     {
+      /* Why the "next mark"? ...script issues the amount of delay
+         that has occurred *before* a read has been attempted, thus
+         scriptreplay.pl Actually reads and executes two delays before
+         printing the first byte, to keep the remaining delays properly
+         synched. So, we need to ensure we issue two delays before
+         _we_ process the first byte, as well. */
       struct delay d;
       delay_read (configuration.timings, &d);
       p->mark += p->next_mark;
