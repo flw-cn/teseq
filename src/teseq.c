@@ -71,6 +71,8 @@ struct processor
   enum processor_state st;
   int print_dot;
   size_t mark;
+  size_t next_mark;
+  
 };
 
 struct delay
@@ -1016,24 +1018,18 @@ configure (struct processor *p, int argc, char **argv)
 void
 emit_delay (struct processor *p)
 {
-  struct delay total = { 0, 0 };
   size_t count = inputbuf_get_count (p->ibuf);
+  finish_state (p);
   do
     {
       struct delay d;
       delay_read (configuration.timings, &d);
-      total.time += d.time;
-      total.chars += d.chars;
-      p->mark += d.chars;
+      p->mark += p->next_mark;
+      p->next_mark = d.chars;
+      putter_single (p->putr, "@ %f", d.time);
     }
-  while (configuration.timings && p->mark < count);
+  while (configuration.timings && p->mark <= count);
 
-  if (total.time != 0)
-    {
-      finish_state (p);
-      putter_single (p->putr, "@ %f", total.time);
-    }
-  
   /* Following couple lines aren't strictly necessary,
      but keep the count/mark from getting huge, and avoid the
      unlikely potential for overflow. */

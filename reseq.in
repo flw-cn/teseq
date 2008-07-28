@@ -22,6 +22,7 @@ our $timings;
 
 our $timingsf;
 our $last_delay = 0.0;
+our $last_last_delay = 0.0;
 our $count;
 
 our @controls = (
@@ -108,10 +109,11 @@ sub process_delay {
         select (undef, undef, undef, $_[0]);
     }
     elsif ($timings) {
-        if ($last_delay) {
-            print $timingsf "$last_delay $count\n";
+        if ($last_last_delay) {
+            print $timingsf "$last_last_delay $count\n";
         }
         $count = 0;
+        $last_last_delay = $last_delay;
         $last_delay = $_[0];
     }
 }
