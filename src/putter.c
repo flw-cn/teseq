@@ -80,7 +80,7 @@ putter_start (struct putter *p, const char *s,
   p->postsz = strlen (post);
 
   if (p->nc > 0)
-    fputc ('\n', p->file);
+    putc ('\n', p->file);
   p->nc = strlen (s);
   return fputs (s, p->file);
 }
@@ -142,7 +142,7 @@ putter_single (struct putter *p, const char *fmt, ...)
   int ret, e;
 
   if (p->nc > 0)
-    fputc ('\n', p->file);
+    putc ('\n', p->file);
   va_start (ap, fmt);
   ret = vfprintf (p->file, fmt, ap);
   va_end (ap);
