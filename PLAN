@@ -6,14 +6,15 @@ CSI ! p Soft terminal reset (DECSTR)
 CSI Ps ; Ps r   Set scrolling region
 CSI ? Pm r   Restore values of (private) specified modes.
 CSI ? Pm s   Save values of (private) specified modes.
+
 CSI Ps [; Ps ; Ps] t
              Window manipulation.
+
 CSI Ps ; Pu ' z
              DECELR Locator Reporting.
-CSI Pm ' {   Select Locator events
-CSI Ps ' |   Request Locator Position.
+CSI Pm ' {   DECSLE Select Locator events
+CSI Ps ' |   DECRQLP Request Locator Position.
 
-Other mouse stuff.
 
 Reseq should complain about lines it doesn't recognize, so it can't
 silently generate incomplete data from the output of future versions
