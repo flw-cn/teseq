@@ -259,6 +259,13 @@ standard output by default, but see the @option{-o} option.
 @opindex -h
 Print usage information on standard output and exit successfully.
 
+@item --version
+@itemx -V
+@opindex --version
+@opindex -V
+Print the version number and licensing information for @command{teseq} on
+standard output and then exit successfully.
+
 @item -C
 @opindex -C
 @cpindex control character
@@ -300,12 +307,11 @@ are (those that Teseq understands). The output produced
 Don't print identifying labels (lines beginning with @samp{&}) for
 escape sequences.
 
-@item --version
-@itemx -V
-@opindex --version
-@opindex -V
-Print the version number and licensing information of @code{hello} on
-standard output and then exit successfully.
+@item --buffered
+@itemx -b
+@opindex --buffered
+@opindex -b
+Force @command{teseq} to use buffered I/O.
 
 @item -t @var{timings}
 @opindex -t
@@ -352,6 +358,42 @@ representations it suppresses. However, while they may be more practical to reme
 will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
 in order to pass them to the @command{teseq} command.
+
+@unnumberedsec Interactive Mode
+@cindex non-canonical mode
+@cindex @command{teseq}, interactive mode
+
+When @command{teseq} is started with a terminal as its input, it sets
+the terminal to non-canonical mode with echo off. That way, you can
+see real-time translation of input, as you type. You can try it out by
+simply running @command{teseq} without any arguments.
+
+When run in this way, characters typed as input are immediately
+translated and written out. The exception is that when an @sc{escape}
+character is encountered, @command{teseq} must wait for the next few
+characters before writing anything, so it can decide whether to start
+an escape line or a control-character line.
+
+When @command{teseq} has a terminal as its output, it is careful to
+ensure that it finishes output lines when it is stopped by a
+signal. If it was in the middle of writing a text line, it will write
+the closing pipe character @samp{|}, followed by a newline. If it was
+in the middle of trying to determine whether it's in a valid escape
+sequence or just an escape character followed by other characters, it
+will assume the latter case, and translate all the characters it has
+seen so far.
+
+The @command{teseq} program does not take care to finish lines when
+the output is not a terminal.
+
+Whether or not @command{teseq} is connected to a terminal, it uses
+unbuffered I/O by default, unless the input is an ordinary file. This is
+so that each character may be processed as soon as it's seen. However,
+this can result in much longer processing time overall. To force
+@command{teseq} to buffer its input and output, use the
+@opindex --buffered
+@opindex -b
+@option{--buffered} (@option{-b}) option.
 
 @node Output Format, Standards, Invoking Teseq, Top
 @chapter Output Format
