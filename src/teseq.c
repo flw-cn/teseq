@@ -1083,8 +1083,9 @@ configure (struct processor *p, int argc, char **argv)
       configuration.timings = must_fopen (timings_fname, "r", 0);
     }
 
-  /* Set input to unbuffered. */
+  /* Set input/output to unbuffered. */
   setvbuf (inf, NULL, _IONBF, 0);
+  setvbuf (outf, NULL, _IONBF, 0);
   infd = fileno (inf);
   tty_setup (infd);
   

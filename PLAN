@@ -1,8 +1,5 @@
 TODO:                                                   -*- text -*-
 
-Terminal input settings.
-
-
 CSI ? n (DEC DSR)
 CSI > p (Xterm pointer hiding)
 CSI ! p Soft terminal reset (DECSTR)
@@ -25,6 +22,11 @@ silently generate incomplete data from the output of future versions
 of Teseq. Perhaps reserve some "safe" ones in advance.
 
 Figure out what to do with teseq-post.sed.
+
+Make the signal-handling state-finishing stuff dependant on whether
+_output_ is a tty, rather than input (but keep the termios stuff
+dependant on input). Turn off unbuffered I/O for sane cases, and offer
+options to force buffered/unbuffered mode.
 
 Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
