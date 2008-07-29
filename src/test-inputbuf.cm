@@ -29,6 +29,14 @@
 
 struct inputbuf *the_buffer;
 
+void
+initfile (void)
+{
+  FILE *f = fopen ("src/test-inputbuf.inf", "r");
+  fail_if (f == NULL);
+  the_buffer = inputbuf_new (f, 10);
+}
+
 #test basic
         /* Reading from the file. */
         fail_unless (inputbuf_get (the_buffer) == 'a');
@@ -66,11 +74,21 @@ struct inputbuf *the_buffer;
         fail_unless (inputbuf_rewind (the_buffer) == 0);
         fail_unless (inputbuf_get (the_buffer) == EOF);
 
+#test avail
+        fail_unless (inputbuf_avail (the_buffer) == 0);
+        fail_unless (inputbuf_get (the_buffer) == 'a');
+        fail_unless (inputbuf_get (the_buffer) == 'b');
+        fail_unless (inputbuf_get (the_buffer) == 'c');
+        /* Haven't buffered anything, so nothing avail: */
+        fail_unless (inputbuf_avail (the_buffer) == 0);
+        fail_unless (inputbuf_saving (the_buffer) == 0);
+        fail_unless (inputbuf_get (the_buffer) == 'd');
+        fail_unless (inputbuf_get (the_buffer) == 'e');
+        fail_unless (inputbuf_rewind (the_buffer) == 0);
+        fail_unless (inputbuf_avail (the_buffer) != 0);
+        fail_unless (inputbuf_get (the_buffer) == 'd');
+        fail_unless (inputbuf_get (the_buffer) == 'e');
+        fail_unless (inputbuf_avail (the_buffer) == 0);
+
 #main-pre
-        FILE *f = fopen ("src/test-inputbuf.inf", "r");
-        if (!f)
-          {
-            perror ("Couldn't open input file");
-            exit (1);
-          }
-        the_buffer = inputbuf_new (f, 10);
+        tcase_add_checked_fixture (tc1_1, initfile, NULL);

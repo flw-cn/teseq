@@ -43,6 +43,7 @@ struct ringbuf_reader *ringbuf_reader_new (struct ringbuf *);
 void ringbuf_reader_delete (struct ringbuf_reader *);
 void ringbuf_reader_reset (struct ringbuf_reader *);
 void ringbuf_reader_to_end (struct ringbuf_reader *);
+int ringbuf_reader_at_end (struct ringbuf_reader *);
 int ringbuf_reader_get (struct ringbuf_reader *);
 void ringbuf_reader_consume (struct ringbuf_reader *);
 

@@ -210,6 +210,12 @@ ringbuf_reader_to_end (struct ringbuf_reader *reader)
 }
 
 int
+ringbuf_reader_at_end (struct ringbuf_reader *reader)
+{
+  return reader->cursor == NULL;
+}
+
+int
 ringbuf_reader_get (struct ringbuf_reader *reader)
 {
   int ret;

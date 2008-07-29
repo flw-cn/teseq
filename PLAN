@@ -30,8 +30,13 @@ Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
 single-line-no-EOF for timings.
 
+Deal with check, checkmk more sanely, in configure.ac.
 
 
+
+Test terminal-mode stuff.
+
+How to deal with xterm mouse reports? ...perhaps a special flag...
 
 OSC stuff?
 

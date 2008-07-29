@@ -833,7 +833,7 @@ void
 handle_pending_signal (struct processor *p)
 {
   struct sigaction sa;
-  if (!signal_pending_p)
+  if (!signal_pending_p || inputbuf_avail (p->ibuf))
     return;
   
   finish_state (p);
@@ -1151,18 +1151,18 @@ main (int argc, char **argv)
     {
       if (SHOULD_EMIT_DELAY (&p))
         emit_delay (&p);
+      handle_pending_signal (&p);
       c = inputbuf_get (p.ibuf);
       if (c == EOF)
         {
           if (signal_pending_p)
-            handle_pending_signal (&p);
+            continue;
           else
             break;
         }
       else
         {
           process (&p, c);
-          handle_pending_signal (&p);
         }
     }
   finish (&p);
