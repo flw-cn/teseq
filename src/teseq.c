@@ -23,9 +23,12 @@
 
 #include <assert.h>
 #include <getopt.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "inputbuf.h"
 #include "putter.h"
@@ -95,6 +98,12 @@ const char *control_names[] = {
 };
 
 struct config configuration = { 0 };
+
+static struct termios saved_stty;
+static struct termios working_stty;
+static int termfd = -1;
+static volatile sig_atomic_t signal_pending_p;
+static int pending_signal;
 
 
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
@@ -811,6 +820,35 @@ finish_state (struct processor *p)
 }
 
 void
+catchsig (int s)
+{
+  if (!signal_pending_p)
+    {
+      pending_signal = s;
+      signal_pending_p = 1;
+    }
+}
+
+void
+handle_pending_signal (struct processor *p)
+{
+  struct sigaction sa;
+  if (!signal_pending_p)
+    return;
+  
+  finish_state (p);
+  tcsetattr (termfd, TCSANOW, &saved_stty);
+  sigaction (pending_signal, NULL, &sa);
+  sa.sa_handler = SIG_DFL;
+  sigaction (pending_signal, &sa, NULL);
+  raise (pending_signal);
+  sa.sa_handler = catchsig;
+  sigaction (pending_signal, &sa, NULL);
+  tcsetattr (termfd, TCSANOW, &working_stty);
+  signal_pending_p = 0;
+}
+
+void
 process (struct processor *p, unsigned char c)
 {
   int handled = 0;
@@ -926,6 +964,42 @@ must_fopen (const char *fname, const char *mode, int dash)
   exit (EXIT_FAILURE);
 }
 
+void
+tty_setup (int fd)
+{
+  struct termios ti;
+  static const int sigs[] =
+    {
+      SIGINT,
+      SIGTERM,
+      SIGTSTP,
+      SIGTTIN,
+      SIGTTOU
+    };
+  const int *sig, *sige = sigs + N_ARY_ELEMS (sigs);
+  struct sigaction sa;
+  sigset_t mask;
+  
+  if (!isatty (fd) || tcgetattr (fd, &ti) != 0)
+    return;
+  saved_stty = ti;
+  ti.c_lflag &= ~(ECHO | ICANON);
+  working_stty = ti;
+  termfd = fd;
+  tcsetattr (fd, TCSANOW, &ti);
+
+  sigemptyset (&mask);
+  for (sig = sigs; sig != sige; ++sig)
+    sigaddset (&mask, *sig);
+  
+  sa.sa_handler = catchsig;
+  sa.sa_mask = mask;
+  sa.sa_flags = 0;
+  
+  for (sig = sigs; sig != sige; ++sig)
+    sigaction (*sig, &sa, NULL);
+}
+
 struct option teseq_opts[] = {
   { "help", 0, NULL, 'h' },
   { "version", 0, NULL, 'V' },
@@ -939,6 +1013,7 @@ configure (struct processor *p, int argc, char **argv)
   const char *timings_fname = NULL;
   FILE *inf = stdin;
   FILE *outf = stdout;
+  int infd;
 
   configuration.control_hats = 1;
   configuration.descriptions = 1;
@@ -1010,6 +1085,9 @@ configure (struct processor *p, int argc, char **argv)
 
   /* Set input to unbuffered. */
   setvbuf (inf, NULL, _IONBF, 0);
+  infd = fileno (inf);
+  tty_setup (infd);
+  
   p->ibuf = inputbuf_new (inf, 1024);
   p->putr = putter_new (outf);
   if (!p->ibuf || !p->putr)
@@ -1074,8 +1152,18 @@ main (int argc, char **argv)
       if (SHOULD_EMIT_DELAY (&p))
         emit_delay (&p);
       c = inputbuf_get (p.ibuf);
-      if (c == EOF) break;
-      process (&p, c);
+      if (c == EOF)
+        {
+          if (signal_pending_p)
+            handle_pending_signal (&p);
+          else
+            break;
+        }
+      else
+        {
+          process (&p, c);
+          handle_pending_signal (&p);
+        }
     }
   finish (&p);
   return EXIT_SUCCESS;
