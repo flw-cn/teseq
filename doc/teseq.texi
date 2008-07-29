@@ -96,6 +96,7 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 * Reseq::                       Reversing Teseq's output.
 
 * Future Directions::           Future features under consideration.
+* Contact and Info::            Where to ask questions and find answers.
 
 * Copying::                     Copying and sharing this manual.
 * Index::                       Index of concepts.
@@ -1186,7 +1187,7 @@ delay lines:
 Any other sorts of lines encountered are ignored and discarded, and
 have no effect on the output.
 
-@node Future Directions, Copying, Reseq, Top
+@node Future Directions, Contact and Info, Reseq, Top
 @chapter Future Directions
 
 Here are some potential additions that may appear in future versions of
@@ -1239,7 +1240,29 @@ No commitment has been made to any particular output format for this
 feature; the above is intended purely as an example of one possible
 approach.
 
-@node Copying, Index, Future Directions, Top
+@node Contact and Info, Copying, Future Directions, Top
+@chapter Contact and Information
+
+If you have any questions, comments, suggestions, or bug reports,
+please take advantage of the mailing list at
+@email{bug-teseq@@gnu.org}. To subscribe, send an empty email with the
+Subject ``subscribe'' to @email{bug-teseq-request@@gnu.org}; or use
+the web interface at
+@uref{http://lists.gnu.org/mailman/listinfo/bug-teseq}.
+
+The official website for GNU Teseq is at
+@uref{http://www.gnu.org/software/hello/}.  For the latest updates and
+other information, please check that site (or better yet,
+stay appraised by subscribing to the mailing list.
+
+GNU Teseq uses Savannah to manage bug-tracking, and to host the
+development source repository in Mercurial:
+@uref{https://savannah.gnu.org/projects/teseq/}.
+
+There is also an IRC channel (@t{#teseq}) on irc.freenode.net; however,
+for reliable support, it is better to use the mailing list.
+
+@node Copying, Index, Contact and Info, Top
 @appendix Copying
 @include fdl.texi
 
