@@ -21,9 +21,7 @@ Reseq should complain about lines it doesn't recognize, so it can't
 silently generate incomplete data from the output of future versions
 of Teseq. Perhaps reserve some "safe" ones in advance.
 
-Figure out what to do with teseq-post.sed.
-
-Make the signal-handling state-finishing stuff dependant on whether
+Make the signal-handling state-finishing stuff dependent on whether
 _output_ is a tty, rather than input (but keep the termios stuff
 dependant on input). Turn off unbuffered I/O for sane cases, and offer
 options to force buffered/unbuffered mode.
@@ -36,10 +34,12 @@ Deal with check, checkmk more sanely, in configure.ac.
 
 
 
+Figure out what to do with teseq-post.sed.
+
 Test terminal-mode stuff.
 
 How to deal with xterm mouse reports? ...perhaps a special flag...
 
 OSC stuff?
 
-Gettext.
+Line wrapping, and gettext. User-specifiable line-limits.
