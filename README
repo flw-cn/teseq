@@ -1,7 +1,7 @@
 This is the README file for GNU Teseq.
 
 GNU Teseq is a tool for analyzing files that contain control characters
-terminal control sequences. It is intended to be useful for diagnosing
+and terminal control sequences. It is intended to be useful for diagnosing
 terminal emulators, and programs that make heavy use of terminal
 features (such as those based on the Curses library).
  
