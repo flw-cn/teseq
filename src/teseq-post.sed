@@ -4,9 +4,9 @@
 # are permitted in any medium without royalty provided the copyright
 # notice and this notice are preserved.
 
-# Text: reverse-video content
+# Text: cyan, reverse-video content
 /^-\{0,1\}|/ {
-	s/^-\{0,1\}|/&[7m/ ; s/|.\{0,1\}$/[m&/
+	s/^-\{0,1\}|/&[36;7m/ ; s/|.\{0,1\}$/[m&/
 }
 
 # Short controls: red
@@ -20,3 +20,6 @@ s/^&.*$/[35m&[m/
 
 # Descriptions: green
 s/^".*$/[32m&[m/
+
+# Delay lines: blue
+s/^@.*$/[34m&[m/
