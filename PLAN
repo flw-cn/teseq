@@ -26,6 +26,9 @@ _output_ is a tty, rather than input (but keep the termios stuff
 dependant on input). Turn off unbuffered I/O for sane cases, and offer
 options to force buffered/unbuffered mode.
 
+Add a divisor option to reseq for playback, like scriptreplay's. And
+suppress delays < 0.0001, too.
+
 Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
 single-line-no-EOF for timings.

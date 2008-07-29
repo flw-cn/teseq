@@ -56,7 +56,7 @@ Reverse the translations made by teseq.
  -t, --timings=FILE  Output timing data to FILE, in the format used
                      by script -t and scriptreplay.
 
-Report bugs to micah\@cowan.name
+Report bugs to bug-teseq\@gnu.org
 END_USAGE
     exit ($status);
 }
