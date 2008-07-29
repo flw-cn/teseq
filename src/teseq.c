@@ -1008,8 +1008,8 @@ configure (struct processor *p, int argc, char **argv)
       configuration.timings = must_fopen (timings_fname, "r", 0);
     }
 
+  /* Set input to unbuffered. */
   setvbuf (inf, NULL, _IONBF, 0);
-  setvbuf (outf, NULL, _IOLBF, BUFSIZ);
   p->ibuf = inputbuf_new (inf, 1024);
   p->putr = putter_new (outf);
   if (!p->ibuf || !p->putr)
