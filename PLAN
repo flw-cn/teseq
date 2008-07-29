@@ -1,5 +1,8 @@
 TODO:                                                   -*- text -*-
 
+Terminal input settings.
+
+
 CSI ? n (DEC DSR)
 CSI > p (Xterm pointer hiding)
 CSI ! p Soft terminal reset (DECSTR)
@@ -15,14 +18,20 @@ CSI Ps ; Pu ' z
 CSI Pm ' {   DECSLE Select Locator events
 CSI Ps ' |   DECRQLP Request Locator Position.
 
+DEC function keys, etc.
 
 Reseq should complain about lines it doesn't recognize, so it can't
 silently generate incomplete data from the output of future versions
 of Teseq. Perhaps reserve some "safe" ones in advance.
 
+Figure out what to do with teseq-post.sed.
+
 Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
 single-line-no-EOF for timings.
+
+
+
 
 OSC stuff?
 
