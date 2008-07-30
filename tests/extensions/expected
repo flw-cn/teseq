@@ -55,3 +55,9 @@
 & DSR: DEVICE STATUS REPORT (private params)
 " (Xterm) Disable modifyOtherKeys.
 . LF/^J
+: Esc [ r
+" Set the scrolling region to full size.
+: Esc [ 1 ; 10 r
+" Set the scrolling region to from line 1 to line 10.
+: Esc [ 10 r
+. LF/^J

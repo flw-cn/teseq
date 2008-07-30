@@ -177,9 +177,9 @@ void
 init_csi_params (struct csi_handler *handler, size_t *n_params,
                  unsigned int params[])
 {
-  if (handler->acro)
+  if (handler->fn)
     {
-      if (*n_params == 0)
+      if (*n_params == 0 && handler->default0 != CSI_DEFAULT_NONE)
         params[(*n_params)++] = handler->default0;
       if (*n_params == 1 && CSI_USE_DEFAULT1 (handler->type))
         params[(*n_params)++] = handler->default1;
@@ -264,7 +264,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
   if (configuration.labels)
     print_csi_label (p, handler, private_params);
 
-  if (configuration.descriptions && handler->acro && handler->fn
+  if (configuration.descriptions && handler->fn
       && (configuration.extensions || !private_params))
     {
       int wrong_num_params = 0;

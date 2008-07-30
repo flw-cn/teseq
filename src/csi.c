@@ -34,7 +34,7 @@ csi_do_ich (unsigned char final, unsigned char priv, struct putter *putr,
   if (priv) return;
   assert (n_params == 1);
   putter_single (putr, ("\" Shift characters after the cursor to make room "
-                        "for %d new character%s."), params[0],
+                        "for %u new character%s."), params[0],
                  params[0] == 1 ? "" : "s");
 }
 
@@ -45,7 +45,7 @@ csi_do_cuu (unsigned char final, unsigned char priv, struct putter *putr,
   const char *dir[] = {"up", "down", "right", "left"};
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor %s %d line%s.",
+  putter_single (putr, "\" Move the cursor %s %u line%s.",
                  dir[ final - 0x41 ],
                  params[0], params[0] == 1 ? "" : "s");
 }
@@ -57,7 +57,7 @@ csi_do_cnl (unsigned char final, unsigned char priv, struct putter *putr,
   const char *dir[] = {"down", "up"};
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor to the first column, %d line%s %s.",
+  putter_single (putr, "\" Move the cursor to the first column, %u line%s %s.",
                  params[0], params[0] == 1 ? "" : "s", dir[ final - 0x45 ]);
 }
 
@@ -67,7 +67,7 @@ csi_do_cha (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor to column %d.", params[0]);
+  putter_single (putr, "\" Move the cursor to column %u.", params[0]);
 }
 
 static void
@@ -76,7 +76,7 @@ csi_do_cup (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 2);
-  putter_single (putr, "\" Move the cursor to line %d, column %d.",
+  putter_single (putr, "\" Move the cursor to line %u, column %u.",
                  params[0], params[1]);
 }
 
@@ -88,7 +88,7 @@ csi_do_cht (unsigned char final, unsigned char priv, struct putter *putr,
   const char *dir = (final == 0x5A) ? "back" : "forward";
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor %s %d %stab stop%s.",
+  putter_single (putr, "\" Move the cursor %s %u %stab stop%s.",
                  dir, params[0], hv, params[0] == 1 ? "" : "s");
 }
 
@@ -137,7 +137,7 @@ csi_do_il (unsigned char final, unsigned char priv, struct putter *putr,
   assert (n_params == 1);
   if (priv) return;
   putter_single (putr, ("\" Shift lines after the cursor to make room "
-                        "for %d new line%s."), params[0],
+                        "for %u new line%s."), params[0],
                  params[0] == 1 ? "" : "s");
 }
 
@@ -147,7 +147,7 @@ csi_do_dl (unsigned char final, unsigned char priv, struct putter *putr,
 {
   assert (n_params == 1);
   if (priv) return;
-  putter_single (putr, "\" Delete %d line%s, shifting the following lines up.",
+  putter_single (putr, "\" Delete %u line%s, shifting the following lines up.",
                  params[0], params[0] == 1 ? "" : "s");
 }
 
@@ -179,7 +179,7 @@ csi_do_dch (unsigned char final, unsigned char priv, struct putter *putr,
 {
   assert (n_params == 1);
   if (priv) return;
-  putter_single (putr, ("\" Delete %d character%s, shifting the following "
+  putter_single (putr, ("\" Delete %u character%s, shifting the following "
                         "characters left."),
                  params[0], params[0] == 1 ? "" : "s");
 }
@@ -190,8 +190,8 @@ csi_do_cpr (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 2);
-  putter_single (putr, ("\" Report that the cursor is located at line %d, "
-                        "column %d"), params[0], params[1]);
+  putter_single (putr, ("\" Report that the cursor is located at line %u, "
+                        "column %u"), params[0], params[1]);
 }
 
 static void
@@ -223,7 +223,7 @@ csi_do_su (unsigned char final, unsigned char priv, struct putter *putr,
       assert (! "got here");
     }
   
-  putter_single (putr, "\" Scroll %s by %d %s%s", dir, params[0], unit,
+  putter_single (putr, "\" Scroll %s by %u %s%s", dir, params[0], unit,
                  params[0] == 1 ? "" : "s");
 }
 
@@ -256,7 +256,7 @@ csi_do_ech (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   if (priv) return;
-  putter_single (putr, "\" Erase %d character%s, starting at the cursor.",
+  putter_single (putr, "\" Erase %u character%s, starting at the cursor.",
                  params[0], params[0] == 1 ? "" : "s");
 }
 
@@ -275,7 +275,7 @@ csi_do_vpa (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   if (priv) return;
-  putter_single (putr, "\" Move the cursor to line %d.", params[0]);
+  putter_single (putr, "\" Move the cursor to line %u.", params[0]);
 }
 
 /* Describe private mode sets. Based on information from the
@@ -613,7 +613,7 @@ print_t416_description (struct putter *putr, unsigned char n_params,
     fore_back = "background";
   if (n_params == 3 && params[1] == 5)
     {
-      putter_single (putr, "\" Set %s color to index %d.",
+      putter_single (putr, "\" Set %s color to index %u.",
                      fore_back, params[2]);
     }
   else
@@ -643,7 +643,7 @@ csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
       if (n_params > 1 && params[1] > 0)
         arg = params[1];
       if (res)
-        putter_single (putr, "\" (Xterm) Set %s to %d.", res, arg);
+        putter_single (putr, "\" (Xterm) Set %s to %u.", res, arg);
     }
   if (priv) return;
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
@@ -685,6 +685,20 @@ csi_do_dsr (unsigned char final, unsigned char priv, struct putter *putr,
   if (priv) return;
   if (p < N_ARY_ELEMS (messages))
     putter_single (putr, "\" %s", messages[p]);
+}
+
+static void
+csi_do_sr (unsigned char final, unsigned char priv, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  if (n_params == 0)
+    putter_single (putr, "\" Set the scrolling region to full size.");
+  else if (n_params == 2)
+    {
+      putter_single (putr, "\
+\" Set the scrolling region to from line %u to line %u.",
+                     params[0], params[1]);
+    }
 }
 
 static struct csi_handler csi_no_handler = { NULL, NULL };
@@ -794,12 +808,25 @@ static struct csi_handler csi_spc_handlers[] =
     {NULL, NULL}
   };
 
+struct csi_handler csi_sr_handler =
+  {NULL, NULL, CSI_FUNC_PN_ANY, csi_do_sr, -1, -1};
+
 struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
                  int interm, unsigned char final)
 {
   if (final >= 0x70)
-    return &csi_no_handler;
+    {
+      if (!configuration.extensions)
+        return &csi_no_handler;
+      switch (final)
+        {
+        case 'r':
+          return &csi_sr_handler;
+        default:
+          return &csi_no_handler;
+        }
+    }
   else if (intermsz == 0)
     return &csi_handlers[final - 0x40];
   else if (intermsz == 1 && interm == 0x20)
