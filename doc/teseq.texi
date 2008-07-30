@@ -397,7 +397,7 @@ To force @command{teseq} to behave as if it's not connected to a terminal (that 
 @opindex --no-interactive
 @opindex -I
 ensuring lines are finished, or setting non-canonical/no-echo mode),
-use the @option{--no-interactive} (@option{-IS}) option.
+use the @option{--no-interactive} (@option{-I}) option.
 
 The @command{teseq} program does not take care to finish lines when
 the output is not a terminal.
