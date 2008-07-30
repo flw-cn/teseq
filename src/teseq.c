@@ -102,7 +102,7 @@ struct config configuration = { 0 };
 
 static struct termios saved_stty;
 static struct termios working_stty;
-static int termfd = -1;
+static int input_term_fd = -1;
 static int output_tty_p = 0;
 static volatile sig_atomic_t signal_pending_p;
 static int pending_signal;
@@ -841,8 +841,8 @@ handle_pending_signal (struct processor *p)
   if (output_tty_p)
     finish_state (p);
 
-  if (termfd != -1)
-    tcsetattr (termfd, TCSANOW, &saved_stty);
+  if (input_term_fd != -1)
+    tcsetattr (input_term_fd, TCSANOW, &saved_stty);
 
   sigaction (pending_signal, NULL, &sa);
   sa.sa_handler = SIG_DFL;
@@ -851,8 +851,8 @@ handle_pending_signal (struct processor *p)
   sa.sa_handler = catchsig;
   sigaction (pending_signal, &sa, NULL);
 
-  if (termfd != -1)
-    tcsetattr (termfd, TCSANOW, &working_stty);
+  if (input_term_fd != -1)
+    tcsetattr (input_term_fd, TCSANOW, &working_stty);
 
   signal_pending_p = 0;
 }
@@ -991,7 +991,7 @@ tty_setup (int fd)
   if (output_tty_p)
     ti.c_lflag &= ~ECHO;
   working_stty = ti;
-  termfd = fd;
+  input_term_fd = fd;
   tcsetattr (fd, TCSANOW, &ti);
 }
 
