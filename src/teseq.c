@@ -151,7 +151,7 @@ maybe_print_label (struct processor *p, const char *acro, const char *name)
 }
 
 void
-print_csi_label (struct processor *p, struct csi_handler *handler,
+print_csi_label (struct processor *p, const struct csi_handler *handler,
                  int private)
 {
   if (handler->acro)
@@ -174,7 +174,7 @@ print_c1_label (struct processor *p, unsigned char c)
 }
 
 void
-init_csi_params (struct csi_handler *handler, size_t *n_params,
+init_csi_params (const struct csi_handler *handler, size_t *n_params,
                  unsigned int params[])
 {
   if (handler->fn)
@@ -191,7 +191,7 @@ init_csi_params (struct csi_handler *handler, size_t *n_params,
    collects parameters, and invokes a hook to describe the control
    function (if configured). */
 void
-process_csi_sequence (struct processor *p, struct csi_handler *handler)
+process_csi_sequence (struct processor *p, const struct csi_handler *handler)
 {
   int c;
   int e = configuration.escapes;
@@ -285,7 +285,7 @@ process_csi_sequence (struct processor *p, struct csi_handler *handler)
 /* Determine whether the remaining characters after an initial CSI
    make a valid control sequence; and if so, return information about
    the control function from the final byte. */
-struct csi_handler *
+const struct csi_handler *
 read_csi_sequence (struct processor *p)
 {
   enum
@@ -620,7 +620,7 @@ handle_c1 (struct processor *p, unsigned char c)
 {
   if (c == '[')
     {
-      struct csi_handler *h;
+      const struct csi_handler *h;
       if ((h = read_csi_sequence (p)))
         {
           process_csi_sequence (p, h);

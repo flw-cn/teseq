@@ -62,7 +62,7 @@ struct csi_handler
   int                   default1;
 };
 
-struct csi_handler *
+const struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
                  int interm, unsigned char final);
 

@@ -21,7 +21,7 @@
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
 : Esc [ 1 ; 51 r
-" Set the scrolling region to from line 1 to line 51.
+" (DEC) Set the scrolling region to from line 1 to line 51.
 : Esc [ H
 & CUP: CURSOR POSITION
 " Move the cursor to line 1, column 1.
@@ -266,7 +266,7 @@
 & SGR: SELECT GRAPHIC RENDITION
 " Clear italicized or fraktur text.
 : Esc [ 1 ; 50 r
-" Set the scrolling region to from line 1 to line 50.
+" (DEC) Set the scrolling region to from line 1 to line 50.
 : Esc [ 50 ; 1 H
 & CUP: CURSOR POSITION
 " Move the cursor to line 50, column 1.
@@ -390,7 +390,7 @@
 " Clear italicized or fraktur text.
 |prompt$ |
 : Esc [ 1 ; 51 r
-" Set the scrolling region to from line 1 to line 51.
+" (DEC) Set the scrolling region to from line 1 to line 51.
 : Esc [ ? 1 l
 & RM: RESET MODE (private params)
 " (DEC) Cursor key mode off.

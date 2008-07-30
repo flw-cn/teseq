@@ -56,18 +56,55 @@
 " (Xterm) Disable modifyOtherKeys.
 . LF/^J
 : Esc [ r
-" Set the scrolling region to full size.
+" (DEC) Set the scrolling region to full size.
 : Esc [ 1 ; 10 r
-" Set the scrolling region to from line 1 to line 10.
+" (DEC) Set the scrolling region to from line 1 to line 10.
 : Esc [ 10 r
 . LF/^J
 : Esc [ ? 1000 ; 1049 r
-" *** Restore saved settings for specified modes:
+" *** (Xterm) Restore saved settings for specified modes:
 " (Xterm) Send mouse X & Y on button press and release.
 " (Xterm) Save the cursor position and use the alternate screen buffer,
 "  clearing it first.
 : Esc [ ? 5 ; 1 s
-" *** Save current state of specified modes:
+" *** (Xterm) Save current state of specified modes:
 " (DEC) Reverse video (dark on light).
 " (DEC) Cursor key mode.
+. LF/^J
+: Esc [ 1 t
+" (dtterm) De-iconify window.
+: Esc [ 2 t
+" (dtterm) Iconify window.
+: Esc [ 3 ; 32 ; 63 t
+" (dtterm) Move window to [32, 63].
+: Esc [ 4 ; 512 ; 342 t
+" (dtterm) Resize the window to height 512 and width 342 in pixels.
+: Esc [ 5 t
+" (dtterm) Raise the window to the front of the stacking order.
+: Esc [ 6 t
+" (dtterm) Lower the xterm window to the bottom of the stacking order.
+: Esc [ 7 t
+" (dtterm) Refresh the window.
+: Esc [ 8 ; 24 ; 80 t
+" (dtterm) Resize the text area to height 24 and width 80 in characters.
+: Esc [ 9 ; 0 t
+" (Xterm) Restore maximized window.
+: Esc [ 9 ; 1 t
+" (Xterm) Maximize window.
+: Esc [ 11 t
+" (dtterm) Request report on the window state (iconified/not iconified).
+: Esc [ 13 t
+" (dtterm) Request report on the window position.
+: Esc [ 14 t
+" (dtterm) Request report on window size in pixels.
+: Esc [ 18 t
+" (dtterm) Request report on text area size in characters.
+: Esc [ 19 t
+" (Xterm) Request report on the whole screen size in characters.
+: Esc [ 20 t
+" (dtterm) Request report of the window's icon label.
+: Esc [ 21 t
+" (dtterm) Request report of the window's title.
+: Esc [ 53 t
+" (Xterm) Resize the window to 53 lines.
 . LF/^J

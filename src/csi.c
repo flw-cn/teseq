@@ -694,11 +694,11 @@ csi_do_sr (unsigned char final, unsigned char priv, struct putter *putr,
   if (priv == '?')
     {
       if (final == 'r')
-        putter_single (putr, ("\" *** Restore saved settings for specified "
-                              "modes:"));
+        putter_single (putr, ("\
+\" *** (Xterm) Restore saved settings for specified modes:"));
       else
-        putter_single (putr, ("\" *** Save current state of specified "
-                              "modes:"));
+        putter_single (putr, ("\
+\" *** (Xterm) Save current state of specified modes:"));
       csi_do_sm ('h', priv, putr, n_params, params);
     }
   else if (priv)
@@ -706,18 +706,108 @@ csi_do_sr (unsigned char final, unsigned char priv, struct putter *putr,
   else if (final != 'r')
     return;
   else if (n_params == 0)
-    putter_single (putr, "\" Set the scrolling region to full size.");
+    putter_single (putr, "\" (DEC) Set the scrolling region to full size.");
   else if (n_params == 2)
     {
       putter_single (putr, "\
-\" Set the scrolling region to from line %u to line %u.",
+\" (DEC) Set the scrolling region to from line %u to line %u.",
                      params[0], params[1]);
     }
 }
 
-static struct csi_handler csi_no_handler = { NULL, NULL };
+static void
+csi_do_wm (unsigned char final, unsigned char priv, struct putter *putr,
+           size_t n_params, unsigned int *params)
+{
+  if (priv)
+    return;
+  if (n_params == 0)
+    return;
+  switch (params[0])
+    {
+    case 1:
+      putter_single (putr, "\" (dtterm) De-iconify window.");
+      break;
+    case 2:
+      putter_single (putr, "\" (dtterm) Iconify window.");
+      break;
+    case 3:
+      if (n_params >= 3)
+        putter_single (putr, "\" (dtterm) Move window to [%u, %u].",
+                       params[1], params[2]);
+      break;
+    case 4:
+      if (n_params >= 3)
+        putter_single (putr, "\
+\" (dtterm) Resize the window to height %u and width %u in pixels.",
+                       params[1], params[2]);
+      break;
+    case 5:
+      putter_single (putr, "\
+\" (dtterm) Raise the window to the front of the stacking order.");
+      break;
+    case 6:
+      putter_single (putr, "\
+\" (dtterm) Lower the xterm window to the bottom of the stacking order.");
+      break;
+    case 7:
+      putter_single (putr, "\" (dtterm) Refresh the window.");
+      break;
+    case 8:
+      if (n_params >= 3)
+        putter_single (putr, "\
+\" (dtterm) Resize the text area to height %u and width %u in characters.",
+                       params[1], params[2]);
+      break;
+    case 9:
+      if (n_params < 2)
+        break;
+      else if (params[1] == 0)
+        putter_single (putr, "\" (Xterm) Restore maximized window.");
+      else if (params[1] == 1)
+        putter_single (putr, "\" (Xterm) Maximize window.");
+      break;
+    case 11:
+      putter_single (putr, "\
+\" (dtterm) Request report on the window state (iconified/not iconified).");
+      break;
+    case 13:
+      putter_single (putr, "\
+\" (dtterm) Request report on the window position.");
+      break;
+    case 14:
+      putter_single (putr, "\
+\" (dtterm) Request report on window size in pixels.");
+      break;
+    case 18:
+      putter_single (putr, "\
+\" (dtterm) Request report on text area size in characters.");
+      break;
+    case 19:
+      putter_single (putr, "\
+\" (Xterm) Request report on the whole screen size in characters.");
+      break;
+    case 20:
+      putter_single (putr, "\
+\" (dtterm) Request report of the window's icon label.");
+      break;
+    case 21:
+      putter_single (putr, "\
+\" (dtterm) Request report of the window's title.");
+      break;
+    default:
+      if (params[0] >= 24)
+        {
+          putter_single (putr, "\
+\" (Xterm) Resize the window to %u lines.", params[0]);
+        }
+      break;
+    }
+}
 
-static struct csi_handler csi_handlers[] =
+const static struct csi_handler csi_no_handler = { NULL, NULL };
+
+const static struct csi_handler csi_handlers[] =
   {
     {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1 },  /* x40 */
     {"CUU", "CURSOR UP", CSI_FUNC_PN, csi_do_cuu, 1 },
@@ -770,7 +860,7 @@ static struct csi_handler csi_handlers[] =
     {"DAQ", "DEFINE AREA QUALIFICATION"}
   };
 
-static struct csi_handler csi_spc_handlers[] = 
+const static struct csi_handler csi_spc_handlers[] = 
   {
     {"SL", "SCROLL LEFT", CSI_FUNC_PN, csi_do_su, 1 },
     {"SR", "SCROLL RIGHT", CSI_FUNC_PN, csi_do_su, 1 },
@@ -822,10 +912,12 @@ static struct csi_handler csi_spc_handlers[] =
     {NULL, NULL}
   };
 
-struct csi_handler csi_sr_handler =
+const static struct csi_handler csi_sr_handler =
   {NULL, NULL, CSI_FUNC_PN_ANY, csi_do_sr, -1, -1};
+const static struct csi_handler csi_wm_handler =
+  {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_wm, -1, -1};
 
-struct csi_handler *
+const struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
                  int interm, unsigned char final)
 {
@@ -838,6 +930,8 @@ get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
         case 'r':
         case 's':
           return &csi_sr_handler;
+        case 't':
+          return &csi_wm_handler;
         default:
           return &csi_no_handler;
         }
