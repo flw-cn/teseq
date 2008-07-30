@@ -148,3 +148,10 @@ inputbuf_reset_count (struct inputbuf *ib)
   ib->saved_count = 0;
 }
 
+int
+inputbuf_avail (struct inputbuf *ib)
+{
+  return ib->saving ? !ringbuf_reader_at_end (ib->reader)
+    : !ringbuf_is_empty (ib->rb);
+}
+

@@ -23,9 +23,13 @@
 
 #include <assert.h>
 #include <getopt.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "inputbuf.h"
 #include "putter.h"
@@ -95,6 +99,13 @@ const char *control_names[] = {
 };
 
 struct config configuration = { 0 };
+
+static struct termios saved_stty;
+static struct termios working_stty;
+static int input_term_fd = -1;
+static int output_tty_p = 0;
+static volatile sig_atomic_t signal_pending_p;
+static int pending_signal;
 
 
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
@@ -811,6 +822,42 @@ finish_state (struct processor *p)
 }
 
 void
+catchsig (int s)
+{
+  if (!signal_pending_p)
+    {
+      pending_signal = s;
+      signal_pending_p = 1;
+    }
+}
+
+void
+handle_pending_signal (struct processor *p)
+{
+  struct sigaction sa;
+  if (!signal_pending_p || inputbuf_avail (p->ibuf))
+    return;
+  
+  if (output_tty_p)
+    finish_state (p);
+
+  if (input_term_fd != -1)
+    tcsetattr (input_term_fd, TCSANOW, &saved_stty);
+
+  sigaction (pending_signal, NULL, &sa);
+  sa.sa_handler = SIG_DFL;
+  sigaction (pending_signal, &sa, NULL);
+  raise (pending_signal);
+  sa.sa_handler = catchsig;
+  sigaction (pending_signal, &sa, NULL);
+
+  if (input_term_fd != -1)
+    tcsetattr (input_term_fd, TCSANOW, &working_stty);
+
+  signal_pending_p = 0;
+}
+
+void
 process (struct processor *p, unsigned char c)
 {
   int handled = 0;
@@ -872,19 +919,27 @@ Usage: teseq [-CLDEx] [in] [out]\n\
    or: teseq -h | --help\n\
    or: teseq -V | --version\n\
 Format text with terminal escapes and control sequences for human\n\
-consumption.\n\
-\n", f);
+consumption.\n", f);
+  putc ('\n', f);
   fputs ("\
- -h, --help     Display usage information (this message).\n\
- -C             Don't print ^X for C0 controls.\n\
- -D             Don't print descriptions.\n\
- -E             Don't print escape sequences.\n\
- -L             Don't print labels.\n\
- -V, --version  Display version and warrantee.\n\
- -t TIMINGS     Read timing info from TIMINGS and emit delay lines.\n\
- -x             Identify control sequences from VT100/Xterm\n", f);
+ -h, --help      Display usage information (this message).\n\
+ -V, --version   Display version and warrantee.\n", f);
   fputs ("\
-\n\
+ -C              Don't print ^X for C0 controls.\n\
+ -D              Don't print descriptions.\n\
+ -E              Don't print escape sequences.\n\
+ -L              Don't print labels.\n", f);
+  fputs ("\
+ -I, --no-interactive\n\
+                 Don't put the terminal into non-canonical or no-echo\n\
+                 mode, and don't try to ensure output lines are finished\n\
+                 when a signal is received.\n\
+ -b, --buffered  Force teseq to buffer I/O.\n\
+ -t, --timings=TIMINGS\n\
+                 Read timing info from TIMINGS and emit delay lines.\n\
+ -x              Identify control sequences from VT100/Xterm\n", f);
+  putc ('\n', f);
+  fputs ("\
 The GNU Teseq home page is at http://www.gnu.org/software/teseq/.\n\
 Report all bugs to bug-teseq@gnu.org.\n\
 ", f);
@@ -905,8 +960,6 @@ There is NO WARRANTY, to the extent permitted by law.\
   exit (EXIT_SUCCESS);
 }
 
-  
-
 FILE *
 must_fopen (const char *fname, const char *mode, int dash)
 {
@@ -926,9 +979,55 @@ must_fopen (const char *fname, const char *mode, int dash)
   exit (EXIT_FAILURE);
 }
 
+void
+tty_setup (int fd)
+{
+  struct termios ti;
+
+  if (tcgetattr (fd, &ti) != 0)
+    return;
+  saved_stty = ti;
+  ti.c_lflag &= ~ICANON;
+  if (output_tty_p)
+    ti.c_lflag &= ~ECHO;
+  working_stty = ti;
+  input_term_fd = fd;
+  tcsetattr (fd, TCSANOW, &ti);
+}
+
+void
+signal_setup (void)
+{
+  static const int sigs[] =
+    {
+      SIGINT,
+      SIGTERM,
+      SIGTSTP,
+      SIGTTIN,
+      SIGTTOU
+    };
+  const int *sig, *sige = sigs + N_ARY_ELEMS (sigs);
+  struct sigaction sa;
+  sigset_t mask;
+
+  sigemptyset (&mask);
+  for (sig = sigs; sig != sige; ++sig)
+    sigaddset (&mask, *sig);
+  
+  sa.sa_handler = catchsig;
+  sa.sa_mask = mask;
+  sa.sa_flags = 0;
+  
+  for (sig = sigs; sig != sige; ++sig)
+    sigaction (*sig, &sa, NULL);
+}
+
 struct option teseq_opts[] = {
   { "help", 0, NULL, 'h' },
   { "version", 0, NULL, 'V' },
+  { "timings", 1, NULL, 't' },
+  { "buffered", 0, NULL, 'b' },
+  { "no-interactive", 0, NULL, 'I' },
   { 0 }
 };
 
@@ -939,15 +1038,18 @@ configure (struct processor *p, int argc, char **argv)
   const char *timings_fname = NULL;
   FILE *inf = stdin;
   FILE *outf = stdout;
+  int infd;
 
   configuration.control_hats = 1;
   configuration.descriptions = 1;
   configuration.labels = 1;
   configuration.escapes = 1;
   configuration.extensions = 0;
+  configuration.buffered = 0;
+  configuration.handle_signals = 1;
   configuration.timings = NULL;
 
-  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEt:x",
+  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEt:xbI",
                              teseq_opts, NULL))
          != -1)
     {
@@ -973,6 +1075,12 @@ configure (struct processor *p, int argc, char **argv)
           break;
         case 'E':
           configuration.escapes = 0;
+          break;
+        case 'I':
+          configuration.handle_signals = 0;
+          break;
+        case 'b':
+          configuration.buffered = 1;
           break;
         case 't':
           timings_fname = optarg;
@@ -1008,8 +1116,30 @@ configure (struct processor *p, int argc, char **argv)
       configuration.timings = must_fopen (timings_fname, "r", 0);
     }
 
-  /* Set input to unbuffered. */
-  setvbuf (inf, NULL, _IONBF, 0);
+  /* Set input/output to unbuffered. */
+  infd = fileno (inf);
+  if (!configuration.buffered)
+    {
+      /* Don't unbuffer if input's a plain file. */
+      struct stat s;
+      int r = fstat (infd, &s);
+      
+      if (r == -1 || !S_ISREG (s.st_mode))
+        {
+          setvbuf (inf, NULL, _IONBF, 0);
+          setvbuf (outf, NULL, _IONBF, 0);
+        }
+    }
+
+  output_tty_p = isatty (fileno (outf));
+
+  if (configuration.handle_signals)
+    {
+      if (isatty (infd))
+        tty_setup (infd);
+      signal_setup ();
+    }
+  
   p->ibuf = inputbuf_new (inf, 1024);
   p->putr = putter_new (outf);
   if (!p->ibuf || !p->putr)
@@ -1073,9 +1203,19 @@ main (int argc, char **argv)
     {
       if (SHOULD_EMIT_DELAY (&p))
         emit_delay (&p);
+      handle_pending_signal (&p);
       c = inputbuf_get (p.ibuf);
-      if (c == EOF) break;
-      process (&p, c);
+      if (c == EOF)
+        {
+          if (signal_pending_p)
+            continue;
+          else
+            break;
+        }
+      else
+        {
+          process (&p, c);
+        }
     }
   finish (&p);
   return EXIT_SUCCESS;
