@@ -130,11 +130,13 @@ csi_do_cuu (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   const char *dir[] = {"up", "down", "right", "left"};
+  const char *unit[] = {"line", "character"};
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor %s %u line%s.",
+  putter_single (putr, "\" Move the cursor %s %u %s%s.",
                  dir[ final - 0x41 ],
-                 params[0], params[0] == 1 ? "" : "s");
+                 params[0], unit[ (final - 0x41)/2 ],
+                 params[0] == 1 ? "" : "s");
 }
 
 static void

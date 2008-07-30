@@ -24,16 +24,16 @@
 " Move the cursor down 2 lines.
 : Esc [ C
 & CUF: CURSOR RIGHT
-" Move the cursor right 1 line.
+" Move the cursor right 1 character.
 : Esc [ 2 C
 & CUF: CURSOR RIGHT
-" Move the cursor right 2 lines.
+" Move the cursor right 2 characters.
 : Esc [ D
 & CUB: CURSOR LEFT
-" Move the cursor left 1 line.
+" Move the cursor left 1 character.
 : Esc [ 2 D
 & CUB: CURSOR LEFT
-" Move the cursor left 2 lines.
+" Move the cursor left 2 characters.
 . LF/^J
 : Esc [ E
 & CNL: CURSOR NEXT LINE

@@ -1,8 +1,5 @@
 TODO:                                                   -*- text -*-
 
-CSI Ps [; Ps ; Ps] t
-             Window manipulation.
-
 CSI Ps ; Pu ' z
              DECELR Locator Reporting.
 CSI Pm ' {   DECSLE Select Locator events
