@@ -61,3 +61,13 @@
 " Set the scrolling region to from line 1 to line 10.
 : Esc [ 10 r
 . LF/^J
+: Esc [ ? 1000 ; 1049 r
+" *** Restore saved settings for specified modes:
+" (Xterm) Send mouse X & Y on button press and release.
+" (Xterm) Save the cursor position and use the alternate screen buffer,
+"  clearing it first.
+: Esc [ ? 5 ; 1 s
+" *** Save current state of specified modes:
+" (DEC) Reverse video (dark on light).
+" (DEC) Cursor key mode.
+. LF/^J

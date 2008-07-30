@@ -691,7 +691,21 @@ static void
 csi_do_sr (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
-  if (n_params == 0)
+  if (priv == '?')
+    {
+      if (final == 'r')
+        putter_single (putr, ("\" *** Restore saved settings for specified "
+                              "modes:"));
+      else
+        putter_single (putr, ("\" *** Save current state of specified "
+                              "modes:"));
+      csi_do_sm ('h', priv, putr, n_params, params);
+    }
+  else if (priv)
+    return;
+  else if (final != 'r')
+    return;
+  else if (n_params == 0)
     putter_single (putr, "\" Set the scrolling region to full size.");
   else if (n_params == 2)
     {
@@ -822,6 +836,7 @@ get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
       switch (final)
         {
         case 'r':
+        case 's':
           return &csi_sr_handler;
         default:
           return &csi_no_handler;
