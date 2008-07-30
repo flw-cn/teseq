@@ -21,11 +21,6 @@ Reseq should complain about lines it doesn't recognize, so it can't
 silently generate incomplete data from the output of future versions
 of Teseq. Perhaps reserve some "safe" ones in advance.
 
-Make the signal-handling state-finishing stuff dependent on whether
-_output_ is a tty, rather than input (but keep the termios stuff
-dependant on input). Turn off unbuffered I/O for sane cases, and offer
-options to force buffered/unbuffered mode.
-
 Add a divisor option to reseq for playback, like scriptreplay's. And
 suppress delays < 0.0001, too.
 
