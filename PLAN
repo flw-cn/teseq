@@ -28,8 +28,7 @@ Figure out what to do with teseq-post.sed.
 
 Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
-single-line-no-EOF for timings.
-
+single-line-no-EOF for timings. Exit status on I/O error.
 
 
 
