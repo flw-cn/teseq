@@ -902,15 +902,6 @@ process (struct processor *p, unsigned char c)
 }
 
 void
-finish (struct processor *p)
-{
-  if (p->st == ST_TEXT)
-    putter_finish (p->putr, "|");
-  else if (p->st != ST_INIT)
-    putter_finish (p->putr, "");
-}
-
-void
 usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
@@ -1217,6 +1208,6 @@ main (int argc, char **argv)
           process (&p, c);
         }
     }
-  finish (&p);
+  finish_state (&p);
   return EXIT_SUCCESS;
 }
