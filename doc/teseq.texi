@@ -95,7 +95,7 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 
 * Reseq::                       Reversing Teseq's output.
 
-* Future Directions::           Future features under consideration.
+* Future Enhancements::         Future features under consideration.
 * Contact and Info::            Where to ask questions and find answers.
 
 * Copying::                     Copying and sharing this manual.
@@ -132,7 +132,7 @@ database such as
 termcap or
 @cindex terminfo
 terminfo, though future versions may
-include limited support for that (@pxref{Future Directions}).
+include limited support for that (@pxref{Future Enhancements }).
 Therefore, the descriptions Teseq uses for control functions may not
 necessarily match their actual interpretation by whatever terminal
 device the characters were actually intended for.
@@ -581,7 +581,7 @@ be represented in hexadecimal on control-character lines, and not
 displayed on a text line. Future versions of Teseq may provide options
 allowing for these characters to be represented properly in text
 lines, but for now, the output format is ASCII characters only.
-@xref{Future Directions}.
+@xref{Future Enhancements}.
 
 Note that even characters falling in the normal range of ASCII
 printable characters may not necessarily be represented correctly: for
@@ -1046,9 +1046,9 @@ However, depending on the current setting of the
 @sc{line editing mode}, the actual behavior might be to shift the
 lines @emph{before} the cursor, rather than the ones after. Future
 versions of Teseq may track enough terminal state to improve the
-accuracy of these descriptions, but they would still need to
-guess at the initial state of the terminal, for any modes that had not
-been explicitly set or reset.
+accuracy of these descriptions (@pxref{Future Enhancements}), but they
+would still need to guess at the initial state of the terminal, for
+any modes that had not been explicitly set or reset.
 
 Descriptions are also often inaccurate. For instance, the description
 for @sc{insert line} should really read ``shift the current line and
@@ -1125,7 +1125,7 @@ sequence''.
 These standards are available, ``free of charge and copyright'', at@*
 @uref{http://www.ecma-international.org/}.
 
-@node Reseq, Future Directions, Standards, Top
+@node Reseq, Future Enhancements, Standards, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{teseq}
@@ -1252,26 +1252,48 @@ delay lines:
 Any other sorts of lines encountered are ignored and discarded, and
 have no effect on the output.
 
-@node Future Directions, Contact and Info, Reseq, Top
-@chapter Future Directions
+@node Future Enhancements, Contact and Info, Reseq, Top
+@chapter Future Enhancements
 
 Here are some potential additions that may appear in future versions of
 Teseq.
 
-@unnumberedsec Unicode Output
+@unnumberedsec Stateful Processing
+
+Future versions of Teseq may support options to remember state
+information about the terminal. For instance if Teseq has seen the
+invocation of @sc{select graphic rendition} to set underlined text,
+Teseq might render any further text that
+appears in
+@cindex text line
+with underlining. In addition, the meaning of some standardized
+commands defined by @fortyeight{} depend on the current setting of
+various terminal modes, and Teseq currently makes assumptions about
+those modes. A state-remembering Teseq might remember the last time a
+mode was set, and no longer need to make assumptions.
+
+If Teseq is given information about the size of the target terminal,
+it could also provide information about the cursor's present location
+after every cursor-moving command.
+
 Currently, all output from @command{teseq} is in US
 @cindex standards
 @cindex ASCII
-ASCII; but future versions of Teseq might support output in more
-extensive character encodings, such as
-@cindex UTF-8
-UTF-8 or other Unicode-based encodings. If that happens, Teseq might
-also add support for the handling of @thirtyfive{} character
-code-switching sequences, such that the characters given in
+ASCII; but future versions of Teseq might support output in other
+encodings. If that happens, Teseq might also add support for the
+handling of @thirtyfive{} character code-switching sequences, such
+that the characters given in
 @cindex text line
 text lines would reflect the actual characters as they would actually
 appear in the terminal device, depending on the current encoding
 state.
+
+Note that features which alter the bytes found between the pipe
+characters of a text line, would most likely break reverse-translation
+with
+@cindex @command{reseq}
+@command{reseq}, as it would be much harder to tell what the original
+byte values had been.
 
 @unnumberedsec Terminal Database Awareness
 
@@ -1305,7 +1327,7 @@ No commitment has been made to any particular output format for this
 feature; the above is intended purely as an example of one possible
 approach.
 
-@node Contact and Info, Copying, Future Directions, Top
+@node Contact and Info, Copying, Future Enhancements, Top
 @chapter Contact and Information
 
 If you have any questions, comments, suggestions, or bug reports,

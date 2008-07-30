@@ -1,8 +1,5 @@
 TODO:                                                   -*- text -*-
 
-CSI ? Pm r   Restore values of (private) specified modes.
-CSI ? Pm s   Save values of (private) specified modes.
-
 CSI Ps [; Ps ; Ps] t
              Window manipulation.
 
