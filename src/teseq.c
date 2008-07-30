@@ -103,6 +103,7 @@ struct config configuration = { 0 };
 static struct termios saved_stty;
 static struct termios working_stty;
 static int termfd = -1;
+static int output_tty_p = 0;
 static volatile sig_atomic_t signal_pending_p;
 static int pending_signal;
 
@@ -837,7 +838,8 @@ handle_pending_signal (struct processor *p)
   if (!signal_pending_p || inputbuf_avail (p->ibuf))
     return;
   
-  finish_state (p);
+  if (output_tty_p)
+    finish_state (p);
 
   if (termfd != -1)
     tcsetattr (termfd, TCSANOW, &saved_stty);
@@ -985,7 +987,9 @@ tty_setup (int fd)
   if (tcgetattr (fd, &ti) != 0)
     return;
   saved_stty = ti;
-  ti.c_lflag &= ~(ECHO | ICANON);
+  ti.c_lflag &= ~ICANON;
+  if (output_tty_p)
+  ti.c_lflag &= ~ICANON;
   working_stty = ti;
   termfd = fd;
   tcsetattr (fd, TCSANOW, &ti);
@@ -1005,7 +1009,7 @@ signal_setup (void)
   const int *sig, *sige = sigs + N_ARY_ELEMS (sigs);
   struct sigaction sa;
   sigset_t mask;
-  
+
   sigemptyset (&mask);
   for (sig = sigs; sig != sige; ++sig)
     sigaddset (&mask, *sig);
@@ -1126,14 +1130,14 @@ configure (struct processor *p, int argc, char **argv)
           setvbuf (outf, NULL, _IONBF, 0);
         }
     }
-  if (isatty (fileno (outf)))
+
+  output_tty_p = isatty (fileno (outf));
+
+  if (configuration.handle_signals)
     {
-      if (configuration.handle_signals)
-        {
-          if (isatty (infd))
-            tty_setup (infd);
-          signal_setup ();
-        }
+      if (isatty (infd))
+        tty_setup (infd);
+      signal_setup ();
     }
   
   p->ibuf = inputbuf_new (inf, 1024);

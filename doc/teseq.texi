@@ -373,10 +373,13 @@ in order to pass them to the @command{teseq} command.
 @cindex non-canonical mode
 @cindex @command{teseq}, interactive mode
 
-When @command{teseq} is started with a terminal as both its input and
-output, it sets the terminal to non-canonical mode with echo off. That
-way, you can see real-time translation of input, as you type. You can
-try it out by simply running @command{teseq} without any arguments.
+When @command{teseq} is started with a terminal as its input, it sets
+the terminal to non-canonical mode. That way, you can see real-time
+translation of input, as you type. If both input and output are
+terminals, then @command{teseq} will also turn local echo off, so that
+the characters you type will not interfere with the output you
+see. You can try it out by simply running @command{teseq} without any
+arguments.
 
 When run in this way, characters typed as input are immediately
 translated and written out. The exception is that when an @sc{escape}
