@@ -91,10 +91,10 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 * Overview::                    What does Teseq do? (with example)
 * Invoking Teseq::              How to run Teseq, with options 'n' stuff.
 * Output Format::               How Teseq's output looks.
-* Standards::                   The official word on control functions.
 
 * Reseq::                       Reversing Teseq's output.
 
+* Standards::                   The official word on control functions.
 * Future Enhancements::         Future features under consideration.
 * Contact and Info::            Where to ask questions and find answers.
 
@@ -132,7 +132,7 @@ database such as
 termcap or
 @cindex terminfo
 terminfo, though future versions may
-include limited support for that (@pxref{Future Enhancements }).
+include limited support for that (@pxref{Future Enhancements}).
 Therefore, the descriptions Teseq uses for control functions may not
 necessarily match their actual interpretation by whatever terminal
 device the characters were actually intended for.
@@ -206,8 +206,8 @@ settings, you'll get the following output.
 |earth|.
 @end example
 
-@cindex line prefixes
-@cindex prefixes
+@cindex line prefix
+@cindex prefix, line
 @noindent
 Note that the special control sequences that tell the terminal to start
 and stop writing in boldface text are separated out on their own lines
@@ -418,7 +418,7 @@ this can result in much longer processing time overall. To force
 @opindex -b
 @option{--buffered} (@option{-b}) option.
 
-@node Output Format, Standards, Invoking Teseq, Top
+@node Output Format, Reseq, Invoking Teseq, Top
 @chapter Output Format
 
 Teseq produces output that is primarily intended to be read by humans
@@ -1107,25 +1107,7 @@ output, to introduce a delay at a particular point when using
 @samp{reseq --replay}, which can aid in giving the user time to more
 easily observe terminal behavior.
 
-@node Standards, Reseq, Output Format, Top
-@chapter Standards
-
-The most authoritative source of information on control functions,
-their representations in bytes, and their intended meaning, is the
-@fortyeight{} standard. Also related is the @thirtyfive{} standard,
-which describes control functions for switching the character
-encoding, and defines the possible forms of escape sequence (note
-that, in Teseq, 
-@cindex escape sequence
-``escape sequence'' refers to both the Ecma-48 concept of
-@cindex control sequence
-``control sequences'', and the official Ecma-35 meaning of ``escape
-sequence''.
-
-These standards are available, ``free of charge and copyright'', at@*
-@uref{http://www.ecma-international.org/}.
-
-@node Reseq, Future Enhancements, Standards, Top
+@node Reseq, Standards, Output Format, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{teseq}
@@ -1248,11 +1230,95 @@ delay lines:
 @@ 3.14159
 @end example
 
-@noindent
-Any other sorts of lines encountered are ignored and discarded, and
-have no effect on the output.
+@menu
+* Reserved Line Prefixes::      
+@end menu
 
-@node Future Enhancements, Contact and Info, Reseq, Top
+@node Reserved Line Prefixes,  , Reseq, Reseq
+@unnumberedsec Reserved Line Prefixes
+@cindex reserved line prefixes
+@cindex line prefix, reserved
+@cindex line prefix
+@cindex prefix, line
+
+It's important for @command{reseq} to be able to process its input
+correctly, even if that output came from a different version of
+@command{teseq} than @command{reseq} is familiar with. So, it's
+important that @command{reseq} should refuse to continue processing
+input if it encounters a line that it doesn't recognize, but which
+might contain important semantic information that effects the output
+@command{reseq} should produce.
+
+At the same time, it'd be a shame for @command{reseq} to refuse to
+process a line it doesn't understand, if that line contains
+non-critical information. For example, consider delay lines (beginning
+with @samp{@@}. The delay line holds semantic information, to be sure;
+but not information that would affect @command{reseq}'s normal
+operation (it only has meaning when one of the
+@opindex --timings
+@option{--timings} or
+@opindex --replay
+@option{--replay} options has been specified). So, if an older version
+of @command{reseq} had existed that did not recognize them, it would
+have been a shame if its introduction in the newer release had caused
+the older version to refuse to process it.
+
+To address both of these concerns, @command{reseq} has taken the
+approach of reserving certain prefixes for use as ``semantically
+significant'' line prefixes, and others for use in lines that
+@command{reseq} can safely ignore. A line that begins with any of the
+following characters, will cause @command{reseq} to halt processing
+and exit with an error.
+
+@example
+!$+/=[\^@{~
+@end example
+
+@noindent
+The idea is that these prefixes are reserved for future use in lines
+that @command{reseq} must understand in order to produce correct
+results.
+
+This leaves all remaining characters free for use in specifying future
+@command{teseq} output lines that do not affect processing for older
+@command{reseq}s. Note that they are still reserved for
+@command{teseq}, and are not intended for users to insert commentary
+or such. However, @command{teseq} will never use a line beginning with
+the space character; and @command{reseq} will always ignore such
+lines, so the space character may be used to indicate user comments.
+
+@node Standards, Future Enhancements, Reseq, Top
+@chapter Standards
+
+The most authoritative source of information on control functions,
+their representations in bytes, and their intended meaning, is the
+@fortyeight{} standard. Also related is the @thirtyfive{} standard,
+which describes control functions for switching the character
+encoding, and defines the possible forms of escape sequence (note
+that, in Teseq, 
+@cindex escape sequence
+``escape sequence'' refers to both the Ecma-48 concept of
+@cindex control sequence
+``control sequences'', and the official Ecma-35 meaning of ``escape
+sequence''. These standards are available, ``free of charge and
+copyright'', at:
+
+@example
+@uref{http://www.ecma-international.org/}.
+@end example
+
+@noindent
+In addition to the definitions provided by these standards, Teseq also
+recognizes additional sequences when the @option{-x} option has been
+specified. Sources of information that were used for identifying and
+describing these sequences, include:
+
+@example
+@uref{http://invisible-island.net/xterm/ctlseqs/ctlseqs.html}
+@uref{http://www.vt100.net/}.
+@end example
+
+@node Future Enhancements, Contact and Info, Standards, Top
 @chapter Future Enhancements
 
 Here are some potential additions that may appear in future versions of

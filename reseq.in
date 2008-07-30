@@ -86,7 +86,12 @@ sub process_control {
     }
     else {
         $control =~ s#/.*$##;
-        &emit($controls{$control});
+        unless (exists $controls{$control}) {
+            print STDERR ("reseq: line $.: unrecognized \"control\": "
+                          . "\"\Q$control\E\"\n");
+        } else {
+            &emit($controls{$control});
+        }
     }
 }
 
@@ -105,7 +110,7 @@ sub process_sequence {
 
 sub process_delay {
     if ($replay) {
-        return if !defined($_[0]);
+        return if !defined($_[0] || $_[0] <= 0.0001);
         select (undef, undef, undef, $_[0]);
     }
     elsif ($timings) {
@@ -146,6 +151,13 @@ sub process_line {
     }
     elsif (/^@ +(.*)$/) {
         &process_delay ($1);
+    }
+    elsif (/^[!\$+\[\/=\\^\{~]/) {
+        die "Unknown semantic line prefix, line $.: $&\n";
+    }
+    else {
+        # Acceptable line prefix with no crucial semantic value.
+        # This includes label (&) and description (") lines.
     }
 }
 
