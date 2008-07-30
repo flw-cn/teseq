@@ -379,7 +379,11 @@ translation of input, as you type. If both input and output are
 terminals, then @command{teseq} will also turn local echo off, so that
 the characters you type will not interfere with the output you
 see. You can try it out by simply running @command{teseq} without any
-arguments.
+arguments. @strong{Note}, this means that the control for indicating
+``end-of-file'' (usually @samp{C-d}) will not be processed specially,
+but will be passed through to @command{teseq} like any other
+character. Use the interrupt character (usually @samp{C-c}) instead,
+or specify @option{--no-interactive} to disable this behavior.
 
 When run in this way, characters typed as input are immediately
 translated and written out. The exception is that when an @sc{escape}
