@@ -989,7 +989,7 @@ tty_setup (int fd)
   saved_stty = ti;
   ti.c_lflag &= ~ICANON;
   if (output_tty_p)
-  ti.c_lflag &= ~ICANON;
+    ti.c_lflag &= ~ECHO;
   working_stty = ti;
   termfd = fd;
   tcsetattr (fd, TCSANOW, &ti);
