@@ -44,10 +44,10 @@ dist_man_MANS = doc/teseq.1 doc/reseq.1
 
 SUFFIXES = .cm
 
-doc/teseq.1: ./teseq
+doc/teseq.1: src/teseq.c
 	help2man ./teseq -o doc/teseq.1
 
-doc/reseq.1: ./reseq
+doc/reseq.1: ./reseq.in
 	help2man ./reseq -o doc/reseq.1
 
 .cm.c:

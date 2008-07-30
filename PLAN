@@ -18,7 +18,7 @@ Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
 single-line-no-EOF for timings. Exit status on I/O error.
 
-Deal with check, checkmk more sanely, in configure.ac.
+Deal with check, checkmk, help2man (see hello) more sanely, in configure.ac.
 
 
 
