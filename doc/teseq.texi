@@ -1133,19 +1133,19 @@ to the terminal; in that event, the @var{output} argument is optional.
 @table @option
 @item -h
 @itemx --help
-@opindex --help
-@opindex -h
+@opindex --help (reseq)
+@opindex -h (reseq)
 Print usage information on standard output and exit successfully.
 
 @item -V
 @itemx --version
-@opindex --version
-@opindex -V
+@opindex --version (reseq)
+@opindex -V (reseq)
 Print the version number and licensing information of @code{hello} on
 standard output and then exit successfully.
 
 @item --replay
-@opindex --replay
+@opindex --replay (reseq)
 Honor delay lines in the input, pausing the specified amount of time
 before continuing to process the next line. This is useful for
 producing behavior equivalent to that of the
@@ -1156,14 +1156,14 @@ but using a Teseq output file as input, rather than a raw typescript
 file.
 
 @item -d @var{divisor}
-@opindex -d
+@opindex -d (reseq)
 Play back the script at @var{divisor} times the original speed
 (meaningless unless @option{--replay} was also specified).
 
 @item -t @var{timings}
 @itemx --timings @var{timings}
-@opindex -t
-@opindex --timings
+@opindex -t (reseq)
+@opindex --timings (reseq)
 Produce timing information from delay lines, in the format generated
 by
 @cindex @command{script}
@@ -1265,9 +1265,10 @@ non-critical information. For example, consider delay lines (beginning
 with @samp{@@}. The delay line holds semantic information, to be sure;
 but not information that would affect @command{reseq}'s normal
 operation (it only has meaning when one of the
-@opindex --timings
+@opindex -t (reseq)
+@opindex --timings (reseq)
 @option{--timings} or
-@opindex --replay
+@opindex --replay (reseq)
 @option{--replay} options has been specified). So, if an older version
 of @command{reseq} had existed that did not recognize them, it would
 have been a shame if its introduction in the newer release had caused
