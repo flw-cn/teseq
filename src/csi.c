@@ -904,13 +904,13 @@ csi_do_decelr (unsigned char final, unsigned char priv,
   switch (params[0])
     {
     case 0:
-      putter_single (putr, "\" (DEC) Disable locator reports.");
+      putter_single (putr, "\" Disable locator reports.");
       return; /* (why mention units we won't be reporting with?) */
     case 1:
-      putter_single (putr, "\" (DEC) Enable locator reports.");
+      putter_single (putr, "\" Enable locator reports.");
       break;
     case 2:
-      putter_single (putr, "\" (DEC) Enable a single locator report.");
+      putter_single (putr, "\" Enable a single locator report.");
       break;
     }
   switch (params[1])
@@ -941,7 +941,7 @@ csi_do_decsle (unsigned char final, unsigned char priv,
   
   for (p = params; p != pend; ++p)
     if (*p < N_ARY_ELEMS (msgs))
-      putter_single (putr, "\" (DEC) %s", msgs[*p]);
+      putter_single (putr, "\" %s", msgs[*p]);
 }
 
 const static struct csi_handler csi_no_handler = { NULL, NULL };
@@ -1056,9 +1056,9 @@ const static struct csi_handler csi_sr_handler =
 const static struct csi_handler csi_wm_handler =
   {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_wm, -1, -1};
 const static struct csi_handler csi_decelr_handler =
-  {NULL, NULL, CSI_FUNC_PS_PS, csi_do_decelr, 0, 0};
+  {"DECELR", "ENABLE LOCATOR REPORTING", CSI_FUNC_PS_PS, csi_do_decelr, 0, 0};
 const static struct csi_handler csi_decsle_handler =
-  {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_decsle, 0};
+  {"DECSLE", "SELECT LOCATOR EVENTS", CSI_FUNC_PS_ANY, csi_do_decsle, 0};
 
 const struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,

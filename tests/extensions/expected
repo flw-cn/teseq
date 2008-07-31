@@ -109,28 +109,38 @@
 " (Xterm) Resize the window to 53 lines.
 . LF/^J
 : Esc [ ' z
-" (DEC) Disable locator reports.
+& DECELR: ENABLE LOCATOR REPORTING
+" Disable locator reports.
 : Esc [ 0 ' z
-" (DEC) Disable locator reports.
+& DECELR: ENABLE LOCATOR REPORTING
+" Disable locator reports.
 : Esc [ 1 ; 1 ' z
-" (DEC) Enable locator reports.
+& DECELR: ENABLE LOCATOR REPORTING
+" Enable locator reports.
 "  Report position in pixels.
 : Esc [ 1 ; 0 ' z
-" (DEC) Enable locator reports.
+& DECELR: ENABLE LOCATOR REPORTING
+" Enable locator reports.
 "  Report position in character cells.
 : Esc [ 2 ; 2 ' z
-" (DEC) Enable a single locator report.
+& DECELR: ENABLE LOCATOR REPORTING
+" Enable a single locator report.
 "  Report position in character cells.
 : Esc [ 1 ; 2 ; 3 ' z
+& DECELR: ENABLE LOCATOR REPORTING
 . LF/^J
 : Esc [ ' {
-" (DEC) Only respond to explicit locator report requests.
+& DECSLE: SELECT LOCATOR EVENTS
+" Only respond to explicit locator report requests.
 : Esc [ 2 ; 3 ' {
-" (DEC) Do not report button-down transitions.
-" (DEC) Report button-up transitions.
+& DECSLE: SELECT LOCATOR EVENTS
+" Do not report button-down transitions.
+" Report button-up transitions.
 : Esc [ 1 ; 4 ' {
-" (DEC) Report button-down transitions.
-" (DEC) Do not report button-up transitions.
+& DECSLE: SELECT LOCATOR EVENTS
+" Report button-down transitions.
+" Do not report button-up transitions.
 : Esc [ 0 ; 5 ' {
-" (DEC) Only respond to explicit locator report requests.
+& DECSLE: SELECT LOCATOR EVENTS
+" Only respond to explicit locator report requests.
 . LF/^J
