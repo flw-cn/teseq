@@ -1047,18 +1047,31 @@ get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
     {
       if (!configuration.extensions)
         return &csi_no_handler;
-      switch (final)
+      if (intermsz == 0)
         {
-        case 'r':
-        case 's':
-          return &csi_sr_handler;
-        case 't':
-          return &csi_wm_handler;
-        case 'z':
-          return &csi_decelr_handler;
-        default:
-          return &csi_no_handler;
+          switch (final)
+            {
+            case 'r':
+            case 's':
+              return &csi_sr_handler;
+            case 't':
+              return &csi_wm_handler;
+            default:
+              return &csi_no_handler;
+            }
         }
+      else if (intermsz == 1 && interm == '\'')
+        {
+          switch (final)
+            {
+            case 'z':
+              return &csi_decelr_handler;
+            default:
+              return &csi_no_handler;
+            }
+        }
+      else
+        return &csi_no_handler;
     }
   else if (intermsz == 0)
     return &csi_handlers[final - 0x40];
