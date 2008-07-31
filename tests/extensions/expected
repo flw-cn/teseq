@@ -147,3 +147,6 @@
 & DECRQLP: REQUEST LOCATOR POSITION
 " Request a single DECLRP locator report.
 . LF/^J
+: Esc [ 2 ; 28 ; 52 ; 19 ; 1 & w
+" (DEC) Mouse [down:left/M4] at [52,52].
+. LF/^J

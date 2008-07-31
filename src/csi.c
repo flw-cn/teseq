@@ -109,6 +109,7 @@ SOFTWARE.
 #include "teseq.h"
 
 #include <assert.h>
+#include <string.h>
 
 #include "csi.h"
 #include "sgr.h"
@@ -955,6 +956,41 @@ csi_do_decrqlp (unsigned char final, unsigned char priv,
   putter_single (putr, "\" Request a single DECLRP locator report.");
 }
 
+static void
+csi_do_decmouse (unsigned char final, unsigned char priv,
+                 struct putter *putr, size_t n_params, unsigned int *params)
+{
+  char downs[100] = " [down:", *cur;
+  const char *buttons[] = {"right", "middle", "left", "M4"};
+  
+  if (priv) return;
+  if (n_params < 4) return;
+  if (params[1] == 0)
+    cur = "";
+  else
+    {
+      unsigned int bit;
+      cur = downs + strlen (downs);
+      for (bit = 0; bit != N_ARY_ELEMS (buttons); ++bit)
+        {
+          size_t len;
+
+          if ((params[1] & (1u << bit)) == 0) continue;
+          if (*(cur-1) != ':')
+            *cur++ = '/';
+          len = strlen (buttons[bit]);
+          memcpy (cur, buttons[bit], len);
+          cur += len;
+        }
+      *cur = ']';
+      /* terminating '\0' is already there; downs was initialized. */
+      assert (cur - downs < sizeof downs);
+      cur = downs;
+    }
+  putter_single (putr, "\" (DEC) Mouse%s at [%u,%u].",
+                 cur, params[2], params[2]);
+}
+
 const static struct csi_handler csi_no_handler = { NULL, NULL };
 
 const static struct csi_handler csi_handlers[] =
@@ -1072,6 +1108,8 @@ const static struct csi_handler csi_decsle_handler =
   {"DECSLE", "SELECT LOCATOR EVENTS", CSI_FUNC_PS_ANY, csi_do_decsle, 0};
 const static struct csi_handler csi_decrqlp_handler =
   {"DECRQLP", "REQUEST LOCATOR POSITION", CSI_FUNC_PS, csi_do_decrqlp, 0};
+const static struct csi_handler csi_decmouse_handler =
+  {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_decmouse, -1, -1};
 
 const struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
@@ -1108,6 +1146,8 @@ get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
               return &csi_no_handler;
             }
         }
+      else if (intermsz == 1 && interm == '&' && final == 'w')
+        return &csi_decmouse_handler;
       else
         return &csi_no_handler;
     }
