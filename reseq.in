@@ -21,7 +21,7 @@ our $replay = 0;
 our $timings;
 
 our $timingsf;
-our $last_delay = 0.0;
+our $last_delay = undef;
 our $last_last_delay = 0.0;
 our $count;
 
@@ -110,26 +110,19 @@ sub process_sequence {
 
 sub process_delay {
     if ($replay) {
-        return if !defined($_[0] || $_[0] <= 0.0001);
+        return if !defined($_[0]) || $_[0] <= 0.0001;
         select (undef, undef, undef, $_[0]);
     }
     elsif ($timings) {
-        # Why must we wait until we've seen a third delay line before
+        # Why must we wait until we've seen a second delay line before
         # emitting the first one? The answer is that "script" emits its
         # delays such that they are counted _before_ the read, rather than
-        # after. Thus the first delay is always close to zero (would be
-        # much closer, but the first delay is calculated very roughly),
-        # and the second delay represents the actual time the first read
-        # required (plus whatever small time leads up to the next read).
-        #
-        # Thus the first two delays together make up the amount of time
-        # to delay before the first byte is written, and it isn't until we
-        # reach the third delay (or EOF) that we know how many bytes are
-        # supposed to be read by scriptreplay after the _first_ delay
-        # (and then written after the second is read, to keep the remaining
-        # timings true).
-        if ($last_last_delay) {
-            print $timingsf "$last_last_delay $count\n";
+        # after. So we need to wait until the second delay line before
+        # we know how large a character-count we should place in the first
+        # line (which should get a zero-sized delay).
+        if (defined $last_delay) {
+            $last_last_delay = 0.0 unless defined $last_last_delay;
+            printf $timingsf ("%f %u\n", $last_last_delay, $count);
         }
         $count = 0;
         $last_last_delay = $last_delay;

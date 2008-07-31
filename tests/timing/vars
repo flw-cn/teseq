@@ -3,4 +3,4 @@ r_invocation='"$RESEQ" -t "$testout/timing-out" "$testin/$r_input" \
               "$testout/$r_output"'
 
 r_diffcmd='cmp -- "$testin/$r_expected" "$testout/$r_output" && \
-           diff -- "$testin/timing-info" "$testout/timing-out"'
+           diff -u -- "$testin/timing-info" "$testout/timing-out"'

@@ -111,6 +111,7 @@ static int pending_signal;
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
 #define is_ascii_digit(x)       ((x) >= 0x30 && (x) <= 0x39)
 
+/* Read a line from a typescript timings file. */
 void
 delay_read (FILE *f, struct delay *d)
 {
@@ -1143,6 +1144,7 @@ configure (struct processor *p, int argc, char **argv)
 void
 emit_delay (struct processor *p)
 {
+  static int first = 1;
   size_t count = inputbuf_get_count (p->ibuf);
   finish_state (p);
   do
@@ -1150,14 +1152,18 @@ emit_delay (struct processor *p)
       /* Why the "next mark"? ...script issues the amount of delay
          that has occurred *before* a read has been attempted, thus
          scriptreplay.pl Actually reads and executes two delays before
-         printing the first byte, to keep the remaining delays properly
-         synched. So, we need to ensure we issue two delays before
-         _we_ process the first byte, as well. */
+         printing the first byte, to keep the remaining delays
+         properly synched. So, we throw out the first delay (but
+         remember the number-of-bytes field), and execute the second,
+         before _we_ process the byte. */
       struct delay d;
       delay_read (configuration.timings, &d);
       p->mark += p->next_mark;
       p->next_mark = d.chars;
-      putter_single (p->putr, "@ %f", d.time);
+      if (first)
+        first = 0;
+      else
+        putter_single (p->putr, "@ %f", d.time);
     }
   while (configuration.timings && p->mark <= count);
 
