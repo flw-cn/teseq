@@ -19,6 +19,7 @@ our $inf;
 our $outf;
 our $replay = 0;
 our $timings;
+our $divisor = 1.0;
 
 our $timingsf;
 our $last_delay = undef;
@@ -53,6 +54,7 @@ Reverse the translations made by teseq.
  -h, --help          Print usage information (this message).
  -V, --version       Display version and warrantee
  --replay            Obey delay lines for video-style playback.
+ -d DIVISOR          Play back at DIVISOR times the normal speed.
  -t, --timings=FILE  Output timing data to FILE, in the format used
                      by script -t and scriptreplay.
 
@@ -110,8 +112,8 @@ sub process_sequence {
 
 sub process_delay {
     if ($replay) {
-        return if !defined($_[0]) || $_[0] <= 0.0001;
-        select (undef, undef, undef, $_[0]);
+        return if !defined($_[0]) || ($_[0] / $divisor) <= 0.0001;
+        select (undef, undef, undef, $_[0] / $divisor);
     }
     elsif ($timings) {
         # Why must we wait until we've seen a second delay line before
@@ -158,9 +160,11 @@ sub process_line {
 &GetOptions ('help|h' => sub { &usage (0); },
              'version|V' => \&version,
              'replay' => \$replay,
-             'timings|t=s' => \$timings);
+             'timings|t=s' => \$timings,
+             'd=f' => \$divisor);
 
 if ($replay) {
+    die "Divisor cannot be zero.\n" unless $divisor;
     &usage (1) unless @ARGV == 1 || @ARGV == 2;
 }
 else {

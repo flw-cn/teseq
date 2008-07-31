@@ -1117,7 +1117,7 @@ Synopsis:
 
 @example
 reseq [-t|--timings=@var{timings}] @var{input} @var{output}
-reseq [--replay] @var{input} [@var{output}]
+reseq --replay [-d @var{divisor}] @var{input} [@var{output}]
 reseq -h | --help
 reseq -V | --version
 @end example
@@ -1154,6 +1154,11 @@ producing behavior equivalent to that of the
 @uref{http://userweb.kernel.org/~kzak/util-linux-ng/, util-linux}),
 but using a Teseq output file as input, rather than a raw typescript
 file.
+
+@item -d @var{divisor}
+@opindex -d
+Play back the script at @var{divisor} times the original speed
+(meaningless unless @option{--replay} was also specified).
 
 @item -t @var{timings}
 @itemx --timings @var{timings}
