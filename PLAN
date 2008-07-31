@@ -16,7 +16,9 @@ suppress delays < 0.0001, too.
 
 Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
-single-line-no-EOF for timings. Exit status on I/O error.
+single-line-no-EOF for timings. Exit status on I/O error. Use :bytes
+in reseq, and verify that it can handle non-Unicode high-bytes
+and the escape character (ISO-2022-JP).
 
 Deal with check, checkmk, help2man (see hello) more sanely, in configure.ac.
 

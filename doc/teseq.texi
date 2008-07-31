@@ -1324,7 +1324,41 @@ describing these sequences, include:
 Here are some potential additions that may appear in future versions of
 Teseq.
 
-@unnumberedsec Stateful Processing
+@menu
+* Localized Messages::          
+* Stateful Processing::         
+* Terminal Databases::          
+@end menu
+
+@node Localized Messages, Stateful Processing, Future Enhancements, Future Enhancements
+@section Localized Messages
+
+It is expected that a near release of Teseq will include support for
+native-language translations of control label names and descriptions. Note
+that the acronym portions of label lines will never be translated:
+they represent official designations for their respective controls.
+
+An important requirement of such translations is that they must not
+interfere with processing of the document; if they use a shift-based
+encoding, they will shift to the translation encoding
+only after the line prefix, which must be a plain ASCII character, and
+shift back to normal ASCII prior to the end of the line. Bytes with
+values corresponding to the ASCII control characters @sc{nul},
+@sc{cr}, or @sc{lf} (hexadecimal @samp{x00}, @samp{x0D},
+and @samp{0x0A}) will not appear, except when they represent their
+ASCII functions (in no case will @sc{nul}s be present in the
+document).
+
+These requirements rule out the use of wide-character encodings
+such as UCS-2 or UTF-16, which could not be intermixed with ascii
+characters and which have character representations that would enclude
+byte values corresponding to the forbidden characters noted above, but
+should be compatible with UTF-8, ISO 2022-based encodings such as the
+ISO 8859 series, ISO 2022-JP, or EUC-JP and other encodings that meet
+these requirements such as GBK, Big5, or Shift JIS.
+
+@node Stateful Processing, Terminal Databases, Localized Messages, Future Enhancements
+@section Stateful Processing
 
 Future versions of Teseq may support options to remember state
 information about the terminal. For instance if Teseq has seen the
@@ -1361,7 +1395,8 @@ with
 @command{reseq}, as it would be much harder to tell what the original
 byte values had been.
 
-@unnumberedsec Terminal Database Awareness
+@node Terminal Databases,  , Stateful Processing, Future Enhancements
+@section Terminal Database Awareness
 
 Future versions of Teseq may allow the user to specify the name of the
 terminal for which the input was intended, which Teseq will then use
