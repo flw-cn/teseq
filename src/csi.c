@@ -925,65 +925,84 @@ csi_do_decelr (unsigned char final, unsigned char priv,
     }
 }
 
+static void
+csi_do_decsle (unsigned char final, unsigned char priv,
+               struct putter *putr, size_t n_params, unsigned int *params)
+{
+  const char *msgs[] =
+    {
+      "Only respond to explicit locator report requests.",
+      "Report button-down transitions.",
+      "Do not report button-down transitions.",
+      "Report button-up transitions.",
+      "Do not report button-up transitions."
+    };
+  unsigned int *p, *pend = params + n_params;
+  
+  for (p = params; p != pend; ++p)
+    if (*p < N_ARY_ELEMS (msgs))
+      putter_single (putr, "\" (DEC) %s", msgs[*p]);
+}
+
 const static struct csi_handler csi_no_handler = { NULL, NULL };
 
 const static struct csi_handler csi_handlers[] =
   {
-    {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1 },  /* x40 */
-    {"CUU", "CURSOR UP", CSI_FUNC_PN, csi_do_cuu, 1 },
-    {"CUD", "CURSOR DOWN", CSI_FUNC_PN, csi_do_cuu, 1 },
-    {"CUF", "CURSOR RIGHT", CSI_FUNC_PN, csi_do_cuu, 1 },
-    {"CUB", "CURSOR LEFT", CSI_FUNC_PN, csi_do_cuu, 1 },
-    {"CNL", "CURSOR NEXT LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
-    {"CPL", "CURSOR PRECEDING LINE", CSI_FUNC_PN, csi_do_cnl, 1 },
-    {"CHA", "CURSOR CHARACTER ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1 },
-    {"CUP", "CURSOR POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },   /* x48 */
-    {"CHT", "CURSOR FORWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
-    {"ED", "ERASE IN PAGE", CSI_FUNC_PS, csi_do_ed, 0 },
-    {"EL", "ERASE IN LINE", CSI_FUNC_PS, csi_do_ed, 0 },
-    {"IL", "INSERT LINE", CSI_FUNC_PN, csi_do_il, 1 },
-    {"DL", "DELETE LINE", CSI_FUNC_PN, csi_do_dl, 1 },
-    {"EF", "ERASE IN FIELD", CSI_FUNC_PS, csi_do_ef, 0 },
+    {"ICH", "INSERT CHARACTER", CSI_FUNC_PN, csi_do_ich, 1},  /* x40 */
+    {"CUU", "CURSOR UP", CSI_FUNC_PN, csi_do_cuu, 1},
+    {"CUD", "CURSOR DOWN", CSI_FUNC_PN, csi_do_cuu, 1},
+    {"CUF", "CURSOR RIGHT", CSI_FUNC_PN, csi_do_cuu, 1},
+    {"CUB", "CURSOR LEFT", CSI_FUNC_PN, csi_do_cuu, 1},
+    {"CNL", "CURSOR NEXT LINE", CSI_FUNC_PN, csi_do_cnl, 1},
+    {"CPL", "CURSOR PRECEDING LINE", CSI_FUNC_PN, csi_do_cnl, 1},
+    {"CHA", "CURSOR CHARACTER ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1},
+    {"CUP", "CURSOR POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1},   /* x48 */
+    {"CHT", "CURSOR FORWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1},
+    {"ED", "ERASE IN PAGE", CSI_FUNC_PS, csi_do_ed, 0},
+    {"EL", "ERASE IN LINE", CSI_FUNC_PS, csi_do_ed, 0},
+    {"IL", "INSERT LINE", CSI_FUNC_PN, csi_do_il, 1},
+    {"DL", "DELETE LINE", CSI_FUNC_PN, csi_do_dl, 1},
+    {"EF", "ERASE IN FIELD", CSI_FUNC_PS, csi_do_ef, 0},
     {"EA", "ERASE IN AREA"},
-    {"DCH", "DELETE CHARACTER", CSI_FUNC_PN, csi_do_dch, 1 },  /* x50 */
+    {"DCH", "DELETE CHARACTER", CSI_FUNC_PN, csi_do_dch, 1},  /* x50 */
     {"SEE", "SELECT EDITING EXTENT"},
-    {"CPR", "ACTIVE POSITION REPORT", CSI_FUNC_PN_PN, csi_do_cpr, 1, 1 },
-    {"SU", "SCROLL UP", CSI_FUNC_PN, csi_do_su, 1 },
-    {"SD", "SCROLL DOWN", CSI_FUNC_PN, csi_do_su, 1 },
+    {"CPR", "ACTIVE POSITION REPORT", CSI_FUNC_PN_PN, csi_do_cpr, 1, 1},
+    {"SU", "SCROLL UP", CSI_FUNC_PN, csi_do_su, 1},
+    {"SD", "SCROLL DOWN", CSI_FUNC_PN, csi_do_su, 1},
     {"NP", "NEXT PAGE"},
     {"PP", "PRECEDING PAGE"},
-    {"CTC", "CURSOR TABULATION CONTROL", CSI_FUNC_PS_ANY, csi_do_ctc, 0 },
-    {"ECH", "ERASE CHARACTER", CSI_FUNC_PN, csi_do_ech, 1 },   /* x58 */
-    {"CVT", "CURSOR LINE TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
-    {"CBT", "CURSOR BACKWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1 },
+    {"CTC", "CURSOR TABULATION CONTROL", CSI_FUNC_PS_ANY, csi_do_ctc, 0},
+    {"ECH", "ERASE CHARACTER", CSI_FUNC_PN, csi_do_ech, 1},   /* x58 */
+    {"CVT", "CURSOR LINE TABULATION", CSI_FUNC_PN, csi_do_cht, 1},
+    {"CBT", "CURSOR BACKWARD TABULATION", CSI_FUNC_PN, csi_do_cht, 1},
     {"SRS", "START REVERSED STRING"},
     {"PTX", "PARALLEL TEXTS"},
     {"SDS", "START DIRECTED STRING"},
     {"SIMD", "SELECT IMPLICIT MOVEMENT DIRECTION"},
     {NULL, NULL},
-    {"HPA", "CHARACTER POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1 },
+    {"HPA", "CHARACTER POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_cha, 1},
                                                             /* ^ x60 */
     {"HPR", "CHARACTER POSITION FORWARD"},
     {"REP", "REPEAT"},
-    {"DA", "DEVICE ATTRIBUTES", CSI_FUNC_PS, csi_do_da, 0 },
+    {"DA", "DEVICE ATTRIBUTES", CSI_FUNC_PS, csi_do_da, 0},
     {"VPA", "LINE POSITION ABSOLUTE", CSI_FUNC_PN, csi_do_vpa, 1},
     {"VPR", "LINE POSITION FORWARD"},
-    {"HVP", "CHARACTER AND LINE POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1 },
-    {"TBC", "TABULATION CLEAR", CSI_FUNC_PS, csi_do_tbc, 0 },
-    {"SM", "SET MODE", CSI_FUNC_PS_ANY, csi_do_sm },           /* x68 */
-    {"MC", "MEDIA COPY", CSI_FUNC_PS, csi_do_mc, 0 },
+    {"HVP", "CHARACTER AND LINE POSITION", CSI_FUNC_PN_PN, csi_do_cup, 1, 1},
+    {"TBC", "TABULATION CLEAR", CSI_FUNC_PS, csi_do_tbc, 0},
+    {"SM", "SET MODE", CSI_FUNC_PS_ANY, csi_do_sm},           /* x68 */
+    {"MC", "MEDIA COPY", CSI_FUNC_PS, csi_do_mc, 0},
     {"HPB", "CHARACTER POSITION BACKWARD"},
     {"VPB", "LINE POSITION BACKWARD"},
-    {"RM", "RESET MODE", CSI_FUNC_PS_ANY, csi_do_sm },
-    {"SGR", "SELECT GRAPHIC RENDITION", CSI_FUNC_PS_ANY, csi_do_sgr, 0 },
-    {"DSR", "DEVICE STATUS REPORT", CSI_FUNC_PS, csi_do_dsr, 0 },
+    {"RM", "RESET MODE", CSI_FUNC_PS_ANY, csi_do_sm},
+    {"SGR", "SELECT GRAPHIC RENDITION", CSI_FUNC_PS_ANY, csi_do_sgr, 0},
+    {"DSR", "DEVICE STATUS REPORT", CSI_FUNC_PS, csi_do_dsr, 0},
     {"DAQ", "DEFINE AREA QUALIFICATION"}
-  };
+ };
 
 const static struct csi_handler csi_spc_handlers[] = 
   {
-    {"SL", "SCROLL LEFT", CSI_FUNC_PN, csi_do_su, 1 },
-    {"SR", "SCROLL RIGHT", CSI_FUNC_PN, csi_do_su, 1 },
+    {"SL", "SCROLL LEFT", CSI_FUNC_PN, csi_do_su, 1},
+    {"SR", "SCROLL RIGHT", CSI_FUNC_PN, csi_do_su, 1},
     {"GSM", "GRAPHIC SIZE MODIFICATION"},
     {"GSS", "GRAPHIC SIZE SELECTION"},
     {"FNT", "FONT SELECTION"},
@@ -1038,6 +1057,8 @@ const static struct csi_handler csi_wm_handler =
   {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_wm, -1, -1};
 const static struct csi_handler csi_decelr_handler =
   {NULL, NULL, CSI_FUNC_PS_PS, csi_do_decelr, 0, 0};
+const static struct csi_handler csi_decsle_handler =
+  {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_decsle, 0};
 
 const struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
@@ -1066,6 +1087,8 @@ get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
             {
             case 'z':
               return &csi_decelr_handler;
+            case '{':
+              return &csi_decsle_handler;
             default:
               return &csi_no_handler;
             }

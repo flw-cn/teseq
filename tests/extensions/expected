@@ -123,3 +123,14 @@
 "  Report position in character cells.
 : Esc [ 1 ; 2 ; 3 ' z
 . LF/^J
+: Esc [ ' {
+" (DEC) Only respond to explicit locator report requests.
+: Esc [ 2 ; 3 ' {
+" (DEC) Do not report button-down transitions.
+" (DEC) Report button-up transitions.
+: Esc [ 1 ; 4 ' {
+" (DEC) Report button-down transitions.
+" (DEC) Do not report button-up transitions.
+: Esc [ 0 ; 5 ' {
+" (DEC) Only respond to explicit locator report requests.
+. LF/^J
