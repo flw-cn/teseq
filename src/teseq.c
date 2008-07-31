@@ -933,7 +933,7 @@ consumption.\n", f);
   putc ('\n', f);
   fputs ("\
 The GNU Teseq home page is at http://www.gnu.org/software/teseq/.\n\
-Report all bugs to bug-teseq@gnu.org.\n\
+Report all bugs to " PACKAGE_BUGREPORT "\n\
 ", f);
   exit (status);
 }
