@@ -20,6 +20,7 @@ AC_CONFIG_HEADER([src/config.h])
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
+AM_MISSING_PROG([HELP2MAN], [help2man])
 
 # Checks for libraries.
 AC_CHECK_LIB([check], tcase_add_test)
