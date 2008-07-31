@@ -899,6 +899,7 @@ csi_do_decelr (unsigned char final, unsigned char priv,
                struct putter *putr, size_t n_params, unsigned int *params)
 {
   assert (n_params == 2);
+  if (priv) return;
   if (params[0] > 2 || params[1] > 2)
     return;
   switch (params[0])
@@ -939,9 +940,19 @@ csi_do_decsle (unsigned char final, unsigned char priv,
     };
   unsigned int *p, *pend = params + n_params;
   
+  if (priv) return;
   for (p = params; p != pend; ++p)
     if (*p < N_ARY_ELEMS (msgs))
       putter_single (putr, "\" %s", msgs[*p]);
+}
+
+static void
+csi_do_decrqlp (unsigned char final, unsigned char priv,
+                struct putter *putr, size_t n_params, unsigned int *params)
+{
+  if (priv) return;
+  if (params[0] > 1) return;
+  putter_single (putr, "\" Request a single DECLRP locator report.");
 }
 
 const static struct csi_handler csi_no_handler = { NULL, NULL };
@@ -1059,6 +1070,8 @@ const static struct csi_handler csi_decelr_handler =
   {"DECELR", "ENABLE LOCATOR REPORTING", CSI_FUNC_PS_PS, csi_do_decelr, 0, 0};
 const static struct csi_handler csi_decsle_handler =
   {"DECSLE", "SELECT LOCATOR EVENTS", CSI_FUNC_PS_ANY, csi_do_decsle, 0};
+const static struct csi_handler csi_decrqlp_handler =
+  {"DECRQLP", "REQUEST LOCATOR POSITION", CSI_FUNC_PS, csi_do_decrqlp, 0};
 
 const struct csi_handler *
 get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
@@ -1089,6 +1102,8 @@ get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
               return &csi_decelr_handler;
             case '{':
               return &csi_decsle_handler;
+            case '|':
+              return &csi_decrqlp_handler;
             default:
               return &csi_no_handler;
             }

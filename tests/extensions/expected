@@ -143,4 +143,7 @@
 : Esc [ 0 ; 5 ' {
 & DECSLE: SELECT LOCATOR EVENTS
 " Only respond to explicit locator report requests.
+: Esc [ ' |
+& DECRQLP: REQUEST LOCATOR POSITION
+" Request a single DECLRP locator report.
 . LF/^J
