@@ -108,3 +108,18 @@
 : Esc [ 53 t
 " (Xterm) Resize the window to 53 lines.
 . LF/^J
+: Esc [ z
+" (DEC) Disable locator reports.
+: Esc [ 0 z
+" (DEC) Disable locator reports.
+: Esc [ 1 ; 1 z
+" (DEC) Enable locator reports.
+"  Report position in pixels.
+: Esc [ 1 ; 0 z
+" (DEC) Enable locator reports.
+"  Report position in character cells.
+: Esc [ 2 ; 2 z
+" (DEC) Enable a single locator report.
+"  Report position in character cells.
+: Esc [ 1 ; 2 ; 3 z
+. LF/^J
