@@ -1162,17 +1162,22 @@ file.
 Produce timing information from delay lines, in the format generated
 by
 @cindex @command{script}
-@samp{script -t}. This can be used to regenerate @command{script}
+@code{script -t}. This can be used to regenerate @command{script}
 typescript and timing files that were fed as the input to
-@samp{teseq -t timings}.
+@code{teseq -t timings}. Note that the result will differ slightly
+from the output from @code{script -t}, in that the first delay will be
+zeroed out (@command{teseq} always throws out the first delay value,
+whose value from script is an arbitrary value between 0 and 1), and
+the last delay line will include all the remaining characters
+(@command{script}'s timings don't count the final timestamp line).
 @end table
 
 @noindent
-Teseq also comes with a @command{reseq} command, which essentially
-does the reverse of @command{teseq}. If you feed it the output from
-@command{teseq}, it will generate the corresponding escape
-sequences---that is, it will generate the same content that was fed to
-@command{teseq} to produce that output. The shell command
+The @command{reseq} command essentially does the reverse of
+@command{teseq}. If you feed it the output from @command{teseq}, it
+will generate the corresponding escape sequences---that is, it will
+generate the same content that was fed to @command{teseq} to produce
+that output. The shell command
 
 @example
 $ teseq foo | reseq - -
