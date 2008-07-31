@@ -5,14 +5,7 @@ CSI Ps ; Pu ' z
 CSI Pm ' {   DECSLE Select Locator events
 CSI Ps ' |   DECRQLP Request Locator Position.
 
-DEC function keys, etc.
-
-Reseq should complain about lines it doesn't recognize, so it can't
-silently generate incomplete data from the output of future versions
-of Teseq. Perhaps reserve some "safe" ones in advance.
-
-Add a divisor option to reseq for playback, like scriptreplay's. And
-suppress delays < 0.0001, too.
+Add a divisor option to reseq for playback, like scriptreplay's.
 
 Test input buffer overflow, unusual corner cases with escapes
 processing in the various parser states. Single-line,
@@ -23,6 +16,8 @@ and the escape character (ISO-2022-JP).
 Deal with check, checkmk, help2man (see hello) more sanely, in configure.ac.
 
 
+
+DEC function keys, etc.
 
 Figure out what to do with teseq-post.sed.
 
