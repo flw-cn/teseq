@@ -121,6 +121,7 @@ fi
         sgr-no-x
         sgr-x
         timing
+        timing-header-only
         limits
 '}
 

@@ -4,6 +4,8 @@ syntax:glob
 **~
 **/.\#*
 **/\#*
+.\#*
+\#*
 **/tags
 **/TAGS
 **/cscope.out
