@@ -55,7 +55,7 @@ AC_CHECK_FUNCS([strchr])
 # Check that vsnprintf take (NULL, 0 ... )
 AC_CACHE_CHECK([for working vsnprintf],
                teseq_vsnprintf,
-               [AC_COMPILE_IFELSE(AC_LANG_PROGRAM([
+               [AC_RUN_IFELSE(AC_LANG_PROGRAM([
   #include <stdio.h>
   #include <stdarg.h>
 
