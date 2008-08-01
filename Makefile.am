@@ -30,13 +30,15 @@ teseq_SOURCES = src/teseq.c src/inputbuf.c src/ringbuf.c src/putter.c \
                 src/sgr.h src/csi.h src/inputbuf.h src/ringbuf.h src/putter.h \
                 src/c1.h src/teseq.h src/modes.h
 
-check_PROGRAMS = src/test-ringbuf src/test-inputbuf
-check_DATA = src/test-inputbuf.inf
-TESTS = $(check_PROGRAMS)
+if DO_CHECK_TESTS
+  check_PROGRAMS = src/test-ringbuf src/test-inputbuf
+  check_DATA = src/test-inputbuf.inf
+  TESTS = $(check_PROGRAMS)
+endif
 src_test_ringbuf_SOURCES = src/test-ringbuf.c src/ringbuf.c
-src_test_ringbuf_LDADD = -lcheck
+src_test_ringbuf_LDADD = @LIBCHECK@
 src_test_inputbuf_SOURCES = src/test-inputbuf.c src/inputbuf.c src/ringbuf.c
-src_test_inputbuf_LDADD = -lcheck
+src_test_inputbuf_LDADD = @LIBCHECK@
 
 info_TEXINFOS = doc/teseq.texi
 doc_teseq_TEXINFOS = doc/fdl.texi

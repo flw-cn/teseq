@@ -11,7 +11,7 @@ dnl implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
 AC_PREREQ(2.61)
-AC_INIT([GNU teseq], [1.0-devel], [bug-teseq@gnu.org])
+AC_INIT([GNU teseq], [1.0.0-devel], [bug-teseq@gnu.org])
 AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 dist-lzma gnu])
 AC_CONFIG_SRCDIR([src/teseq.c])
 AC_CONFIG_HEADER([src/config.h])
@@ -23,7 +23,19 @@ AC_PROG_INSTALL
 AM_MISSING_PROG([HELP2MAN], [help2man])
 
 # Checks for libraries.
-AC_CHECK_LIB([check], tcase_add_test)
+
+AC_SUBST([LIBCHECK])
+AC_CHECK_LIB([check], [suite_add_tcase],
+  [AC_DEFINE([HAVE_LIBCHECK], 1,
+             [Define to 1 if you have the `check' library (-lcheck).])
+    LIBCHECK="-lcheck"
+  ], [AC_MSG_WARN([
+
+You do not have Check (http://check.sourceforge.net/);
+You will not be able to run the full set of tests.
+])
+])
+AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "$HAVE_LIBCHECK"])
 
 # Checks for header files.
 AC_HEADER_STDC
