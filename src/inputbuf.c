@@ -82,7 +82,7 @@ inputbuf_get (struct inputbuf *ib)
   if (ib->saving)
     {
       c = ringbuf_reader_get (ib->reader);
-      if (c == EOF)
+      if (c == EOF && ringbuf_space_avail (ib->rb))
         {
           c = getc (ib->file);
           if (c != EOF)

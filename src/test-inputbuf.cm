@@ -90,5 +90,17 @@ initfile (void)
         fail_unless (inputbuf_get (the_buffer) == 'e');
         fail_unless (inputbuf_avail (the_buffer) == 0);
 
+#tcase bounds
+
+#test limits
+        FILE *f = fopen ("src/test-inputbuf.inf", "r");
+        fail_if (f == NULL);
+        the_buffer = inputbuf_new (f, 3);
+        fail_unless (inputbuf_saving (the_buffer) == 0);
+        fail_unless (inputbuf_get (the_buffer) == 'a');
+        fail_unless (inputbuf_get (the_buffer) == 'b');
+        fail_unless (inputbuf_get (the_buffer) == 'c');
+        fail_unless (inputbuf_get (the_buffer) == -1);
+
 #main-pre
         tcase_add_checked_fixture (tc1_1, initfile, NULL);

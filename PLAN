@@ -6,9 +6,11 @@ single-line-no-EOF for timings. Exit status on I/O error. Use :bytes
 in reseq, and verify that it can handle non-Unicode high-bytes
 and the escape character (ISO 2022-JP).
 
-Deal with check, checkmk, help2man (see hello) more sanely, in configure.ac.
 
 
+
+
+Don't require getopt_long.
 
 DEC function keys, etc.
 

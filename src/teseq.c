@@ -238,12 +238,14 @@ process_csi_sequence (struct processor *p, const struct csi_handler *handler)
         {
           if (is_ascii_digit (last))
             {
-              params[n_params++] = cur_param;
+              if (n_params < N_ARY_ELEMS (params))
+                params[n_params++] = cur_param;
               if (e)
                 putter_printf (p->putr, " %d", cur_param);
             }
           else if ((last != 0 || private_params == 0)
-                   && ! IS_CSI_INTERMEDIATE_CHAR (last))
+                   && ! IS_CSI_INTERMEDIATE_CHAR (last)
+                   && n_params < N_ARY_ELEMS (params))
             {
               int param = CSI_GET_DEFAULT (handler, n_params);
               if (param >= 0)
