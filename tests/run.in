@@ -122,6 +122,7 @@ fi
         sgr-x
         timing
         timing-header-only
+        timing-no-eol
         limits
 '}
 
