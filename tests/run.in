@@ -93,7 +93,7 @@ fi
 ########################################
 
 : ${TESEQ=${builddir}/teseq}
-: ${RESEQ=${srcdir}/reseq}
+: ${RESEQ=${builddir}/reseq}
 : ${TESEQ_TESTS='
 	empty
 	cmdline-in-out
