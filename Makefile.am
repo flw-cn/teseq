@@ -19,7 +19,6 @@
 
 AUTOMAKE_OPTIONS = subdir-objects
 AM_CFLAGS=-Wall -g -O2 -ansi -pedantic-errors
-CHECKMK = checkmk
 
 bin_PROGRAMS = teseq
 dist_bin_SCRIPTS  = reseq
@@ -53,7 +52,7 @@ doc/reseq.1: ./reseq.in
 	$(HELP2MAN) ./reseq -o doc/reseq.1
 
 .cm.c:
-	$(CHECKMK) $< > $@
+	$(CHECKMK) $< > $@ || ( rm -f $@ && false )
 
 check: check-teseq check-reseq
 

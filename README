@@ -25,10 +25,12 @@ run.
 
 Teseq also ships with a suite of regression tests. Some of these are
 written in relatively portable POSIX sh; some others require the Check
-test library, available at http://check.sourceforge.net/. If changes
-are made to the Check-based test suite sources (*.cm files), the
-Checkmk processor, available at
-http://micah.cowan.name/projects/checkmk/, will be required to
-generate the tests.
+test library, available at http://check.sourceforge.net/.
+
+If changes are made to the Check-based test suite sources (*.cm files),
+the Checkmk processor, available at
+http://micah.cowan.name/projects/checkmk/, will be required to generate
+the tests. At some point in the near future, Checkmk will be shipped as
+part of Check, and will not need to be obtained separately.
 
 GNU Teseq is free software. See the file COPYING for copying conditions.

@@ -21,6 +21,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AM_MISSING_PROG([HELP2MAN], [help2man])
+AM_MISSING_PROG([CHECKMK], [checkmk])
 
 # Checks for libraries.
 
@@ -35,7 +36,7 @@ You do not have Check (http://check.sourceforge.net/);
 You will not be able to run the full set of tests.
 ])
 ])
-AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "$HAVE_LIBCHECK"])
+AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "$LIBCHECK"])
 
 # Checks for header files.
 AC_HEADER_STDC
