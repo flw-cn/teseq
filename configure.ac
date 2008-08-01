@@ -32,8 +32,8 @@ AC_CHECK_LIB([check], [suite_add_tcase],
     LIBCHECK="-lcheck"
   ], [AC_MSG_WARN([
 
-You do not have Check (http://check.sourceforge.net/);
-You will not be able to run the full set of tests.
+  You do not have Check (http://check.sourceforge.net/);
+  You will not be able to run the full set of tests.
 ])
 ])
 AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "$LIBCHECK"])
@@ -52,6 +52,33 @@ AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strchr])
 
+# Check that vsnprintf take (NULL, 0 ... )
+AC_CACHE_CHECK([for working vsnprintf],
+               teseq_vsnprintf,
+               [AC_COMPILE_IFELSE(AC_LANG_PROGRAM([
+  #include <stdio.h>
+  #include <stdarg.h>
+
+  int
+  count_printf (const char *format, ...)
+  {
+    int count;
+    va_list ap;
+    va_start (ap, format);
+    count = vsnprintf (NULL, 0, format, ap);
+    va_end (ap);
+    return count;
+  }
+],[count_printf ("%s", "supercalifragilisticexpialidocious");])
+, AS_VAR_SET([teseq_vsnprintf], [yes]),
+  AS_VAR_SET([teseq_vsnprintf], [no]))
+])
+AS_IF([test AS_VAR_GET([teseq_vsnprintf]) = yes],,
+            AC_MSG_FAILURE([
+
+  You do not have a reasonable implmentation of vsnprintf.
+  Teseq would either fail to build or segfault.
+]))
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([reseq],[chmod +x reseq])
 AC_CONFIG_FILES([run-tests:tests/run.in],[chmod +x run-tests])
