@@ -22,7 +22,9 @@
 #include "teseq.h"
 
 #include <assert.h>
-#include <getopt.h>
+#ifdef HAVE_GETOPT_H
+#  include <getopt.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1016,6 +1018,7 @@ signal_setup (void)
     sigaction (*sig, &sa, NULL);
 }
 
+#ifdef HAVE_GETOPT_H
 struct option teseq_opts[] = {
   { "help", 0, NULL, 'h' },
   { "version", 0, NULL, 'V' },
@@ -1024,6 +1027,7 @@ struct option teseq_opts[] = {
   { "no-interactive", 0, NULL, 'I' },
   { 0 }
 };
+#endif
 
 void
 configure (struct processor *p, int argc, char **argv)
@@ -1043,8 +1047,15 @@ configure (struct processor *p, int argc, char **argv)
   configuration.handle_signals = 1;
   configuration.timings = NULL;
 
-  while ((opt = getopt_long (argc, argv, ":hVo:C^&D\"LEt:xbI",
-                             teseq_opts, NULL))
+  while ((opt = (
+#define ACCEPTOPTS      ":hVo:C^&D\"LEt:xbI"
+#ifdef HAVE_GETOPT_H
+                 getopt_long (argc, argv, ACCEPTOPTS,
+                              teseq_opts, NULL)
+#else
+                 getopt (argc, argv, ACCEPTOPTS)
+#endif
+                 ))
          != -1)
     {
       switch (opt)

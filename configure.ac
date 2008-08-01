@@ -40,7 +40,7 @@ AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "$LIBCHECK"])
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stddef.h stdlib.h string.h])
+AC_CHECK_HEADERS([stddef.h stdlib.h string.h getopt.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
