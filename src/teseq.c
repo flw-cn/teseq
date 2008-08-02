@@ -113,6 +113,17 @@ static int pending_signal;
 #define is_normal_text(x)       ((x) >= 0x20 && (x) < 0x7f)
 #define is_ascii_digit(x)       ((x) >= 0x30 && (x) <= 0x39)
 
+/* Handle write error in putter. */
+void
+handle_write_error (int e, void *arg)
+{
+  const char *argv0 = arg;
+
+  fprintf (stderr, "%s: ", argv0);
+  perror ("write error");
+  exit (e);
+}
+
 /* Read a line from a typescript timings file. */
 void
 delay_read (FILE *f, struct delay *d)
@@ -1152,6 +1163,7 @@ configure (struct processor *p, int argc, char **argv)
       fputs ("Out of memory.\n", stderr);
       exit (EXIT_FAILURE);
     }
+  putter_set_handler (p->putr, handle_write_error, argv[0]);
 }
 
 void

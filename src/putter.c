@@ -21,6 +21,7 @@
 
 #include "teseq.h"
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,9 @@ struct putter
   const char *postsep;
   size_t postsz;
   size_t linemax;
+
+  putter_error_handler handler;
+  void *handler_arg;
 };
 
 struct putter *
@@ -50,8 +54,26 @@ putter_new (FILE * file)
   p->presep = p->postsep = "";
   p->presz = 0;
   p->postsz = 0;
+  p->handler = NULL;
+  p->handler_arg = NULL;
   return p;
 }
+
+#define HANDLER_IF(p, cond)                     \
+  do                                            \
+    {                                           \
+      if ((p)->handler && cond)                 \
+        (p)->handler (errno, (p)->handler_arg); \
+    }                                           \
+  while (0)
+
+void
+putter_set_handler (struct putter *p, putter_error_handler f, void *arg)
+{
+  p->handler = f;
+  p->handler_arg = arg;
+}
+
 
 void
 putter_delete (struct putter *p)
@@ -64,58 +86,78 @@ ensure_space (struct putter *p, size_t addition)
 {
   if (p->nc + addition > p->linemax || p->nc + p->presz == p->linemax)
     {
-      fprintf (p->file, "%s\n%s", p->presep, p->postsep);
+      int cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep);
+      HANDLER_IF (p, cs < 0);
       p->nc = p->postsz;
     }
   p->nc += addition;
 }
 
-int
+void
 putter_start (struct putter *p, const char *s,
               const char *pre, const char *post)
 {
+  int e;
+
   p->presep = pre;
   p->postsep = post;
   p->presz = strlen (pre);
   p->postsz = strlen (post);
 
   if (p->nc > 0)
-    putc ('\n', p->file);
+    {
+      e = putc ('\n', p->file);
+      HANDLER_IF (p, e == EOF);
+    }
   p->nc = strlen (s);
-  return fputs (s, p->file);
+  e = fputs (s, p->file);
+  HANDLER_IF (p, e == EOF);
 }
 
-int
+void
 putter_finish (struct putter *p, const char *s)
 {
+  int cs;
+  
   p->presep = "";
   p->postsep = "";
   p->presz = 0;
   p->postsz = 0;
 
   if (p->nc == 0)
-    return 0;
+    return;
   if (p->nc + strlen (s) > p->linemax)
-    fprintf (p->file, "%s\n", p->presep);
+    {
+      cs = fprintf (p->file, "%s\n", p->presep);
+      HANDLER_IF (p, cs < 0);
+    }
+  
   p->nc = 0;
-  return fprintf (p->file, "%s\n", s);
+  cs = fprintf (p->file, "%s\n", s);
+  HANDLER_IF (p, cs < 0);
 }
 
-int
+void
 putter_putc (struct putter *p, unsigned char c)
 {
+  int e;
+
   ensure_space (p, 1);
-  return putc (c, p->file);
+  e = putc (c, p->file);
+  HANDLER_IF (p, e == EOF);
 }
 
-int
+void
 putter_puts (struct putter *p, const char *s)
 {
+  int e;
+  
   ensure_space (p, strlen (s));
-  return fputs (s, p->file);
+  e = fputs (s, p->file);
+  HANDLER_IF (p, e == EOF);
 }
 
-int
+void
 putter_printf (struct putter *p, const char *fmt, ...)
 {
   int len, ret;
@@ -128,32 +170,34 @@ putter_printf (struct putter *p, const char *fmt, ...)
   va_start (ap, fmt);
   ret = vfprintf (p->file, fmt, ap);
   va_end (ap);
-  return ret;
+  HANDLER_IF (p, ret < 0);
+  return;
 }
 
 /* Combines:
  *      putter_start (p, "", "", "");
  *      putter_printf (p, fmt, ...);
  *      putter_finish (p, ""); */
-int
+void
 putter_single (struct putter *p, const char *fmt, ...)
 {
   va_list ap;
-  int ret, e;
+  int e;
 
   if (p->nc > 0)
-    putc ('\n', p->file);
+    {
+      e = putc ('\n', p->file);
+      HANDLER_IF (p, e == EOF);
+    }
   va_start (ap, fmt);
-  ret = vfprintf (p->file, fmt, ap);
+  e = vfprintf (p->file, fmt, ap);
   va_end (ap);
+  HANDLER_IF (p, e < 0);
   p->presep = "";
   p->postsep = "";
   p->presz = 0;
   p->postsz = 0;
   p->nc = 0;
   e = putc ('\n', p->file);
-  if (e == -1)
-    return -1;
-
-  return ret + 1;
+  HANDLER_IF (p, e == EOF);
 }
