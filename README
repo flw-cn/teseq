@@ -11,6 +11,31 @@ features (such as those based on the Curses library).
   are permitted in any medium without royalty provided the copyright
   notice and this notice are preserved.
 
+The latest version of this program is always available at
+http://ftp.gnu.org/gnu/teseq/.
+
+
+GNU Teseq takes raw terminal data as input, like:
+
+  ^[[1mHi^[[m there, world^H^H^H^H^Hearth
+
+And spits out something like:
+
+  : Esc [ 1 m
+  & SGR: SELECT GRAPHIC RENDITION
+  " Set bold text.
+  |Hi|
+  : Esc [ 0 m
+  & SGR: SELECT GRAPHIC RENDITION
+  " Clear graphic rendition to defaults.
+  | there, world|
+  . BS/^H BS/^H BS/^H BS/^H BS/^H
+  |earth|.
+
+The accompanying program `reseq' may then be used to reverse this
+translated output back into its original form, if desired.
+
+
 See the INSTALL file for information on how to build and install this
 program.
 
