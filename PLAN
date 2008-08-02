@@ -1,13 +1,5 @@
 TODO:                                                   -*- text -*-
 
-Exit status on I/O error.
-
-
-
-
-
-Don't require getopt_long.
-
 DEC function keys, etc.
 
 Figure out what to do with teseq-post.sed.

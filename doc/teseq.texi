@@ -1450,7 +1450,7 @@ the web interface at
 @uref{http://lists.gnu.org/mailman/listinfo/bug-teseq}.
 
 The official website for GNU Teseq is at
-@uref{http://www.gnu.org/software/hello/}.  For the latest updates and
+@uref{http://www.gnu.org/software/teseq/}.  For the latest updates and
 other information, please check that site (or better yet,
 stay appraised by subscribing to the mailing list.
 
@@ -1458,8 +1458,7 @@ GNU Teseq uses Savannah to manage bug-tracking, and to host the
 development source repository in Mercurial:
 @uref{https://savannah.gnu.org/projects/teseq/}.
 
-There is also an IRC channel (@t{#teseq}) on irc.freenode.net; however,
-for reliable support, it is better to use the mailing list.
+There is also an IRC channel (@t{#teseq}), hosted on irc.freenode.net.
 
 @node Copying, Index, Contact and Info, Top
 @appendix Copying

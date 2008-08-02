@@ -30,7 +30,6 @@
 struct inputbuf
 {
   FILE *file;
-  int last;
   int saving;
   size_t count;
   size_t saved_count;
@@ -59,7 +58,7 @@ inputbuf_new (FILE * f, size_t bufsz)
   ret->rb = rb;
   ret->reader = reader;
   ret->file = f;
-  ret->last = EOF;
+  ret->saving = 0;
   ret->count = 0;
   ret->err = 0;
   return ret;
@@ -111,7 +110,6 @@ inputbuf_get (struct inputbuf *ib)
           errno = 0;
           c = getc (ib->file);
         }
-      ib->last = c;
       if (c == EOF)
         ib->err = errno;
       else
