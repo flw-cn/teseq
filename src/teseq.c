@@ -22,6 +22,7 @@
 #include "teseq.h"
 
 #include <assert.h>
+#include <errno.h>
 #ifdef HAVE_GETOPT_H
 #  include <getopt.h>
 #endif
@@ -101,6 +102,7 @@ const char *control_names[] = {
 };
 
 struct config configuration = { 0 };
+const char *program_name;
 
 static struct termios saved_stty;
 static struct termios working_stty;
@@ -119,8 +121,7 @@ handle_write_error (int e, void *arg)
 {
   const char *argv0 = arg;
 
-  fprintf (stderr, "%s: ", argv0);
-  perror ("write error");
+  fprintf (stderr, "%s: %s: %s\n", argv0, "write error", strerror (e));
   exit (e);
 }
 
@@ -981,8 +982,8 @@ must_fopen (const char *fname, const char *mode, int dash)
   f = fopen (fname, mode);
   if (f)
     return f;
-  fprintf (stderr, "Couldn't open file %s: ", fname);
-  perror (NULL);
+  fprintf (stderr, "%s: couldn't open file %s: %s\n", program_name,
+           fname, strerror (errno));
   exit (EXIT_FAILURE);
 }
 
@@ -1057,6 +1058,8 @@ configure (struct processor *p, int argc, char **argv)
   configuration.buffered = 0;
   configuration.handle_signals = 1;
   configuration.timings = NULL;
+
+  program_name = argv[0];
 
   while ((opt = (
 #define ACCEPTOPTS      ":hVo:C^&D\"LEt:xbI"
@@ -1206,6 +1209,7 @@ int
 main (int argc, char **argv)
 {
   int c;
+  int err;
   struct processor p = { 0, 0, ST_INIT };
 
   configure (&p, argc, argv);
@@ -1240,5 +1244,7 @@ main (int argc, char **argv)
         }
     }
   finish_state (&p);
+  if ((err = inputbuf_io_error (p.ibuf)) != 0)
+    fprintf (stderr, "%s: %s: %s\n", argv[0], "read error", strerror (err));
   return EXIT_SUCCESS;
 }

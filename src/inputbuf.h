@@ -41,6 +41,7 @@ struct inputbuf;
 
 struct inputbuf *inputbuf_new (FILE *, size_t);
 void inputbuf_delete (struct inputbuf *);
+int inputbuf_io_error (struct inputbuf *);
 
 int inputbuf_get (struct inputbuf *);
 int inputbuf_saving (struct inputbuf *);

@@ -21,6 +21,7 @@
 
 #include "teseq.h"
 
+#include <errno.h>
 #include <stdlib.h>
 
 #include "inputbuf.h"
@@ -35,6 +36,7 @@ struct inputbuf
   size_t saved_count;
   struct ringbuf *rb;
   struct ringbuf_reader *reader;
+  int err;
 };
 
 struct inputbuf *
@@ -59,6 +61,7 @@ inputbuf_new (FILE * f, size_t bufsz)
   ret->file = f;
   ret->last = EOF;
   ret->count = 0;
+  ret->err = 0;
   return ret;
 
 cleanup:
@@ -76,6 +79,12 @@ inputbuf_delete (struct inputbuf *ib)
 }
 
 int
+inputbuf_io_error (struct inputbuf *ib)
+{
+  return ib->err;
+}
+
+int
 inputbuf_get (struct inputbuf *ib)
 {
   int c;
@@ -84,11 +93,12 @@ inputbuf_get (struct inputbuf *ib)
       c = ringbuf_reader_get (ib->reader);
       if (c == EOF && ringbuf_space_avail (ib->rb))
         {
+          errno = 0;
           c = getc (ib->file);
-          if (c != EOF)
-            {
-              ringbuf_put (ib->rb, c);
-            }
+          if (c == EOF)
+            ib->err = errno;
+          else
+            ringbuf_put (ib->rb, c);
         }
       if (c != EOF)
         ++ib->saved_count;
@@ -97,9 +107,14 @@ inputbuf_get (struct inputbuf *ib)
     {
       c = ringbuf_get (ib->rb);
       if (c == EOF)
-        c = getc (ib->file);
+        {
+          errno = 0;
+          c = getc (ib->file);
+        }
       ib->last = c;
-      if (c != EOF)
+      if (c == EOF)
+        ib->err = errno;
+      else
         ++ib->count;
     }
   return c;
