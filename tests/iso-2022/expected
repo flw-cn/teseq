@@ -53,7 +53,8 @@
 : Esc $ ( B
 : Esc * ! $ A
 : Esc $ ( + B
+: Esc $ z
 . ESC/^[
 |$(|
 . SUB/^Z LF/^J ESC/^[
-|$)|
+|$)|.

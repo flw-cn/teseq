@@ -1,3 +1,12 @@
+2008-08-06  Micah Cowan  <micah@cowan.name>
+	
+	* src/teseq.c (print_gxdm_info): Ensure we don't index the
+	desig_strs string unless the index is in the appropriate
+	range. Thanks to Bruno Haible for spotting the bug.
+
+	* tests/iso-2022/input, tests/iso-2022/output: Tests for
+	print_gxdm_info fix ("Esc $ z").
+
 2008-08-01  Micah Cowan  <micah@cowan.name>
 
 	* Initial release, vesion 1.0.0!

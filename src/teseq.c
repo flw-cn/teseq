@@ -546,7 +546,7 @@ print_gxdm_info (struct processor *p, int i1, int f)
       set = 6;
       designate = i1 - 0x2c;
     }
-  else if (i1 != 0x27 && i1 != 0x2c)
+  else if (i1 >= 0x28 && i1 != 0x2c)
     {
       set = 4;
       designate = i1 - 0x28;
@@ -554,6 +554,8 @@ print_gxdm_info (struct processor *p, int i1, int f)
   else
     return;
 
+  assert (designate >= 0);
+  assert (designate < 4);
   if (configuration.labels)
     {
       putter_single (p->putr, "& G%cDM%d: G%d-DESIGNATE MULTIBYTE 9%d-SET",
