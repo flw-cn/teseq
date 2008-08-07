@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AUTOMAKE_OPTIONS = subdir-objects
-AM_CFLAGS=-Wall -g -O2 -ansi -pedantic-errors
+# AM_CFLAGS=-Wall -g -O2 -ansi -pedantic-errors
 
 bin_PROGRAMS = teseq
 dist_bin_SCRIPTS  = reseq

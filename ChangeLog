@@ -1,5 +1,8 @@
 2008-08-06  Micah Cowan  <micah@cowan.name>
-	
+
+	* Makefile.am: Remove AM_CFLAGS; it's not appropriate as a spot
+	for overridable defaults.
+
 	* src/teseq.c (print_gxdm_info): Ensure we don't index the
 	desig_strs string unless the index is in the appropriate
 	range. Thanks to Bruno Haible for spotting the bug.
