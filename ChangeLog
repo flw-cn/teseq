@@ -1,3 +1,7 @@
+2008-08-06  Ryan Niebur  <ryanryan52@gmail.com>
+
+	* Makefile.am: Provide text for NAMES sections in the manpages.
+
 2008-08-06  Micah Cowan  <micah@cowan.name>
 
 	* Makefile.am: Remove AM_CFLAGS; it's not appropriate as a spot

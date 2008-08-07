@@ -46,10 +46,10 @@ dist_man_MANS = doc/teseq.1 doc/reseq.1
 SUFFIXES = .cm
 
 doc/teseq.1: src/teseq.c
-	$(HELP2MAN) ./teseq -o doc/teseq.1
+	$(HELP2MAN) ./teseq -o doc/teseq.1 -n "Format text with terminal escapes and control sequences for human consumption."
 
 doc/reseq.1: ./reseq.in
-	$(HELP2MAN) ./reseq -o doc/reseq.1
+	$(HELP2MAN) ./reseq -o doc/reseq.1 -n "Reverse the translations made by teseq."
 
 .cm.c:
 	$(CHECKMK) $< > $@ || ( rm -f $@ && false )
