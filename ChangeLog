@@ -1,3 +1,31 @@
+2008-08-23  Bruno Haible  <bruno@clisp.org>
+
+	Show designated target code sets with their name.
+	* src/teseq.c (ISO646, ISO8859): Remove macros.
+	(get_set_name): Remove function.
+	(iso_ir_names): New constant.
+	(iso_ir_name): New function.
+	(iso_ir_table1): New constant.
+	(iso_ir_table1_name): New function.
+	(iso_ir_table2): New constant.
+	(iso_ir_table2_name): New function.
+	(iso_ir_table3): New constant.
+	(iso_ir_table3_name): New function.
+	(iso_ir_table4): New constant.
+	(iso_ir_table4_name): New function.
+	(iso_ir_control_names): New constant.
+	(iso_ir_table5): New constant.
+	(iso_ir_c0_name): New function.
+	(iso_ir_table6): New constant.
+	(iso_ir_c1_name): New function.
+	(print_cxd_info): Print more details when configuration.descriptions
+	is set.
+	(print_gxd_info): Add argument i1. Print more details when
+	configuration.descriptions is set.
+	(print_gxdm_info): Print more details when configuration.descriptions
+	is set.
+	(handle_nF): Update print_gxd_info call.
+
 2008-08-23  Micah Cowan  <micah@cowan.name>
 
 	* tests/iso-2022/input, tests/iso-2022/expected: Add test sequence

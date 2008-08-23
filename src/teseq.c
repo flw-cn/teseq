@@ -363,149 +363,608 @@ read_csi_sequence (struct processor *p)
 
 }
 
-#define ISO646(lang)    name = " (ISO646, " lang ")"
-#define ISO8859(num)    name = " (ISO 8859-" #num ")"
-/* Describe the graphical character set being invoked. */
-const char *
-get_set_name (int set, int final)
-{
-  const char *name = "";
-  if (GET_COLUMN (final) == 3)
-    return " (private)";
-  if (set == 4)
-    switch (final)
-      {
-      case 0x40:
-        name = " (ISO646/IRV:1983)";
-        break;
-      case 0x41:
-        ISO646 ("British");
-        break;
-      case 0x42:
-        name = " (US-ASCII)";
-        break;
-      case 0x43:
-        name = " (Finnish)";
-        break;
-      case 0x45:
-        name = " (Norwegian/Danish)";
-        break;
-      case 0x47:
-        ISO646 ("Swedish");
-        break;
-      case 0x48:
-        ISO646 ("Swedish Names");
-        break;
-      case 0x49:
-        name = " (Katakana)";
-        break;
-      case 0x4a:
-        ISO646 ("Japanese");
-        break;
-      case 0x59:
-        ISO646 ("Italian");
-        break;
-      case 0x4c:
-        ISO646 ("Portuguese");
-        break;
-      case 0x5a:
-        ISO646 ("Spanish");
-        break;
-      case 0x4b:
-        ISO646 ("German");
-        break;
-      case 0x60:
-        ISO646 ("Norwegian");
-        break;
-      case 0x66:
-        ISO646 ("French");
-        break;
-      case 0x67:
-        ISO646 ("Portuguese");
-        break;
-      case 0x68:
-        ISO646 ("Spanish");
-        break;
-      case 0x69:
-        ISO646 ("Hungarian");
-        break;
-      case 0x6b:
-        name = " (Arabic)";
-        break;
-      }
-  else
-    switch (final)
-      {
-      case 0x41:
-        ISO8859 (1);
-        break;
-      case 0x42:
-        ISO8859 (2);
-        break;
-      case 0x43:
-        ISO8859 (3);
-        break;
-      case 0x44:
-        ISO8859 (4);
-        break;
-      case 0x46:
-        name = " (Greek)";
-        break;
-      case 0x47:
-        name = " (Arabic)";
-        break;
-      case 0x48:
-        name = " (Hebrew)";
-        break;
-      case 0x40:
-        name = " (Cyrillic)";
-        break;
-      case 0x4d:
-        ISO8859 (9);
-        break;
-      case 0x56:
-        ISO8859 (10);
-        break;
-      }
+/* Table of names of ISO-IR character sets.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/overview.htm  */
+static const char * const iso_ir_names[] =
+  {
+    /* 000 */ NULL,
+    /* 001 */ NULL,
+    /* 002 */ "ISO_646.IRV:1973",
+    /* 003 */ NULL,
+    /* 004 */ "ISO646-GB", /* = "BS_4730" */
+    /* 005 */ NULL,
+    /* 006 */ "ISO646-US", /* = "ANSI_X3.4-1968" */
+    /* 007 */ NULL,
+    /* 008 */ NULL, /* 008-1 and 008-2 handled below: "NATS-SEFI" and "NATS-SEFI-ADD" */
+    /* 009 */ NULL, /* 009-1 and 009-2 handled below: "NATS-DANO" and "NATS-DANO-ADD" */
+    /* 010 */ "ISO646-SE", /* = "ISO646-FI" = "SEN_850200_B" */
+    /* 011 */ "ISO646-SE2", /* = "SEN_850200_C" */
+    /* 012 */ NULL,
+    /* 013 */ "JIS_C6220-1969-JP",
+    /* 014 */ "ISO646-JP",/* = "JIS_C6220-1969" */
+    /* 015 */ "ISO646-IT",
+    /* 016 */ "ISO646-PT",
+    /* 017 */ "ISO646-ES",
+    /* 018 */ "GREEK7-OLD",
+    /* 019 */ "LATIN-GREEK",
+    /* 020 */ NULL,
+    /* 021 */ "ISO646-DE", /* = "DIN_66003" */
+    /* 022 */ NULL,
+    /* 023 */ NULL,
+    /* 024 */ NULL,
+    /* 025 */ "ISO646-FR1", /* = "NF_Z_62-010_1973" */
+    /* 026 */ NULL,
+    /* 027 */ "LATIN-GREEK-1",
+    /* 028 */ NULL,
+    /* 029 */ NULL,
+    /* 030 */ NULL,
+    /* 031 */ "ISO_5428:1976",
+    /* 032 */ NULL,
+    /* 033 */ NULL,
+    /* 034 */ NULL,
+    /* 035 */ NULL,
+    /* 036 */ NULL,
+    /* 037 */ "ISO_5427",
+    /* 038 */ "DIN_31624",
+    /* 039 */ "ISO_6438", /* = "DIN_31625" */
+    /* 040 */ NULL,
+    /* 041 */ NULL,
+    /* 042 */ "JIS_C6226-1978",
+    /* 043 */ NULL,
+    /* 044 */ NULL,
+    /* 045 */ NULL,
+    /* 046 */ NULL,
+    /* 047 */ "ISO-IR-47", /* an ISO646 variant */
+    /* 048 */ NULL,
+    /* 049 */ "INIS",
+    /* 050 */ "INIS-8",
+    /* 051 */ "INIS-CYRILLIC",
+    /* 052 */ NULL,
+    /* 053 */ "ISO_5426", /* = "ISO_5426:1980" */
+    /* 054 */ "ISO_5427:1981",
+    /* 055 */ "ISO_5428", /* = "ISO_5428:1980" */
+    /* 056 */ NULL,
+    /* 057 */ "ISO646-CN", /* = "GB_1988-80" */
+    /* 058 */ "GB_2312-80",
+    /* 059 */ "CODAR-U",
+    /* 060 */ "ISO646-NO", /* = "NS_4551-1" */
+    /* 061 */ "ISO646-NO2", /* = "NS_4551-2" */
+    /* 062 */ NULL,
+    /* 063 */ NULL,
+    /* 064 */ NULL,
+    /* 065 */ NULL,
+    /* 066 */ NULL,
+    /* 067 */ NULL,
+    /* 068 */ "APL",
+    /* 069 */ "ISO646-FR", /* = "NF_Z_62-010" */
+    /* 070 */ "CCITT-VIDEOTEX", /* not an official name */
+    /* 071 */ "CCITT-MOSAIC-2", /* not an official name */
+    /* 072 */ NULL,
+    /* 073 */ NULL,
+    /* 074 */ NULL,
+    /* 075 */ NULL,
+    /* 076 */ NULL,
+    /* 077 */ NULL,
+    /* 078 */ NULL,
+    /* 079 */ NULL,
+    /* 080 */ NULL,
+    /* 081 */ NULL,
+    /* 082 */ NULL,
+    /* 083 */ NULL,
+    /* 084 */ "ISO646-PT2",
+    /* 085 */ "ISO646-ES2",
+    /* 086 */ "ISO646-HU", /* = "MSZ_7795-3" */
+    /* 087 */ NULL, /* usused: "JIS_C6226-1983" = "JIS_X0208-1983" */
+    /* 088 */ "GREEK7",
+    /* 089 */ "ARABIC7", /* = "ASMO_449" */
+    /* 090 */ "ISO_6937-2", /* = "ISO_6937-2:1983" */
+    /* 091 */ "ISO646-JP-OCR-A",
+    /* 092 */ "ISO646-JP-OCR-B",
+    /* 093 */ "ISO646-JP-OCR-B-EXT", /* not an official name */
+    /* 094 */ "ISO646-JP-OCR-HAND", /* not an official name */
+    /* 095 */ "ISO646-JP-OCR-HAND-EXT", /* not an official name */
+    /* 096 */ "JIS_C6229-1984-OCR-HAND", /* not an official name */
+    /* 097 */ NULL,
+    /* 098 */ "ISO_2033",
+    /* 099 */ "ANSI_X3.110",
+    /* 100 */ "ISO-8859-1",
+    /* 101 */ "ISO-8859-2",
+    /* 102 */ "ISO646-T.61", /* not an official name */
+    /* 103 */ "T.61",
+    /* 104 */ NULL,
+    /* 105 */ NULL,
+    /* 106 */ NULL,
+    /* 107 */ NULL,
+    /* 108 */ NULL,
+    /* 109 */ "ISO-8859-3",
+    /* 110 */ "ISO-8859-4",
+    /* 111 */ "ECMA-CYRILLIC",
+    /* 112 */ NULL,
+    /* 113 */ NULL,
+    /* 114 */ NULL,
+    /* 115 */ NULL,
+    /* 116 */ NULL,
+    /* 117 */ NULL,
+    /* 118 */ NULL,
+    /* 119 */ NULL,
+    /* 120 */ NULL,
+    /* 121 */ "ISO646-CA", /* = "CSA_Z243.4-1985-1" */
+    /* 122 */ "ISO646-CA2", /* = "CSA_Z243.4-1985-2" */
+    /* 123 */ "CSA_Z243.4-1985-EXT", /* not an official name */
+    /* 124 */ NULL,
+    /* 125 */ NULL,
+    /* 126 */ "ISO-8859-7:1987", /* = "ELOT_128" = "ECMA-118" */
+    /* 127 */ "ISO-8859-6", /* = "ECMA-114" = "ASMO-708" */
+    /* 128 */ "T.101-2", /* not an official name, same as ISO-IR-99 */
+    /* 129 */ "T.101-3", /* not an official name */
+    /* 130 */ NULL,
+    /* 131 */ NULL,
+    /* 132 */ NULL,
+    /* 133 */ NULL,
+    /* 134 */ NULL,
+    /* 135 */ NULL,
+    /* 136 */ NULL,
+    /* 137 */ "CCITT-MOSAIC-1", /* not an official name */
+    /* 138 */ "ISO-8859-8:1988", /* = "ECMA-121" */
+    /* 139 */ "CSN_369103",
+    /* 140 */ NULL,
+    /* 141 */ "ISO646-YU",
+    /* 142 */ "BSI_IST-2", /* not an official name */
+    /* 143 */ "IEC_P27-1",
+    /* 144 */ "ISO-8859-5", /* = "ECMA-113:1988" */
+    /* 145 */ NULL,
+    /* 146 */ "JUS_003", /* not an official name */
+    /* 147 */ "JUS_004", /* not an official name */
+    /* 148 */ "ISO-8859-9", /* = "ECMA-128" */
+    /* 149 */ "KSC_5601", /* = "KS_C_5601-1987" */
+    /* 150 */ "GREEK-CCITT",
+    /* 151 */ "ISO646-CU", /* = "NC_99-10:81" */
+    /* 152 */ "ISO_6937-2-RESIDUAL", /* not an official name */
+    /* 153 */ "GOST_19768-74", /* = "ST_SEV_358-88" */
+    /* 154 */ "ISO-IR-154",
+    /* 155 */ "ISO_10367-BOX",
+    /* 156 */ "ISO_6937:1992",
+    /* 157 */ "ISO-8859-10",
+    /* 158 */ "ISO-IR-158",
+    /* 159 */ "JIS_X0212-1990",
+    /* 160 */ NULL,
+    /* 161 */ NULL,
+    /* 162 */ NULL,
+    /* 163 */ NULL,
+    /* 164 */ "HEBREW-CCITT", /* not an official name */
+    /* 165 */ "CHINESE-CCITT", /* not an official name */
+    /* 166 */ "TIS-620", /* = "TIS620-2533:1990" */
+    /* 167 */ "ARABIC-BULL", /* not an official name */
+    /* 168 */ "JIS_X0208-1990",
+    /* 169 */ "BLISSYMBOL", /* not an official name */
+    /* 170 */ "ISO646-INV",
+    /* 171 */ "CNS11643-1:1986",
+    /* 172 */ "CNS11643-2:1986",
+    /* 173 */ "CCITT-MOSAIC-3", /* not an official name */
+    /* 174 */ NULL,
+    /* 175 */ NULL,
+    /* 176 */ NULL,
+    /* 177 */ NULL,
+    /* 178 */ NULL,
+    /* 179 */ "ISO-8859-13",
+    /* 180 */ "TCVN5712:1993", /* = "VSCII-2" */
+    /* 181 */ "ISO-IR-181",
+    /* 182 */ "LATIN-WELSH", /* not an official name */
+    /* 183 */ "CNS11643-3:1992",
+    /* 184 */ "CNS11643-4:1992",
+    /* 185 */ "CNS11643-5:1992",
+    /* 186 */ "CNS11643-6:1992",
+    /* 187 */ "CNS11643-7:1992",
+    /* 188 */ NULL,
+    /* 189 */ NULL,
+    /* 190 */ NULL,
+    /* 191 */ NULL,
+    /* 192 */ NULL,
+    /* 193 */ NULL,
+    /* 194 */ NULL,
+    /* 195 */ NULL,
+    /* 196 */ NULL,
+    /* 197 */ "ISO-IR-197",
+    /* 198 */ "ISO-8859-8",
+    /* 199 */ "ISO-8859-14",
+    /* 200 */ "CYRILLIC-URALIC", /* not an official name */
+    /* 201 */ "CYRILLIC-VOLGAIC", /* not an official name */
+    /* 202 */ "KPS_9566-97",
+    /* 203 */ "ISO-8859-15",
+    /* 204 */ "ISO-8859-1-EURO", /* not an official name */
+    /* 205 */ "ISO-8859-4-EURO", /* not an official name */
+    /* 206 */ "ISO-8859-13-EURO", /* not an official name */
+    /* 207 */ "ISO646-IE", /* = "IS_433:1996" */
+    /* 208 */ "IS_434:1997",
+    /* 209 */ "ISO-IR-209",
+    /* 210 */ NULL,
+    /* 211 */ NULL,
+    /* 212 */ NULL,
+    /* 213 */ NULL,
+    /* 214 */ NULL,
+    /* 215 */ NULL,
+    /* 216 */ NULL,
+    /* 217 */ NULL,
+    /* 218 */ NULL,
+    /* 219 */ NULL,
+    /* 220 */ NULL,
+    /* 221 */ NULL,
+    /* 222 */ NULL,
+    /* 223 */ NULL,
+    /* 224 */ NULL,
+    /* 225 */ NULL,
+    /* 226 */ "ISO-8859-16", /* = "SR_14111:1998" */
+    /* 227 */ "ISO-8859-7", /* = "ISO-8859-7:2003" */
+    /* 228 */ "JIS_X0213-1:2000",
+    /* 229 */ "JIS_X0213-2:2000",
+    /* 230 */ "TDS-565",
+    /* 231 */ "ANSI_Z39.47",
+    /* 232 */ "TDS-616", /* = "TDS-616:2003" */
+    /* 233 */ "JIS_X0213-1:2004",
+    /* 234 */ "SI1311:2002"
+  };
 
-  return name;
+/* Return the name of a character set, given its ISO-IR registry number.  */
+static const char *
+iso_ir_name (float id)
+{
+  if (id == 8.1)
+    return "NATS-SEFI";
+  else if (id == 8.2)
+    return "NATS-SEFI-ADD";
+  else if (id == 9.1)
+    return "NATS-DANO";
+  else if (id == 9.2)
+    return "NATS-DANO-ADD";
+  else
+    {
+      int i = (int) id;
+      const char *name = NULL;
+      if (i >= 0 && i < sizeof (iso_ir_names) / sizeof (iso_ir_names[0]))
+	name = iso_ir_names[i];
+      if (name == NULL)
+	{
+	  static char buf[20];
+	  sprintf (buf, "ISO-IR-%d", i);
+	  name = buf;
+	}
+      return name;
+    }
 }
 
-/* Identify control character set invocation. */
+/* Table of code sets with 94 characters, assigned 1988-10 or before,
+   for 3-byte escape sequences. ESC 0x28..0x2B 0x40+XX.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/table01.htm */
+static float const iso_ir_table1[] =
+  {
+     2,  4,  6, 8.1,  8.2, 9.1, 9.2,  10,  11,  13,  14,  21,  16,  39, 37, 38,
+    53, 54, 25,  55,   57,  27,  47,  49,  31,  15,  17,  18,  19,  50, 51, 59,
+    60, 61, 70,  71,  173,  68,  69,  84,  85,  86,  88,  89,  90,  91, 92, 93,
+    94, 95, 96,  98,   99, 102, 103, 121, 122, 137, 141, 146, 128, 147
+  };
+
+/* Return the name of a character set, given the final byte
+   of the 3-byte escape sequence ESC 0x28..0x2B 0x40+XX.
+   Return NULL if unknown.  */
+static const char *
+iso_ir_table1_name (int f)
+{
+  if (f >= 0x40 && f < 0x40 + sizeof (iso_ir_table1) / sizeof (iso_ir_table1[0]))
+    return iso_ir_name (iso_ir_table1[f - 0x40]);
+  else
+    return NULL;
+}
+
+/* Table of code sets with 94 characters, assigned 1988-11 or later,
+   for 4-byte escape sequences ESC 0x28..0x2B 0x21 0x40+XX.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/table02.htm */
+static int const iso_ir_table2[] =
+  {
+    150, 151, 170, 207, 230, 231, 232
+  };
+
+/* Return the name of a character set, given the final byte
+   of the 4-byte escape sequence ESC 0x28..0x2B 0x21 0x40+XX.
+   Return NULL if unknown.  */
+static const char *
+iso_ir_table2_name (int f)
+{
+  if (f >= 0x40 && f < 0x40 + sizeof (iso_ir_table2) / sizeof (iso_ir_table2[0]))
+    return iso_ir_name (iso_ir_table2[f - 0x40]);
+  else
+    return NULL;
+}
+
+/* Table of code sets with 96 characters,
+   for 3-byte escape sequences ESC 0x2D..0x2F 0x40+XX.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/table03.htm */
+static int const iso_ir_table3[] =
+  {
+    111, 100, 101, 109, 110, 123, 126, 127, 138, 139, 142, 143, 144, 148, 152, 153,
+    154, 155, 156, 164, 166, 167, 157,  -1, 158, 179, 180, 181, 182, 197, 198, 199,
+    200, 201, 203, 204, 205, 206, 226, 208, 209, 227, 234,  -1,  -1,  -1,  -1,  -1,
+     -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 129
+  };
+
+/* Return the name of a character set, given the final byte
+   of the 3-byte escape sequence ESC 0x2D..0x2F 0x40+XX.
+   Return NULL if unknown.  */
+static const char *
+iso_ir_table3_name (int f)
+{
+  if (f >= 0x40 && f < 0x40 + sizeof (iso_ir_table3) / sizeof (iso_ir_table3[0]))
+    {
+      int id = iso_ir_table3[f - 0x40];
+      if (id >= 0)
+        return iso_ir_name (id);
+    }
+  return NULL;
+}
+
+/* Table of code sets with multi-byte characters, for escape sequences
+   ESC 0x24 [0x28] 0x40+XX (the 0x28 can be omitted only for the first three)
+   and ESC 0x24 0x29..0x2B 0x40+XX.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/table04.htm */
+static int const iso_ir_table4[] =
+  {
+     42,  58, 168, 149, 159, 165, 169, 171, 172, 183, 184, 185, 186, 187, 202, 228,
+    229, 233
+  };
+
+/* Return the name of a character set, given the final byte
+   of the escape sequence ESC 0x24 [0x28] 0x40+XX (the 0x28 can be omitted only
+   for the first three) or ESC 0x24 0x29..0x2B 0x40+XX.
+   Return NULL if unknown.  */
+static const char *
+iso_ir_table4_name (int f)
+{
+  if (f >= 0x40 && f < 0x40 + sizeof (iso_ir_table3) / sizeof (iso_ir_table3[0]))
+    return iso_ir_name (iso_ir_table4[f - 0x40]);
+  else
+    return NULL;
+}
+
+/* Table of names of ISO-IR control character sets.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/overview.htm  */
+static const char * const iso_ir_control_names[] =
+  {
+    /* 000 */ NULL,
+    /* 001 */ "ISO646",
+    /* 002 */ NULL,
+    /* 003 */ NULL,
+    /* 004 */ NULL,
+    /* 005 */ NULL,
+    /* 006 */ NULL,
+    /* 007 */ "NATS",
+    /* 008 */ NULL,
+    /* 009 */ NULL,
+    /* 010 */ NULL,
+    /* 011 */ NULL,
+    /* 012 */ NULL,
+    /* 013 */ NULL,
+    /* 014 */ NULL,
+    /* 015 */ NULL,
+    /* 016 */ NULL,
+    /* 017 */ NULL,
+    /* 018 */ NULL,
+    /* 019 */ NULL,
+    /* 020 */ NULL,
+    /* 021 */ NULL,
+    /* 022 */ NULL,
+    /* 023 */ NULL,
+    /* 024 */ NULL,
+    /* 025 */ NULL,
+    /* 026 */ "ISO-IR-26",
+    /* 027 */ NULL,
+    /* 028 */ NULL,
+    /* 029 */ NULL,
+    /* 030 */ NULL,
+    /* 031 */ NULL,
+    /* 032 */ NULL,
+    /* 033 */ NULL,
+    /* 034 */ NULL,
+    /* 035 */ NULL,
+    /* 036 */ "ISO-IR-36",
+    /* 037 */ NULL,
+    /* 038 */ NULL,
+    /* 039 */ NULL,
+    /* 040 */ "DIN_31626",
+    /* 041 */ NULL,
+    /* 042 */ NULL,
+    /* 043 */ NULL,
+    /* 044 */ NULL,
+    /* 045 */ NULL,
+    /* 046 */ NULL,
+    /* 047 */ NULL,
+    /* 048 */ "INIS",
+    /* 049 */ NULL,
+    /* 050 */ NULL,
+    /* 051 */ NULL,
+    /* 052 */ NULL,
+    /* 053 */ NULL,
+    /* 054 */ NULL,
+    /* 055 */ NULL,
+    /* 056 */ "VIDEOTEX-GB", /* not an official name */
+    /* 057 */ NULL,
+    /* 058 */ NULL,
+    /* 059 */ NULL,
+    /* 060 */ NULL,
+    /* 061 */ NULL,
+    /* 062 */ NULL,
+    /* 063 */ NULL,
+    /* 064 */ NULL,
+    /* 065 */ NULL,
+    /* 066 */ NULL,
+    /* 067 */ NULL,
+    /* 068 */ NULL,
+    /* 069 */ NULL,
+    /* 070 */ NULL,
+    /* 071 */ NULL,
+    /* 072 */ NULL,
+    /* 073 */ "VIDEOTEX-CCITT", /* not an official name */
+    /* 074 */ "JIS_C6225-1979",
+    /* 075 */ NULL,
+    /* 076 */ NULL,
+    /* 077 */ "ISO_6429",
+    /* 078 */ NULL,
+    /* 079 */ NULL,
+    /* 080 */ NULL,
+    /* 081 */ NULL,
+    /* 082 */ NULL,
+    /* 083 */ NULL,
+    /* 084 */ NULL,
+    /* 085 */ NULL,
+    /* 086 */ NULL,
+    /* 087 */ NULL,
+    /* 088 */ NULL,
+    /* 089 */ NULL,
+    /* 090 */ NULL,
+    /* 091 */ NULL,
+    /* 092 */ NULL,
+    /* 093 */ NULL,
+    /* 094 */ NULL,
+    /* 095 */ NULL,
+    /* 096 */ NULL,
+    /* 097 */ NULL,
+    /* 098 */ NULL,
+    /* 099 */ NULL,
+    /* 100 */ NULL,
+    /* 101 */ NULL,
+    /* 102 */ NULL,
+    /* 103 */ NULL,
+    /* 104 */ "ISO_4873",
+    /* 105 */ "ISO_4873",
+    /* 106 */ "T.61",
+    /* 107 */ "T.61",
+    /* 108 */ NULL,
+    /* 109 */ NULL,
+    /* 110 */ NULL,
+    /* 111 */ NULL,
+    /* 112 */ NULL,
+    /* 113 */ NULL,
+    /* 114 */ NULL,
+    /* 115 */ NULL,
+    /* 116 */ NULL,
+    /* 117 */ NULL,
+    /* 118 */ NULL,
+    /* 119 */ NULL,
+    /* 120 */ NULL,
+    /* 121 */ NULL,
+    /* 122 */ NULL,
+    /* 123 */ NULL,
+    /* 124 */ "ISO_6630-1985",
+    /* 125 */ NULL,
+    /* 126 */ NULL,
+    /* 127 */ NULL,
+    /* 128 */ NULL,
+    /* 129 */ NULL,
+    /* 130 */ "ASMO_662-1985", /* = "ST_SEV_358" */
+    /* 131 */ NULL,
+    /* 132 */ "T.101-1", /* not an official name */
+    /* 133 */ "T.101-1", /* not an official name */
+    /* 134 */ "T.101-2", /* not an official name */
+    /* 135 */ "T.101-3", /* not an official name */
+    /* 136 */ "T.101-3", /* not an official name */
+    /* 137 */ NULL,
+    /* 138 */ NULL,
+    /* 139 */ NULL,
+    /* 140 */ "CSN_369102"
+  };
+
+/* Table of C0 control character sets,
+   for 3-byte escape sequences ESC 0x21 0x40+XX.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/table05.htm */
+static int const iso_ir_table5[] =
+  {
+    1, 7, 48, 26, 36, 106, 74, 104, 130, 132, 134, 135, 140
+  };
+
+/* Return the name of a C0 control character set, given the final byte of
+   the 3-byte escape sequence ESC 0x21 0x40+XX.
+   Return NULL if unknown.  */
+static const char *
+iso_ir_c0_name (int f)
+{
+  if (f >= 0x40 && f < 0x40 + sizeof (iso_ir_table5) / sizeof (iso_ir_table5[0]))
+    {
+      int id = iso_ir_table5[f - 0x40];
+      if (id >= 0)
+        return iso_ir_control_names[id];
+    }
+  return NULL;
+}
+
+/* Table of C1 control character sets,
+   for 3-byte escape sequences ESC 0x22 0x40+XX.
+   See http://www.itscj.ipsj.or.jp/ISO-IR/table06.htm */
+static int const iso_ir_table6[] =
+  {
+    56, 73, 124, 77, 133, 40, 136, 105, 107
+  };
+
+/* Return the name of a C1 control character set, given the final byte of
+   the 3-byte escape sequence ESC 0x22 0x40+XX.
+   Return NULL if unknown.  */
+static const char *
+iso_ir_c1_name (int f)
+{
+  if (f >= 0x40 && f < 0x40 + sizeof (iso_ir_table6) / sizeof (iso_ir_table6[0]))
+    {
+      int id = iso_ir_table6[f - 0x40];
+      if (id >= 0)
+        return iso_ir_control_names[id];
+    }
+  return NULL;
+}
+
+/* Identify control character set invocation.
+   Escape sequence: ESC 0x21..0x22 FINAL */
 void
 print_cxd_info (struct processor *p, int intermediate, int final)
 {
   if (intermediate == 0x21)
     {
       maybe_print_label (p, "CZD", "C0-DESIGNATE");
-      if (configuration.descriptions && final == 0x40)
-        putter_single (p->putr, "\" Designate C0 Set of ISO-646.");
+      if (configuration.descriptions)
+	{
+	  const char *name = iso_ir_c0_name (final);
+	  if (name != NULL)
+	    putter_single (p->putr, "\" Designate C0 Control Set of %s.",
+			   name);
+	}
     }
   else
     {
       maybe_print_label (p, "C1D", "C1-DESIGNATE");
-      if (configuration.descriptions && final == 0x43)
-        putter_single (p->putr, "\" Designate C1 Control Set of ISO 6429-1983.");
+      if (configuration.descriptions)
+	{
+	  const char *name = iso_ir_c1_name (final);
+	  if (name != NULL)
+	    putter_single (p->putr, "\" Designate C1 Control Set of %s.",
+			   name);
+	}
     }
 }
 
-/* Identify graphical character set invocation. */
+/* Identify graphical character set invocation.
+   Escape sequence: ESC 0x28..2F [I1] FINAL */
 void
-print_gxd_info (struct processor *p, int intermediate, int final)
+print_gxd_info (struct processor *p, int intermediate, int i1, int final)
 {
+  /* See ISO 2022 = ECMA 035, section 14.3.2.  */
   int designate;
   const char *desig_strs = "Z123";
   int set;
 
-  if (intermediate >= 0x2d && intermediate <= 0x2f)
-    {
-      set = 6;
-      designate = intermediate - 0x2c;
-    }
-  else if (intermediate != 0x27 && intermediate != 0x2c)
+  if (intermediate >= 0x28 && intermediate <= 0x2b)
     {
       set = 4;
       designate = intermediate - 0x28;
+    }
+  else if (intermediate >= 0x2d && intermediate <= 0x2f)
+    {
+      set = 6;
+      designate = intermediate - 0x2c;
     }
   else
     return;
@@ -517,9 +976,58 @@ print_gxd_info (struct processor *p, int intermediate, int final)
     }
   if (configuration.descriptions)
     {
+      const char *designator;
+      const char *explanation;
+
+      {
+	static char buf[10];
+	char *p = buf;
+
+	if (i1 != 0)
+	  *p++ = i1;
+	*p++ = final;
+	*p = '\0';
+	designator = buf;
+      }
+
+      if (GET_COLUMN (final) == 3)
+	explanation = " (private)";
+      else
+	{
+	  static char buf[100];
+	  const char *name;
+
+	  if (set == 4)
+	    {
+	      if (i1 == 0)
+		/* ESC 0x28..0x2B FINAL */
+		name = iso_ir_table1_name (final);
+	      else if (i1 == 0x21)
+		/* ESC 0x28..0x2B 0x21 FINAL */
+		name = iso_ir_table2_name (final);
+	      else
+		name = NULL;
+	    }
+	  else
+	    {
+	      if (i1 == 0)
+		/* ESC 0x2D..0x2F FINAL */
+		name = iso_ir_table3_name (final);
+	      else
+		name = NULL;
+	    }
+	  if (name != NULL)
+	    {
+	      sprintf (buf, " (%s)", name);
+	      explanation = buf;
+	    }
+	  else
+	    explanation = "";
+	}
+
       putter_single (p->putr, "\" Designate 9%d-character set "
-                     "%c%s to G%d.",
-                     set, final, get_set_name (set, final), designate);
+                     "%s%s to G%d.",
+                     set, designator, explanation, designate);
     }
 }
 
@@ -557,6 +1065,31 @@ print_gxdm_info (struct processor *p, int i1, int final)
     {
       putter_single (p->putr, "& G%cDM%d: G%d-DESIGNATE MULTIBYTE 9%d-SET",
                      desig_strs[designate], set, designate, set);
+    }
+  if (configuration.descriptions)
+    {
+      const char *explanation;
+
+      if (GET_COLUMN (final) == 3)
+	explanation = " (private)";
+      else
+	{
+	  static char buf[100];
+	  const char *name;
+
+	  name = (set == 4 ? iso_ir_table4_name (final) : NULL);
+	  if (name != NULL)
+	    {
+	      sprintf (buf, " (%s)", name);
+	      explanation = buf;
+	    }
+	  else
+	    explanation = "";
+	}
+
+      putter_single (p->putr, "\" Designate multibyte 9%d-character set "
+                     "%c%s to G%d.",
+                     set, final, explanation, designate);
     }
 }
 
@@ -616,8 +1149,8 @@ handle_nF (struct processor *p, unsigned char i)
     print_cxd_info (p, i, f);
   else if (i == 0x24 && (i1 == 0 || i1 >= 0x27))
     print_gxdm_info (p, i1, f);
-  else if (i >= 0x27)
-    print_gxd_info (p, i, f);
+  else if (i >= 0x28)
+    print_gxd_info (p, i, i1, f);
   return 1;
 }
 
