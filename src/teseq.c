@@ -523,33 +523,30 @@ print_gxd_info (struct processor *p, int intermediate, int final)
     }
 }
 
-/* Identify multibyte graphical character set invocation. */
+/* Identify multibyte graphical character set invocation.
+   Escape sequence: ESC 0x24 [I1] FINAL */
 void
-print_gxdm_info (struct processor *p, int i1, int f)
+print_gxdm_info (struct processor *p, int i1, int final)
 {
+  /* See ISO 2022 = ECMA 035, section 14.3.2.  */
   int designate;
   const char *desig_strs = "Z123";
   int set;
 
-  if (f == '\x40' || f == '\x41' || f == '\x42')
+  if (i1 == (final == 0x40 || final == 0x41 || final == 0x42 ? 0 : 0x28))
     {
-      if (i1 == 0)
-        {
-          designate = 0;
-          set = 4;
-        }
-      else
-        return;
+      set = 4;
+      designate = 0;
+    }
+  else if (i1 >= 0x29 && i1 <= 0x2b)
+    {
+      set = 4;
+      designate = i1 - 0x28;
     }
   else if (i1 >= 0x2d && i1 <= 0x2f)
     {
       set = 6;
       designate = i1 - 0x2c;
-    }
-  else if (i1 >= 0x28 && i1 != 0x2c)
-    {
-      set = 4;
-      designate = i1 - 0x28;
     }
   else
     return;

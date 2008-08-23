@@ -1,3 +1,8 @@
+2008-08-23  Bruno Haible  <bruno@clisp.org>
+
+	* src/teseq.c (print_gxdm_info): Accept final byte 0x40..41 also with
+	i1 values different from 0 and 0x28.
+	
 2008-08-06  Ryan Niebur  <ryanryan52@gmail.com>
 
 	* Makefile.am: Provide text for NAMES sections in the manpages.
