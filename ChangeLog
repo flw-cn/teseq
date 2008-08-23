@@ -1,3 +1,12 @@
+2008-08-23  Micah Cowan  <micah@cowan.name>
+
+	* src/teseq.c (iso_ir_names, iso_ir_control_names): Be consistent
+	about choice of underscore in place of the space character, and
+	use the IANA-preferred (and more recognizable) name US-ASCII
+	rather than ISO646-US.
+	* tests/iso-2022/expected: Adjust for new and altered character
+	set descriptions.
+
 2008-08-23  Bruno Haible  <bruno@clisp.org>
 
 	Show designated target code sets with their name.

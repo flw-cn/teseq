@@ -369,11 +369,12 @@ static const char * const iso_ir_names[] =
   {
     /* 000 */ NULL,
     /* 001 */ NULL,
-    /* 002 */ "ISO_646.IRV:1973",
+    /* 002 */ "ISO_646.irv:1973",
     /* 003 */ NULL,
     /* 004 */ "ISO646-GB", /* = "BS_4730" */
     /* 005 */ NULL,
-    /* 006 */ "ISO646-US", /* = "ANSI_X3.4-1968" */
+    /* 006 */ "US-ASCII", /* = "ISO646-US", "ISO_646.irv:1991",
+                               "ANSI_X3.4-1968" */
     /* 007 */ NULL,
     /* 008 */ NULL, /* 008-1 and 008-2 handled below: "NATS-SEFI" and "NATS-SEFI-ADD" */
     /* 009 */ NULL, /* 009-1 and 009-2 handled below: "NATS-DANO" and "NATS-DANO-ADD" */
@@ -467,8 +468,8 @@ static const char * const iso_ir_names[] =
     /* 097 */ NULL,
     /* 098 */ "ISO_2033",
     /* 099 */ "ANSI_X3.110",
-    /* 100 */ "ISO-8859-1",
-    /* 101 */ "ISO-8859-2",
+    /* 100 */ "ISO_8859-1",
+    /* 101 */ "ISO_8859-2",
     /* 102 */ "ISO646-T.61", /* not an official name */
     /* 103 */ "T.61",
     /* 104 */ NULL,
@@ -476,8 +477,8 @@ static const char * const iso_ir_names[] =
     /* 106 */ NULL,
     /* 107 */ NULL,
     /* 108 */ NULL,
-    /* 109 */ "ISO-8859-3",
-    /* 110 */ "ISO-8859-4",
+    /* 109 */ "ISO_8859-3",
+    /* 110 */ "ISO_8859-4",
     /* 111 */ "ECMA-CYRILLIC",
     /* 112 */ NULL,
     /* 113 */ NULL,
@@ -493,8 +494,8 @@ static const char * const iso_ir_names[] =
     /* 123 */ "CSA_Z243.4-1985-EXT", /* not an official name */
     /* 124 */ NULL,
     /* 125 */ NULL,
-    /* 126 */ "ISO-8859-7:1987", /* = "ELOT_128" = "ECMA-118" */
-    /* 127 */ "ISO-8859-6", /* = "ECMA-114" = "ASMO-708" */
+    /* 126 */ "ISO_8859-7:1987", /* = "ELOT_128" = "ECMA-118" */
+    /* 127 */ "ISO_8859-6", /* = "ECMA-114" = "ASMO-708" */
     /* 128 */ "T.101-2", /* not an official name, same as ISO-IR-99 */
     /* 129 */ "T.101-3", /* not an official name */
     /* 130 */ NULL,
@@ -505,17 +506,17 @@ static const char * const iso_ir_names[] =
     /* 135 */ NULL,
     /* 136 */ NULL,
     /* 137 */ "CCITT-MOSAIC-1", /* not an official name */
-    /* 138 */ "ISO-8859-8:1988", /* = "ECMA-121" */
+    /* 138 */ "ISO_8859-8:1988", /* = "ECMA-121" */
     /* 139 */ "CSN_369103",
     /* 140 */ NULL,
     /* 141 */ "ISO646-YU",
     /* 142 */ "BSI_IST-2", /* not an official name */
     /* 143 */ "IEC_P27-1",
-    /* 144 */ "ISO-8859-5", /* = "ECMA-113:1988" */
+    /* 144 */ "ISO_8859-5", /* = "ECMA-113:1988" */
     /* 145 */ NULL,
     /* 146 */ "JUS_003", /* not an official name */
     /* 147 */ "JUS_004", /* not an official name */
-    /* 148 */ "ISO-8859-9", /* = "ECMA-128" */
+    /* 148 */ "ISO_8859-9", /* = "ECMA-128" */
     /* 149 */ "KSC_5601", /* = "KS_C_5601-1987" */
     /* 150 */ "GREEK-CCITT",
     /* 151 */ "ISO646-CU", /* = "NC_99-10:81" */
@@ -524,7 +525,7 @@ static const char * const iso_ir_names[] =
     /* 154 */ "ISO-IR-154",
     /* 155 */ "ISO_10367-BOX",
     /* 156 */ "ISO_6937:1992",
-    /* 157 */ "ISO-8859-10",
+    /* 157 */ "ISO_8859-10",
     /* 158 */ "ISO-IR-158",
     /* 159 */ "JIS_X0212-1990",
     /* 160 */ NULL,
@@ -546,7 +547,7 @@ static const char * const iso_ir_names[] =
     /* 176 */ NULL,
     /* 177 */ NULL,
     /* 178 */ NULL,
-    /* 179 */ "ISO-8859-13",
+    /* 179 */ "ISO_8859-13",
     /* 180 */ "TCVN5712:1993", /* = "VSCII-2" */
     /* 181 */ "ISO-IR-181",
     /* 182 */ "LATIN-WELSH", /* not an official name */
@@ -565,15 +566,15 @@ static const char * const iso_ir_names[] =
     /* 195 */ NULL,
     /* 196 */ NULL,
     /* 197 */ "ISO-IR-197",
-    /* 198 */ "ISO-8859-8",
-    /* 199 */ "ISO-8859-14",
+    /* 198 */ "ISO_8859-8",
+    /* 199 */ "ISO_8859-14",
     /* 200 */ "CYRILLIC-URALIC", /* not an official name */
     /* 201 */ "CYRILLIC-VOLGAIC", /* not an official name */
     /* 202 */ "KPS_9566-97",
-    /* 203 */ "ISO-8859-15",
-    /* 204 */ "ISO-8859-1-EURO", /* not an official name */
-    /* 205 */ "ISO-8859-4-EURO", /* not an official name */
-    /* 206 */ "ISO-8859-13-EURO", /* not an official name */
+    /* 203 */ "ISO_8859-15",
+    /* 204 */ "ISO_8859-1-EURO", /* not an official name */
+    /* 205 */ "ISO_8859-4-EURO", /* not an official name */
+    /* 206 */ "ISO_8859-13-EURO", /* not an official name */
     /* 207 */ "ISO646-IE", /* = "IS_433:1996" */
     /* 208 */ "IS_434:1997",
     /* 209 */ "ISO-IR-209",
@@ -593,8 +594,8 @@ static const char * const iso_ir_names[] =
     /* 223 */ NULL,
     /* 224 */ NULL,
     /* 225 */ NULL,
-    /* 226 */ "ISO-8859-16", /* = "SR_14111:1998" */
-    /* 227 */ "ISO-8859-7", /* = "ISO-8859-7:2003" */
+    /* 226 */ "ISO_8859-16", /* = "SR_14111:1998" */
+    /* 227 */ "ISO_8859-7", /* = "ISO-8859-7:2003" */
     /* 228 */ "JIS_X0213-1:2000",
     /* 229 */ "JIS_X0213-2:2000",
     /* 230 */ "TDS-565",
@@ -729,7 +730,7 @@ iso_ir_table4_name (int f)
 static const char * const iso_ir_control_names[] =
   {
     /* 000 */ NULL,
-    /* 001 */ "ISO646",
+    /* 001 */ "ISO_646",
     /* 002 */ NULL,
     /* 003 */ NULL,
     /* 004 */ NULL,
@@ -805,7 +806,7 @@ static const char * const iso_ir_control_names[] =
     /* 074 */ "JIS_C6225-1979",
     /* 075 */ NULL,
     /* 076 */ NULL,
-    /* 077 */ "ISO_6429",
+    /* 077 */ "ISO_6429-1983",
     /* 078 */ NULL,
     /* 079 */ NULL,
     /* 080 */ NULL,

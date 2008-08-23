@@ -2,14 +2,16 @@
 & ACS: ANNOUNCE CODE STRUCTURE
 : Esc ! @
 & CZD: C0-DESIGNATE
-" Designate C0 Set of ISO-646.
+" Designate C0 Control Set of ISO_646.
 : Esc ! G
 & CZD: C0-DESIGNATE
+" Designate C0 Control Set of ISO_4873.
 : Esc " C
 & C1D: C1-DESIGNATE
-" Designate C1 Control Set of ISO 6429-1983.
+" Designate C1 Control Set of ISO_6429-1983.
 : Esc " E
 & C1D: C1-DESIGNATE
+" Designate C1 Control Set of DIN_31626.
 . LF/^J
 : Esc ' A
 : Esc ( B
@@ -17,24 +19,24 @@
 " Designate 94-character set B (US-ASCII) to G0.
 : Esc ) A
 & G1D4: G1-DESIGNATE 94-SET
-" Designate 94-character set A (ISO646, British) to G1.
+" Designate 94-character set A (ISO646-GB) to G1.
 : Esc * Z
 & G2D4: G2-DESIGNATE 94-SET
-" Designate 94-character set Z (ISO646, Spanish) to G2.
+" Designate 94-character set Z (ISO646-ES) to G2.
 : Esc + 5
 & G3D4: G3-DESIGNATE 94-SET
 " Designate 94-character set 5 (private) to G3.
 : Esc , A
 : Esc ( p
 & GZD4: G0-DESIGNATE 94-SET
-" Designate 94-character set p to G0.
+" Designate 94-character set p (ISO646-JP-OCR-HAND) to G0.
 . LF/^J
 : Esc - A
 & G1D6: G1-DESIGNATE 96-SET
-" Designate 96-character set A (ISO 8859-1) to G1.
+" Designate 96-character set A (ISO_8859-1) to G1.
 : Esc . B
 & G2D6: G2-DESIGNATE 96-SET
-" Designate 96-character set B (ISO 8859-2) to G2.
+" Designate 96-character set B (ISO_8859-2) to G2.
 : Esc / t
 & G3D6: G3-DESIGNATE 96-SET
 " Designate 96-character set t to G3.
@@ -44,14 +46,17 @@
 . LF/^J
 : Esc $ B
 & GZDM4: G0-DESIGNATE MULTIBYTE 94-SET
+" Designate multibyte 94-character set B (JIS_X0208-1990) to G0.
 |:#F|$O!";3ED$5$s!#|
 : Esc ( B
 & GZD4: G0-DESIGNATE 94-SET
 " Designate 94-character set B (US-ASCII) to G0.
 : Esc $ ) D
 & G1DM4: G1-DESIGNATE MULTIBYTE 94-SET
+" Designate multibyte 94-character set D (JIS_X0212-1990) to G1.
 : Esc $ ) A
 & G1DM4: G1-DESIGNATE MULTIBYTE 94-SET
+" Designate multibyte 94-character set A (GB_2312-80) to G1.
 : Esc $ ( B
 : Esc * ! $ A
 : Esc $ ( + B
