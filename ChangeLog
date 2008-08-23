@@ -1,3 +1,8 @@
+2008-08-23  Micah Cowan  <micah@cowan.name>
+
+	* tests/iso-2022/input, tests/iso-2022/expected: Add test sequence
+	for Bruno's print_gxdm_info fix.
+
 2008-08-23  Bruno Haible  <bruno@clisp.org>
 
 	* src/teseq.c (print_gxdm_info): Accept final byte 0x40..41 also with
