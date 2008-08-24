@@ -1,3 +1,11 @@
+2008-08-24  Micah Cowan  <micah@cowan.name>
+
+	* src/teseq.c (iso_ir_names, iso_ir_control_names): Move
+	ISO_8859-X names back to ISO-8859-1, to match the IANA-preferred
+	designations. Use space instead of underscore for "ISO 646" in the
+	control names section, since it refers to a standard, rather than
+	a MIME charset designation.
+
 2008-08-23  Micah Cowan  <micah@cowan.name>
 
 	* src/teseq.c (iso_ir_names, iso_ir_control_names): Be consistent
