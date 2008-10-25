@@ -37,7 +37,7 @@ get_vars()
 	r_expected="${r_expected:-$input}"
 }
 
-if [ "$#" -ge 1 -a "${1}" = "-r" ]
+if [ "$#" -ge 1 -a X"${1}" = X"-r" ]
 then
 	echo
 	echo "RUNNING RESEQ TESTS"

@@ -1,3 +1,7 @@
+2008-10-25  Christian Weisgerber  <naddy@mips.inka.de
+
+	* tests/run.in: protect options within string arguments to test.
+
 2008-08-24  Micah Cowan  <micah@cowan.name>
 
 	* src/teseq.c (iso_ir_names, iso_ir_control_names): Move
