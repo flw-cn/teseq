@@ -13,11 +13,12 @@ use warnings;
 
 use Getopt::Long;
 
+use POSIX;
+
 our $VERSION = '@VERSION@';
 
 our $inf;
 our $outf;
-our $promptf;
 our $replay = 0;
 our $pauses = 0;
 our $timings;
@@ -27,6 +28,11 @@ our $timingsf;
 our $last_delay = undef;
 our $last_last_delay = 0.0;
 our $count;
+
+our $termios;
+our $orig_lflag;
+our $orig_ccmin;
+our $orig_cctime;
 
 our @controls = (
 	"NUL", "SOH", "STX", "ETX",
@@ -57,8 +63,8 @@ Reverse the translations made by teseq.
  -V, --version       Display version and warrantee
  --replay            Obey delay lines for video-style playback.
  --pauses            In addition to obeying delay lines, also obey
-                     "pause" commands, writing prompts to file
-                     descriptor 0 (standard input; must be writable).
+                     "pause" commands, which blocks until the user hits
+                     a key.
  -d DIVISOR          Play back at DIVISOR times the normal speed.
  -t, --timings=FILE  Output timing data to FILE, in the format used
                      by script -t and scriptreplay.
@@ -139,10 +145,17 @@ sub process_delay {
 
 sub process_pause {
     return unless $replay and $pauses;
+    my $data;
 
-    my $prompt = shift;
-    print $promptf "$prompt";
-    <STDIN>;
+    # read any already-available data
+    sysread(STDIN, $data, 65535);
+
+    # Now block til we get one more char.
+    $termios->setcc( VMIN, 1 );
+    $termios->setattr( 0, &POSIX::TCSANOW );
+    sysread(STDIN, $data, 1);
+    $termios->setcc( VMIN, 0 );
+    $termios->setattr( 0, &POSIX::TCSANOW );
 }
 
 sub process_line {
@@ -160,8 +173,8 @@ sub process_line {
     elsif (/^@ +(.*)$/) {
         &process_delay ($1);
     }
-    elsif (/^@@@ *(.*)$/) {
-        &process_pause ($1);
+    elsif (/^@@@/) {
+        &process_pause;
     }
     elsif (/^[!\$+\[\/=\\^\{~]/) {
         die "Unknown semantic line prefix, line $.: $&\n";
@@ -171,6 +184,42 @@ sub process_line {
         # This includes label (&) and description (") lines.
     }
 }
+
+sub restore_term {
+    my $signal = shift;
+    $termios->setlflag( $orig_lflag );
+    $termios->setcc( VMIN, $orig_ccmin );
+    $termios->setcc( VTIME, $orig_cctime );
+    $termios->setattr( 0, &POSIX::TCSANOW );
+    if (defined $signal) {
+        undef $SIG{$signal};
+        raise $signal;
+    }
+}
+
+sub setup_signals {
+    for my $sig qw(TERM INT TSTP) {
+        $SIG{$sig} = \&restore_term;
+    }
+    $SIG{'CONT'} = \&comeback;
+}
+
+sub rawish_term {
+    my $new_lflag = $termios->getlflag;
+    $new_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN);
+    $termios->setlflag($new_lflag);
+    $termios->setcc( VMIN, 0 );
+    $termios->setcc( VTIME, 0 );
+
+    $termios->setattr( 0, &POSIX::TCSANOW ) or die "setattr: $!";
+}
+
+sub comeback {
+    &setup_signals;
+    &rawish_term;
+}
+
+### main ###
 
 &Getopt::Long::Configure ('bundling');
 &GetOptions ('help|h' => sub { &usage (0); },
@@ -189,9 +238,20 @@ else {
 }
 
 if ($replay && $pauses) {
-    open $promptf, '>&0'
-        or die "Specified --pauses, but can't open fd 0: $!\n";
-    $| = 1;
+    # Put the terminal into raw mode, with no echo, and install signal
+    # handler to restore terminal settings.
+    unless ( -t STDIN ) {
+        die "Specified --pauses, but STDIN is not a terminal.\n";
+    }
+
+    $termios = POSIX::Termios->new or die "Termios->new";
+    $termios->getattr( 0 ) or die "getattr: $!";
+    $orig_lflag = $termios->getlflag;
+    $orig_ccmin = $termios->getcc( VMIN );
+    $orig_cctime = $termios->getcc( VTIME );
+
+    &setup_signals;
+    &rawish_term;
 }
 
 if ($ARGV[0] eq '-') {
@@ -220,3 +280,4 @@ while (defined ($line = <$inf>)) {
     &process_line ("$line");
 }
 &process_delay (undef);
+&restore_term if $termios;
