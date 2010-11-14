@@ -17,7 +17,9 @@ our $VERSION = '@VERSION@';
 
 our $inf;
 our $outf;
+our $promptf;
 our $replay = 0;
+our $pauses = 0;
 our $timings;
 our $divisor = 1.0;
 
@@ -46,7 +48,7 @@ sub usage {
 
     print $f <<END_USAGE;
 Usage: reseq [-t FILE] INPUT OUTPUT
-   or: reseq --replay INPUT [OUTPUT]
+   or: reseq --replay [--pauses] INPUT [OUTPUT]
    or: reseq -h | --help
    or: reseq -V | --version
 Reverse the translations made by teseq.
@@ -54,6 +56,9 @@ Reverse the translations made by teseq.
  -h, --help          Print usage information (this message).
  -V, --version       Display version and warrantee
  --replay            Obey delay lines for video-style playback.
+ --pauses            In addition to obeying delay lines, also obey
+                     "pause" commands, writing prompts to file
+                     descriptor 0 (standard input; must be writable).
  -d DIVISOR          Play back at DIVISOR times the normal speed.
  -t, --timings=FILE  Output timing data to FILE, in the format used
                      by script -t and scriptreplay.
@@ -132,6 +137,14 @@ sub process_delay {
     }
 }
 
+sub process_pause {
+    return unless $replay and $pauses;
+
+    my $prompt = shift;
+    print $promptf "$prompt";
+    <STDIN>;
+}
+
 sub process_line {
     local $_ = shift;
     if (/^-?\|(.*)\|([-.]?)$/) {
@@ -147,6 +160,9 @@ sub process_line {
     elsif (/^@ +(.*)$/) {
         &process_delay ($1);
     }
+    elsif (/^@@@ *(.*)$/) {
+        &process_pause ($1);
+    }
     elsif (/^[!\$+\[\/=\\^\{~]/) {
         die "Unknown semantic line prefix, line $.: $&\n";
     }
@@ -160,6 +176,7 @@ sub process_line {
 &GetOptions ('help|h' => sub { &usage (0); },
              'version|V' => \&version,
              'replay' => \$replay,
+             'pauses' => \$pauses,
              'timings|t=s' => \$timings,
              'd=f' => \$divisor);
 
@@ -170,6 +187,13 @@ if ($replay) {
 else {
     &usage (1) unless @ARGV == 2;
 }
+
+if ($replay && $pauses) {
+    open $promptf, '>&0'
+        or die "Specified --pauses, but can't open fd 0: $!\n";
+    $| = 1;
+}
+
 if ($ARGV[0] eq '-') {
     $inf = \*STDIN;
 }
@@ -190,6 +214,7 @@ if ($timings) {
 }
 
 my $line;
+select $outf;
 $| = 1;
 while (defined ($line = <$inf>)) {
     &process_line ("$line");
