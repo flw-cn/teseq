@@ -455,7 +455,7 @@ occurred in the input.
 * Escape-Sequence Lines::       
 * Label Lines::                 
 * Description Lines::           
-* Delay Lines::                 
+* Delay Lines and Halt Lines::  
 @end menu
 
 @node Text Lines, Control-Character Lines, Output Format, Output Format
@@ -1008,7 +1008,7 @@ escape sequences; for instance, control characters or control strings,
 or other strings that may be interpreted specially by some devices or
 applications.
 
-@node Description Lines, Delay Lines, Label Lines, Output Format
+@node Description Lines, Delay Lines and Halt Lines, Label Lines, Output Format
 @section Description Lines
 @cindex description line
 
@@ -1081,9 +1081,10 @@ Some description lines may appear without a preceding label line (even
 when @option{-L} was not specified), in the event that no standard
 designation for the function is known.
 
-@node Delay Lines,  , Description Lines, Output Format
-@section Delay Lines
+@node Delay Lines and Halt Lines,  , Description Lines, Output Format
+@section Delay Lines and Halt Lines
 @cindex delay line
+@cindex halt line
 @opindex @@
 
 A delay line begins with an ``at'' sign @samp{@@}, and contains a
@@ -1104,8 +1105,26 @@ the @option{-t} option, which uses a timing file from
 @samp{script -t} to determine where to insert delays. Aside from that,
 delay lines can be useful for manual insertion into Teseq
 output, to introduce a delay at a particular point when using
+@opindex --replay (reseq)
 @samp{reseq --replay}, which can aid in giving the user time to more
 easily observe terminal behavior.
+
+If a line begins with three ``at'' signs together @samp{@@@@@@}, and
+@command{reseq} is invoked with both @samp{--replay} @emph{and}
+@opindex --halts (reseq)
+@samp{--halts}, then @command{reseq} will pause at this location
+until the user presses a key to indicate continuation. The remainder
+of the line will be ignored, so can be used for comments.
+
+Such a line will never be output by @command{teseq}; it must be
+inserted by the user. Since @command{reseq} does not give any
+indication to the user that it is awaiting input (as opposed to simply
+waiting on a length delay line), it is highly advisable to insert this
+``halt'' line only after a spot in the recorded terminal script that
+already provides such an indication.
+
+The halt line can be useful for creating animated demonstrations of
+program usage, and similar sorts of presentation-oriented scripts.
 
 @node Reseq, Standards, Output Format, Top
 @chapter The Reseq Command
@@ -1155,10 +1174,22 @@ producing behavior equivalent to that of the
 but using a Teseq output file as input, rather than a raw typescript
 file.
 
-@item -d @var{divisor}
-@opindex -d (reseq)
-Play back the script at @var{divisor} times the original speed
-(meaningless unless @option{--replay} was also specified).
+@item --halts
+@opindex --halts (reseq)
+Only takes effect if @samp{--replay} is also specified. In addition to
+honoring delay lines, also honors user-inserted ``halt'' lines (those
+beginning with @samp{@@@@@@}) in the input. These lines cause
+@command{reseq} to halt processing until the user presses a key.
+
+This halting action is not accompanied by any sort of indication that
+@command{reseq} is awaiting user action; it is up to the user to
+ensure that the input script to @command{reseq} has included some sort
+of appropriate indication.
+
+When @samp{--halts} is in effect, @command{reseq} will turn off
+terminal echoing (so the user's keypress to continue the script is not
+shown), and switches the terminal over to unbuffered I/O, so that
+keypresses can be read as soon as they are typed.
 
 @item -t @var{timings}
 @itemx --timings @var{timings}

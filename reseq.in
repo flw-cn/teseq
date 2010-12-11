@@ -20,7 +20,7 @@ our $VERSION = '@VERSION@';
 our $inf;
 our $outf;
 our $replay = 0;
-our $pauses = 0;
+our $halts = 0;
 our $timings;
 our $divisor = 1.0;
 
@@ -54,7 +54,7 @@ sub usage {
 
     print $f <<END_USAGE;
 Usage: reseq [-t FILE] INPUT OUTPUT
-   or: reseq --replay [--pauses] INPUT [OUTPUT]
+   or: reseq --replay [--halts] INPUT [OUTPUT]
    or: reseq -h | --help
    or: reseq -V | --version
 Reverse the translations made by teseq.
@@ -62,9 +62,9 @@ Reverse the translations made by teseq.
  -h, --help          Print usage information (this message).
  -V, --version       Display version and warrantee
  --replay            Obey delay lines for video-style playback.
- --pauses            In addition to obeying delay lines, also obey
-                     "pause" commands, which blocks until the user hits
-                     a key.
+ --halts             In addition to obeying delay lines, also obey
+                     "halt" lines (starting with "@@@"), pausing
+                     further processing until the user hits a key.
  -d DIVISOR          Play back at DIVISOR times the normal speed.
  -t, --timings=FILE  Output timing data to FILE, in the format used
                      by script -t and scriptreplay.
@@ -143,8 +143,8 @@ sub process_delay {
     }
 }
 
-sub process_pause {
-    return unless $replay and $pauses;
+sub process_halt {
+    return unless $replay and $halts;
     my $data;
 
     # read any already-available data
@@ -174,7 +174,7 @@ sub process_line {
         &process_delay ($1);
     }
     elsif (/^@@@/) {
-        &process_pause;
+        &process_halt;
     }
     elsif (/^[!\$+\[\/=\\^\{~]/) {
         die "Unknown semantic line prefix, line $.: $&\n";
@@ -225,9 +225,9 @@ sub comeback {
 &GetOptions ('help|h' => sub { &usage (0); },
              'version|V' => \&version,
              'replay' => \$replay,
-             'pauses' => \$pauses,
+             'halts' => \$halts,
              'timings|t=s' => \$timings,
-             'd=f' => \$divisor);
+             'd=f' => \$divisor) || &usage (1);
 
 if ($replay) {
     die "Divisor cannot be zero.\n" unless $divisor;
@@ -237,11 +237,11 @@ else {
     &usage (1) unless @ARGV == 2;
 }
 
-if ($replay && $pauses) {
+if ($replay && $halts) {
     # Put the terminal into raw mode, with no echo, and install signal
     # handler to restore terminal settings.
     unless ( -t STDIN ) {
-        die "Specified --pauses, but STDIN is not a terminal.\n";
+        die "Specified --halts, but STDIN is not a terminal.\n";
     }
 
     $termios = POSIX::Termios->new or die "Termios->new";
