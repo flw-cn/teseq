@@ -2,7 +2,7 @@
 & ACS: ANNOUNCE CODE STRUCTURE
 : Esc ! @
 & CZD: C0-DESIGNATE
-" Designate C0 Control Set of ISO_646.
+" Designate C0 Control Set of ISO 646.
 : Esc ! G
 & CZD: C0-DESIGNATE
 " Designate C0 Control Set of ISO_4873.
@@ -33,10 +33,10 @@
 . LF/^J
 : Esc - A
 & G1D6: G1-DESIGNATE 96-SET
-" Designate 96-character set A (ISO_8859-1) to G1.
+" Designate 96-character set A (ISO-8859-1) to G1.
 : Esc . B
 & G2D6: G2-DESIGNATE 96-SET
-" Designate 96-character set B (ISO_8859-2) to G2.
+" Designate 96-character set B (ISO-8859-2) to G2.
 : Esc / t
 & G3D6: G3-DESIGNATE 96-SET
 " Designate 96-character set t to G3.
