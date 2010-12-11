@@ -71,7 +71,7 @@ clean-local:
 	find tests -name r-output -o -name output | xargs rm -f
 	rm -f tests/cmdline--/-o
 	rm -f tests/timing/timing-out
-	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf doc/teseq.1 \
-	                              doc/reseq.1
+	test "$(srcdir)" = . || rm -f src/test-inputbuf.inf
+	rm -f doc/teseq.1 doc/reseq.1
 
 CLEANFILES = teseq.dvi
