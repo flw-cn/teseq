@@ -109,11 +109,12 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 @cindex terminal
 @cindex terminal emulator
 
-GNU Teseq is a tool for translating files that contain control
-characters and terminal control sequences, into human-understandable
-text. It is intended to aid in debugging problems in terminal
-emulators, software that makes use of special terminal features, and
-interactions between the two.
+GNU Teseq is a tool for analyzing files that contain control characters
+and terminal control sequences, by printing these control sequences and
+their meanings in readable English. It is intended to be useful for
+debugging terminal emulators, and programs that make heavy use of
+advanced terminal features such as cursor movement, coloring, and other
+effects.
 
 It is primarily targeted at individuals who possess a basic
 understanding of terminal control sequences, especially
@@ -122,20 +123,6 @@ understanding of terminal control sequences, especially
 @acronym{@sc{csi}} sequences; however, by default Teseq will try to
 identify and describe the sequences that it encounters, and the
 behavior they might produce in a terminal.
-
-Teseq describes control functions as they are interpreted by
-VT100-compatible terminals, and/or terminals compliant with the
-@fortyeight{} standard. Teseq does @emph{not} support describing
-control functions according to terminal-specific definitions in a
-database such as
-@cindex termcap
-termcap or
-@cindex terminfo
-terminfo, though future versions may
-include limited support for that (@pxref{Future Enhancements}).
-Therefore, the descriptions Teseq uses for control functions may not
-necessarily match their actual interpretation by whatever terminal
-device the characters were actually intended for.
 
 GNU Teseq is @uref{http://www.gnu.org/philosophy/free-sw.html, free
 software}. @xref{Copying}, for copying conditions.
