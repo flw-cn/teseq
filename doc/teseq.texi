@@ -152,7 +152,8 @@ text, and then to revert back to normal text for the rest. To replace
 the final word, it might have to issue a series of backspaces before
 issuing the replacement word. All of this will be handled
 transparently by the terminal, and you wouldn't see any of the special
-characters the program sent to the terminal---unless perhaps you
+c
+aracters the program sent to the terminal---unless perhaps you
 convinced the program to write to a text file as if it were writing to
 a terminal, or ran the program under a terminal capture utility such
 as the
@@ -286,7 +287,8 @@ particular means that running the output through the
 Still, this option can be useful (in combination with @option{-L}) for
 those that don't care about the exact sequence of characters, or what
 their function is called, but just what their effects in the terminal
-are (those that Teseq understands). The output produced 
+are (those that Teseq understands). The output produced will describe
+what happened, but not how.
 
 @item -L
 @opindex -L
