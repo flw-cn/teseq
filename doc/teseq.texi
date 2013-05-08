@@ -350,6 +350,7 @@ character prefixes for the lines they suppress; and @option{-C} has an
 representations it suppresses. However, while they may be more practical to remember, they
 will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
+with a backslash (@code{-\&} and @code{-\"})
 in order to pass them to the @command{teseq} command.
 
 @unnumberedsec Interactive Mode
