@@ -1519,16 +1519,37 @@ void
 tty_setup (int fd)
 {
   struct termios ti;
+  int            intr;
+  char          *ctrl_name = NULL;
 
   if (tcgetattr (fd, &ti) != 0)
     return;
   saved_stty = ti;
+  intr = ti.c_cc[VINTR];
   ti.c_lflag &= ~ICANON;
   if (output_tty_p)
     ti.c_lflag &= ~ECHO;
   working_stty = ti;
   input_term_fd = fd;
   tcsetattr (fd, TCSANOW, &ti);
+
+  /* Notify the user that they're in non-canonical mode. */
+
+  fprintf (stderr,
+           "  Terminal detected. Interactive mode (-I option to disable).\n"
+           "  Send the interrupt character to exit.");
+
+  if (IS_CONTROL(intr))
+    {
+      fprintf (stderr, " (Control-%c)",
+               intr + '@');  /* <--- Example: '\003' -> (Control-C) */
+    }
+  else if (intr == C_DEL)
+    {
+      fprintf (stderr, " (DEL, or Control-?)");
+    }
+
+  fputs ("\n\n", stderr);
 }
 
 void
