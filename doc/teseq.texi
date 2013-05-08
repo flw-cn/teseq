@@ -296,6 +296,13 @@ what happened, but not how.
 Don't print identifying labels (lines beginning with @samp{&}) for
 escape sequences.
 
+@item --color[=@var{when}]
+@itemx --colour[=@var{when}]
+@opindex --color
+@opindex --colour
+Colorize the output. WHEN defaults to 'always' or can be 'never' or
+'auto'.
+
 @item -I
 @itemx --no-interactive
 @opindex -I
@@ -352,6 +359,19 @@ will be less practical to type, since both @option{-&} and @option{-"}
 are apt to be interpreted as special by the shell, and must be quoted
 with a backslash (@code{-\&} and @code{-\"})
 in order to pass them to the @command{teseq} command.
+
+@unnumberedsec Color Mode
+@opindex --color
+@opindex --colour
+@cindex color
+@cindex colour
+Teseq can provide color formatting to its output. This feature is
+disabled by default, but can be activated via @option{--color=auto}
+or @option{--color=always}. If @samp{auto} is used, then color will be
+added to the output only if the output is to a terminal; otherwise not.
+If @samp{always} is specified, then color formatting codes will be
+provided for the output unconditionally. Note that such output may not
+be fed to @command{reseq}, which will not be able to handle these codes.
 
 @unnumberedsec Interactive Mode
 @cindex non-canonical mode

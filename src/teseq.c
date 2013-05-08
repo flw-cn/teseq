@@ -1,7 +1,7 @@
 /* teseq.c: Analysis of terminal controls and escape sequences. */
 
 /*
-    Copyright (C) 2008 Micah Cowan
+    Copyright (C) 2008,2010,2013 Micah Cowan
 
     This file is part of GNU teseq.
 
@@ -1466,6 +1466,9 @@ consumption.\n", f);
  -E              Don't print escape sequences.\n\
  -L              Don't print labels.\n", f);
   fputs ("\
+     --color=[WHEN], --colour=[WHEN]\n\
+                 Colorize the output. WHEN defaults to 'always'\n\
+                 or can be 'never' or 'auto'. See manual.\n\
  -I, --no-interactive\n\
                  Don't put the terminal into non-canonical or no-echo\n\
                  mode, and don't try to ensure output lines are finished\n\
@@ -1586,6 +1589,8 @@ struct option teseq_opts[] = {
   { "timings", 1, NULL, 't' },
   { "buffered", 0, NULL, 'b' },
   { "no-interactive", 0, NULL, 'I' },
+  { "color", 2, &configuration.color, CFG_COLOR_SET },
+  { "colour", 2, &configuration.color, CFG_COLOR_SET },
   { 0 }
 };
 #endif
@@ -1593,7 +1598,7 @@ struct option teseq_opts[] = {
 void
 configure (struct processor *p, int argc, char **argv)
 {
-  int opt;
+  int opt, which;
   const char *timings_fname = NULL;
   FILE *inf = stdin;
   FILE *outf = stdout;
@@ -1606,6 +1611,7 @@ configure (struct processor *p, int argc, char **argv)
   configuration.buffered = 0;
   configuration.handle_signals = 1;
   configuration.timings = NULL;
+  configuration.color = CFG_COLOR_NONE;
 
   program_name = argv[0];
 
@@ -1613,7 +1619,7 @@ configure (struct processor *p, int argc, char **argv)
 #define ACCEPTOPTS      ":hVo:C^&D\"LEt:xbI"
 #ifdef HAVE_GETOPT_H
                  getopt_long (argc, argv, ACCEPTOPTS,
-                              teseq_opts, NULL)
+                              teseq_opts, &which)
 #else
                  getopt (argc, argv, ACCEPTOPTS)
 #endif
@@ -1659,6 +1665,25 @@ configure (struct processor *p, int argc, char **argv)
         case ':':
           fprintf (stderr, "Option -%c requires an argument.\n\n", optopt);
           usage (EXIT_FAILURE);
+          break;
+        case 0:
+          /* Long-only option. */
+          if (configuration.color == CFG_COLOR_SET)
+            {
+              if (!optarg || !strcasecmp(optarg, "always"))
+                configuration.color = CFG_COLOR_ALWAYS;
+              else if (!strcasecmp(optarg, "none"))
+                configuration.color = CFG_COLOR_NONE;
+              else if (!strcasecmp(optarg, "auto"))
+                configuration.color = CFG_COLOR_AUTO;
+              else
+                {
+                  fprintf (stderr,
+                           "Option --color: Unknown argument ``%s''.\n\n",
+                           optarg);
+                  usage (EXIT_FAILURE);
+                }
+            }
           break;
         default:
           if (optopt == ':')

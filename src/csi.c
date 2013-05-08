@@ -1,7 +1,7 @@
 /* csi.c: acronyms, labels, and descriptions for CSI control sequences. */
 
 /*
-    Copyright (C) 2008 Micah Cowan
+    Copyright (C) 2008,2013 Micah Cowan
 
     This file is part of GNU teseq.
 

@@ -1,7 +1,7 @@
 /* csi.h */
 
 /*
-    Copyright (C) 2008 Micah Cowan
+    Copyright (C) 2008,2013 Micah Cowan
 
     This file is part of GNU teseq.
 

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2008 Micah Cowan
+    Copyright (C) 2008,2010,2013 Micah Cowan
 
     This file is part of GNU teseq.
 
@@ -28,6 +28,13 @@
 
 #define N_ARY_ELEMS(ary)        (sizeof (ary) / sizeof (ary)[0])
 
+enum {
+    CFG_COLOR_NONE,
+    CFG_COLOR_AUTO,
+    CFG_COLOR_ALWAYS,
+    CFG_COLOR_SET       /* Used temporarily when processing options. */
+};
+
 struct config
 {
   int control_hats;
@@ -37,6 +44,7 @@ struct config
   int buffered;
   int handle_signals;
   FILE *timings;
+  int color;
 };
 
 extern struct config configuration;
