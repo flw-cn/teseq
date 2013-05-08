@@ -30,6 +30,7 @@
 : Esc [ ? 1 h
 & SM: SET MODE (private params)
 : Esc =
+& DECKPAM: KEYPAD APPLICATION MODE
 : Esc [ 0 m
 & SGR: SELECT GRAPHIC RENDITION
 : Esc [ 1 ; 52 r

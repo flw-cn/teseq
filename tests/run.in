@@ -111,15 +111,13 @@ fi
 	cntrl-esc
 	high-val
 	hardstatus
-	hardstatus-x
 	controls
         csi-interm
         csi-desc
         modes
         single-functions
         extensions
-        sgr-no-x
-        sgr-x
+        sgr
         timing
         timing-header-only
         timing-no-eol

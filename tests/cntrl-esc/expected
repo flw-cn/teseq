@@ -28,4 +28,6 @@
 . CR/^M LF/^J
 : Esc [ ? 1049 h
 & SM: SET MODE (private params)
+" (Xterm) Save the cursor position and use the alternate screen buffer,
+"  clearing it first.
 . CR/^M LF/^J

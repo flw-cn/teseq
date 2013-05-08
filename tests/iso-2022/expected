@@ -42,7 +42,9 @@
 " Designate 96-character set t to G3.
 . LF/^J
 : Esc =
+& DECKPAM: KEYPAD APPLICATION MODE
 : Esc >
+& DECKPNM: KEYPAD NORMAL MODE
 . LF/^J
 : Esc $ B
 & GZDM4: G0-DESIGNATE MULTIBYTE 94-SET
