@@ -1276,7 +1276,7 @@ might contain important semantic information that effects the output
 At the same time, it'd be a shame for @command{reseq} to refuse to
 process a line it doesn't understand, if that line contains
 non-critical information. For example, consider delay lines (beginning
-with @samp{@@}. The delay line holds semantic information, to be sure;
+with @samp{@@}). The delay line holds semantic information, to be sure;
 but not information that would affect @command{reseq}'s normal
 operation (it only has meaning when one of the
 @opindex -t (reseq)
