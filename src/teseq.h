@@ -34,7 +34,6 @@ struct config
   int descriptions;
   int labels;
   int escapes;
-  int extensions;
   int buffered;
   int handle_signals;
   FILE *timings;

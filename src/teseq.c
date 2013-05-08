@@ -281,8 +281,7 @@ process_csi_sequence (struct processor *p, const struct csi_handler *handler)
   if (configuration.labels)
     print_csi_label (p, handler, private_params);
 
-  if (configuration.descriptions && handler->fn
-      && (configuration.extensions || !private_params))
+  if (configuration.descriptions && handler->fn)
     {
       int wrong_num_params = 0;
       init_csi_params (handler, &n_params, params);
@@ -344,8 +343,7 @@ read_csi_sequence (struct processor *p)
           if (IS_CSI_FINAL_COLUMN (col))
             {
               inputbuf_rewind (p->ibuf);
-              return get_csi_handler (configuration.extensions, private_params,
-                                      intermsz, interm, c);
+              return get_csi_handler (private_params, intermsz, interm, c);
             }
           else if (! IS_CSI_INTERMEDIATE_COLUMN (col))
             {
@@ -1203,23 +1201,20 @@ handle_Fp (struct processor *p, unsigned char c)
 {
   if (configuration.escapes)
     putter_single (p->putr, ": Esc %c", c);
-  if (configuration.extensions)
+  switch (c)
     {
-      switch (c)
-        {
-        case '7':
-          maybe_print_label (p, "DECSC", "SAVE CURSOR");
-          break;
-        case '8':
-          maybe_print_label (p, "DECRC", "RESTORE CURSOR");
-          break;
-        case '=':
-          maybe_print_label (p, "DECKPAM", "KEYPAD APPLICATION MODE");
-          break;
-        case '>':
-          maybe_print_label (p, "DECKPNM", "KEYPAD NORMAL MODE");
-          break;
-        }
+    case '7':
+      maybe_print_label (p, "DECSC", "SAVE CURSOR");
+      break;
+    case '8':
+      maybe_print_label (p, "DECRC", "RESTORE CURSOR");
+      break;
+    case '=':
+      maybe_print_label (p, "DECKPAM", "KEYPAD APPLICATION MODE");
+      break;
+    case '>':
+      maybe_print_label (p, "DECKPNM", "KEYPAD NORMAL MODE");
+      break;
     }
   return 1;
 }
@@ -1478,7 +1473,7 @@ consumption.\n", f);
  -b, --buffered  Force teseq to buffer I/O.\n\
  -t, --timings=TIMINGS\n\
                  Read timing info from TIMINGS and emit delay lines.\n\
- -x              Identify control sequences from VT100/Xterm\n", f);
+ -x              (No effect; accepted for backwards compatibility.)\n", f);
   putc ('\n', f);
   fputs ("\
 The GNU Teseq home page is at http://www.gnu.org/software/teseq/.\n\
@@ -1587,7 +1582,6 @@ configure (struct processor *p, int argc, char **argv)
   configuration.descriptions = 1;
   configuration.labels = 1;
   configuration.escapes = 1;
-  configuration.extensions = 0;
   configuration.buffered = 0;
   configuration.handle_signals = 1;
   configuration.timings = NULL;
@@ -1638,7 +1632,8 @@ configure (struct processor *p, int argc, char **argv)
           timings_fname = optarg;
           break;
         case 'x':
-          configuration.extensions = 1;
+          /* Used to control whether we print descriptions of
+           * non-ANSI-defined sequences. This option is always on now. */
           break;
         case ':':
           fprintf (stderr, "Option -%c requires an argument.\n\n", optopt);

@@ -323,20 +323,14 @@ util-linux).
 
 @item -x
 @opindex -x
-Allow @command{teseq} to recognize some additional, non-standard
-sequences, such as extensions from VT100 or Xterm. Without this
-option, @command{teseq} will only interpret functions standardized by
-@thirtyfive{} and @fortyeight{}.
+No effect. Accepted for backwards compatibility.
 @end table
 
 @noindent
-Note that there are no options for suppressing
 @cpindex text line
-text lines (@samp{|})
-or
 @cpindex control-character line
-control-character lines (@samp{.}),
-as there are for description or
+Note that there are no options for suppressing text lines (@samp{|}) or
+control-character lines (@samp{.}), as there are for description or
 escape-sequence lines.
 
 The @option{-L}, @option{-D} and @option{-E} options also have
@@ -982,9 +976,8 @@ lines).
 
 The format of a label line's content is always @var{acronym}:
 @var{name}; both of these are defined for each control function
-by @fortyeight{}. If the @option{-x} option was specified to
-@command{teseq}, then some labels may also name private functions
-defined by DEC for the VT100 and similar terminals.
+by @fortyeight{}. In some cases, they may also name private functions
+defined by popular terminals and terminal emulators.
 
 Label lines currently are never wrapped; however, future
 versions of Teseq may wrap label lines. At that time, continuation
@@ -1339,9 +1332,14 @@ copyright'', at:
 @end example
 
 @noindent
-In addition to the definitions provided by these standards, Teseq also
-recognizes additional sequences when the @option{-x} option has been
-specified. Sources of information that were used for identifying and
+Teseq also recognizes some additional sequences that were not defined by
+international standard, but are in fairly wide use.
+In such cases, if descriptions are enabled, the description text for
+these sequences will be prefixed by a tag in parentheses that identifies
+where this functionality is found. For instance, @code{(DEC)} for
+sequences used in DEC equipment such as the VT100, or @code{(Xterm)} for
+squences supported by xterm.
+Sources of information that were used for identifying and
 describing these sequences, include:
 
 @example

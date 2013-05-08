@@ -656,7 +656,7 @@ static void
 print_sgr_param_description (struct putter *putr, unsigned int param)
 {
   const char *msg = NULL;
-  if (configuration.extensions && param >= 90 && param <= 107)
+  if (param >= 90 && param <= 107)
     {
       const char *messages[] =
         {
@@ -687,7 +687,7 @@ print_sgr_param_description (struct putter *putr, unsigned int param)
     {
       putter_single (putr, "\" %s", msg);
     }
-  if (configuration.extensions && param == 100)
+  if (param == 100)
     {
       putter_single (putr, "\" %s", ("(Rxvt) Set foreground and background "
                                      "color to default."));
@@ -1112,13 +1112,11 @@ const static struct csi_handler csi_decmouse_handler =
   {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_decmouse, -1, -1};
 
 const struct csi_handler *
-get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
+get_csi_handler (int private_indicator, size_t intermsz,
                  int interm, unsigned char final)
 {
   if (final >= 0x70)
     {
-      if (!configuration.extensions)
-        return &csi_no_handler;
       if (intermsz == 0)
         {
           switch (final)

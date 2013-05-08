@@ -63,7 +63,7 @@ struct csi_handler
 };
 
 const struct csi_handler *
-get_csi_handler (int exts_on, int private_indicator, size_t intermsz,
+get_csi_handler (int private_indicator, size_t intermsz,
                  int interm, unsigned char final);
 
 #endif /* TESEQ_CSI_H */
