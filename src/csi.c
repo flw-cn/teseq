@@ -121,9 +121,9 @@ csi_do_ich (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, ("\" Shift characters after the cursor to make room "
-                        "for %u new character%s."), params[0],
-                 params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, ("Shift characters after the cursor to make room "
+                             "for %u new character%s."), params[0],
+                      params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -134,10 +134,10 @@ csi_do_cuu (unsigned char final, unsigned char priv, struct putter *putr,
   const char *unit[] = {"line", "character"};
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor %s %u %s%s.",
-                 dir[ final - 0x41 ],
-                 params[0], unit[ (final - 0x41)/2 ],
-                 params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, "Move the cursor %s %u %s%s.",
+                      dir[ final - 0x41 ],
+                      params[0], unit[ (final - 0x41)/2 ],
+                      params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -147,8 +147,10 @@ csi_do_cnl (unsigned char final, unsigned char priv, struct putter *putr,
   const char *dir[] = {"down", "up"};
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor to the first column, %u line%s %s.",
-                 params[0], params[0] == 1 ? "" : "s", dir[ final - 0x45 ]);
+  putter_single_desc (putr, ("Move the cursor to the first column,"
+                             " %u line%s %s."),
+                      params[0], params[0] == 1 ? "" : "s",
+                      dir[ final - 0x45 ]);
 }
 
 static void
@@ -157,7 +159,7 @@ csi_do_cha (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor to column %u.", params[0]);
+  putter_single_desc (putr, "Move the cursor to column %u.", params[0]);
 }
 
 static void
@@ -166,8 +168,8 @@ csi_do_cup (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 2);
-  putter_single (putr, "\" Move the cursor to line %u, column %u.",
-                 params[0], params[1]);
+  putter_single_desc (putr, "Move the cursor to line %u, column %u.",
+                      params[0], params[1]);
 }
 
 static void
@@ -178,8 +180,8 @@ csi_do_cht (unsigned char final, unsigned char priv, struct putter *putr,
   const char *dir = (final == 0x5A) ? "back" : "forward";
   if (priv) return;
   assert (n_params == 1);
-  putter_single (putr, "\" Move the cursor %s %u %stab stop%s.",
-                 dir, params[0], hv, params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, "Move the cursor %s %u %stab stop%s.",
+                      dir, params[0], hv, params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -207,15 +209,15 @@ csi_do_ed (unsigned char final, unsigned char priv, struct putter *putr,
   switch (params[0])
     {
     case 0:
-      putter_single (putr, ("\" Clear from the cursor to the end of "
-                            "the %s."), space);
+      putter_single_desc (putr, ("Clear from the cursor to the end of "
+                                 "the %s."), space);
       break;
     case 1:
-      putter_single (putr, ("\" Clear from the beginning of the %s "
-                            "to the cursor."), space);
+      putter_single_desc (putr, ("Clear from the beginning of the %s "
+                                 "to the cursor."), space);
       break;
     case 2:
-      putter_single (putr, "\" Clear the %s.", space);
+      putter_single_desc (putr, "Clear the %s.", space);
       break;
     }
 }
@@ -226,9 +228,9 @@ csi_do_il (unsigned char final, unsigned char priv, struct putter *putr,
 {
   assert (n_params == 1);
   if (priv) return;
-  putter_single (putr, ("\" Shift lines after the cursor to make room "
-                        "for %u new line%s."), params[0],
-                 params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, ("Shift lines after the cursor to make room "
+                             "for %u new line%s."), params[0],
+                      params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -237,8 +239,9 @@ csi_do_dl (unsigned char final, unsigned char priv, struct putter *putr,
 {
   assert (n_params == 1);
   if (priv) return;
-  putter_single (putr, "\" Delete %u line%s, shifting the following lines up.",
-                 params[0], params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, ("Delete %u line%s, shifting the following "
+                             "lines up."),
+                      params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -250,15 +253,15 @@ csi_do_ef (unsigned char final, unsigned char priv, struct putter *putr,
   switch (params[0])
     {
     case 0:
-      putter_single (putr, "\" Clear from the cursor to the next tab stop.");
+      putter_single_desc (putr, "Clear from the cursor to the next tab stop.");
       break;
     case 1:
-      putter_single (putr, ("\" Clear from the previous tab stop "
-                            "to the cursor."));
+      putter_single_desc (putr, ("Clear from the previous tab stop "
+                                 "to the cursor."));
       break;
     case 2:
-      putter_single (putr, ("\" Clear from the previous tab stop to the "
-                            "next tab stop."));
+      putter_single_desc (putr, ("Clear from the previous tab stop to the "
+                                 "next tab stop."));
       break;
     }
 }
@@ -269,9 +272,9 @@ csi_do_dch (unsigned char final, unsigned char priv, struct putter *putr,
 {
   assert (n_params == 1);
   if (priv) return;
-  putter_single (putr, ("\" Delete %u character%s, shifting the following "
-                        "characters left."),
-                 params[0], params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, ("Delete %u character%s, shifting the following "
+                             "characters left."),
+                      params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -280,8 +283,8 @@ csi_do_cpr (unsigned char final, unsigned char priv, struct putter *putr,
 {
   if (priv) return;
   assert (n_params == 2);
-  putter_single (putr, ("\" Report that the cursor is located at line %u, "
-                        "column %u"), params[0], params[1]);
+  putter_single_desc (putr, ("Report that the cursor is located at line %u, "
+                             "column %u"), params[0], params[1]);
 }
 
 static void
@@ -313,8 +316,8 @@ csi_do_su (unsigned char final, unsigned char priv, struct putter *putr,
       assert (! "got here");
     }
   
-  putter_single (putr, "\" Scroll %s by %u %s%s", dir, params[0], unit,
-                 params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, "Scroll %s by %u %s%s", dir, params[0], unit,
+                      params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -337,7 +340,7 @@ csi_do_ctc (unsigned char final, unsigned char priv, struct putter *putr,
   for (; p != pend; ++p)
     {
       if (*p < N_ARY_ELEMS (messages))
-        putter_single (putr, "\" %s", messages[*p]);
+        putter_single_desc (putr, "%s", messages[*p]);
     }
 }
 
@@ -346,8 +349,8 @@ csi_do_ech (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   if (priv) return;
-  putter_single (putr, "\" Erase %u character%s, starting at the cursor.",
-                 params[0], params[0] == 1 ? "" : "s");
+  putter_single_desc (putr, "Erase %u character%s, starting at the cursor.",
+                      params[0], params[0] == 1 ? "" : "s");
 }
 
 static void
@@ -357,7 +360,7 @@ csi_do_da (unsigned char final, unsigned char priv, struct putter *putr,
   if (priv) return;
   if (params[0] != 0)
     return;
-  putter_single (putr, "\" Request terminal identification.");
+  putter_single_desc (putr, "Request terminal identification.");
 }
 
 static void
@@ -365,7 +368,7 @@ csi_do_vpa (unsigned char final, unsigned char priv, struct putter *putr,
             size_t n_params, unsigned int *params)
 {
   if (priv) return;
-  putter_single (putr, "\" Move the cursor to line %u.", params[0]);
+  putter_single_desc (putr, "Move the cursor to line %u.", params[0]);
 }
 
 /* Describe private mode sets. Based on information from the
@@ -380,186 +383,186 @@ handle_private_mode (struct putter *putr, unsigned int param, int set)
   switch (param)
     {
     case 1:
-      if (set) msg = "\" (DEC) Cursor key mode.";
-      else     msg = "\" (DEC) Cursor key mode off.";
+      if (set) msg = "(DEC) Cursor key mode.";
+      else     msg = "(DEC) Cursor key mode off.";
       break;
     case 2:
-      if (set) msg = ("\" (XTerm) Designate US-ASCII for charater sets G0-G3, "
+      if (set) msg = ("(XTerm) Designate US-ASCII for charater sets G0-G3, "
                       "and set VT100 mode.");
-      else     msg = "\" (DEC) Designate VT52 mode.";
+      else     msg = "(DEC) Designate VT52 mode.";
       break;
     case 3:
-      if (set) msg = "\" (DEC) 132 columns per line.";
-      else     msg = "\" (DEC) 80 columns per line.";
+      if (set) msg = "(DEC) 132 columns per line.";
+      else     msg = "(DEC) 80 columns per line.";
       break;
     case 4:
       if (set) msg = "\
-\" (DEC) Smooth scrolling: allow no more than 6 lines to be added\n\
+(DEC) Smooth scrolling: allow no more than 6 lines to be added\n\
 \"  to the screen per second.";
       else     msg = "\
-\" (DEC) Fast scrolling: lines are added to the screen as fast as possible.";
+(DEC) Fast scrolling: lines are added to the screen as fast as possible.";
       break;
     case 5:
-      if (set) msg = "\" (DEC) Reverse video (dark on light).";
-      else     msg = "\" (DEC) Normal video (light on dark).";
+      if (set) msg = "(DEC) Reverse video (dark on light).";
+      else     msg = "(DEC) Normal video (light on dark).";
       break;
     case 7:
-      if (set) msg = "\" (DEC) Text auto-wrap mode.";
-      else     msg = "\" (DEC) Text auto-wrap mode off.";
+      if (set) msg = "(DEC) Text auto-wrap mode.";
+      else     msg = "(DEC) Text auto-wrap mode off.";
       break;
     case 9:
-      if (set) msg = "\" (XTerm) Send mouse X & Y on button press.";
-      else     msg = "\" (XTerm) Don't send mouse X & Y on button press.";
+      if (set) msg = "(XTerm) Send mouse X & Y on button press.";
+      else     msg = "(XTerm) Don't send mouse X & Y on button press.";
       break;
     case 10:
-      if (set) msg = "\" (Rxvt) Show toolbar.";
-      else     msg = "\" (Rxvt) Hide toolbar.";
+      if (set) msg = "(Rxvt) Show toolbar.";
+      else     msg = "(Rxvt) Hide toolbar.";
       break;
     case 12:
-      if (set) msg = "\" (Att610) Start blinking cursor.";
-      else     msg = "\" (Att610) Stop blinkin cursor.";
+      if (set) msg = "(Att610) Start blinking cursor.";
+      else     msg = "(Att610) Stop blinkin cursor.";
       break;
     case 25:
-      if (set) msg = "\" (DEC) Show cursor.";
-      else     msg = "\" (DEC) Hide cursor.";
+      if (set) msg = "(DEC) Show cursor.";
+      else     msg = "(DEC) Hide cursor.";
       break;
     case 30:
-      if (set) msg = "\" (Rxvt) Show scrollbar.";
-      else     msg = "\" (Rxvt) Don't show scrollbar.";
+      if (set) msg = "(Rxvt) Show scrollbar.";
+      else     msg = "(Rxvt) Don't show scrollbar.";
       break;
     case 40:
-      if (set) msg = "\" (Xterm) Allow 80 -> 132 mode.";
-      else     msg = "\" (Xterm) Disallow 80 -> 132 mode.";
+      if (set) msg = "(Xterm) Allow 80 -> 132 mode.";
+      else     msg = "(Xterm) Disallow 80 -> 132 mode.";
       break;
     case 41:
-      if (set) msg = "\" (Xterm) Activate workaround for more(1) bug.";
-      else     msg = "\" (Xterm) Disable workaround for more(1) bug.";
+      if (set) msg = "(Xterm) Activate workaround for more(1) bug.";
+      else     msg = "(Xterm) Disable workaround for more(1) bug.";
       break;
     case 42:
-      if (set) msg = "\" (DEC) National character set mode.";
-      else     msg = "\" (DEC) Multinational character set mode.";
+      if (set) msg = "(DEC) National character set mode.";
+      else     msg = "(DEC) Multinational character set mode.";
       break;
     case 44:
-      if (set) msg = "\" (Xterm) Turn on margin bell.";
-      else     msg = "\" (Xterm) Turn off margin bell.";
+      if (set) msg = "(Xterm) Turn on margin bell.";
+      else     msg = "(Xterm) Turn off margin bell.";
       break;
     case 45:
-      if (set) msg = "\" (Xterm) Reverse-wraparound mode.";
-      else     msg = "\" (Xterm) Reverse-wraparound mode off.";
+      if (set) msg = "(Xterm) Reverse-wraparound mode.";
+      else     msg = "(Xterm) Reverse-wraparound mode off.";
       break;
     case 46:
-      if (set) msg = "\" (Xterm) Start logging.";
-      if (set) msg = "\" (Xterm) Stop logging.";
+      if (set) msg = "(Xterm) Start logging.";
+      if (set) msg = "(Xterm) Stop logging.";
       break;
     case 47:
-      if (set) msg = "\" (Xterm) Use alternate screen buffer.";
-      else     msg = "\" (Xterm) Use normal screen buffer.";
+      if (set) msg = "(Xterm) Use alternate screen buffer.";
+      else     msg = "(Xterm) Use normal screen buffer.";
       break;
     case 66:
-      if (set) msg = "\" (DEC) Application keypad.";
-      else     msg = "\" (DEC) Numeric keypad.";
+      if (set) msg = "(DEC) Application keypad.";
+      else     msg = "(DEC) Numeric keypad.";
       break;
     case 67:
-      if (set) msg = "\" (DEC) Backarrow key sends backspace.";
-      else     msg = "\" (DEC) Backarrow key sends delete.";
+      if (set) msg = "(DEC) Backarrow key sends backspace.";
+      else     msg = "(DEC) Backarrow key sends delete.";
       break;
     case 1000:
-      if (set) msg = ("\" (Xterm) Send mouse X & Y on button press and "
+      if (set) msg = ("(Xterm) Send mouse X & Y on button press and "
                       "release.");
-      else     msg = ("\" (Xterm) Don't send mouse X & Y on button press "
+      else     msg = ("(Xterm) Don't send mouse X & Y on button press "
                       "and release.");
       break;
     case 1001:
-      if (set) msg = "\" (Xterm) Activate hilite mouse tracking.";
-      else     msg = "\" (Xterm) Disable hilite mouse tracking.";
+      if (set) msg = "(Xterm) Activate hilite mouse tracking.";
+      else     msg = "(Xterm) Disable hilite mouse tracking.";
       break;
     case 1002:
-      if (set) msg = "\" (Xterm) Activate cell motion mouse tracking.";
-      else     msg = "\" (Xterm) Disable cell motion mouse tracking.";
+      if (set) msg = "(Xterm) Activate cell motion mouse tracking.";
+      else     msg = "(Xterm) Disable cell motion mouse tracking.";
       break;
     case 1003:
-      if (set) msg = "\" (Xterm) Activate all motion mouse tracking.";
-      else     msg = "\" (Xterm) Disable all motion mouse tracking.";
+      if (set) msg = "(Xterm) Activate all motion mouse tracking.";
+      else     msg = "(Xterm) Disable all motion mouse tracking.";
       break;
     case 1004:
-      if (set) msg = "\" (Xterm) Send FocusIn/FocusOut events.";
-      else     msg = "\" (Xterm) Don't send FocusIn/FocusOut events.";
+      if (set) msg = "(Xterm) Send FocusIn/FocusOut events.";
+      else     msg = "(Xterm) Don't send FocusIn/FocusOut events.";
       break;
     case 1010:
-      if (set) msg = "\" (Rxvt) Scroll to bottom on tty output.";
-      else     msg = "\" (Rxvt) Don't scroll to bottom on tty output.";
+      if (set) msg = "(Rxvt) Scroll to bottom on tty output.";
+      else     msg = "(Rxvt) Don't scroll to bottom on tty output.";
       break;
     case 1011:
-      if (set) msg = "\" (Rxvt) Scroll to bottom on key press.";
-      else     msg = "\" (Rxvt) Don't scroll to bottom on key press.";
+      if (set) msg = "(Rxvt) Scroll to bottom on key press.";
+      else     msg = "(Rxvt) Don't scroll to bottom on key press.";
       break;
     case 1034:
-      if (set) msg = "\" (Xterm) Interpret meta key, sets eighth bit.";
-      else     msg = "\" (Xterm) Don't interpret meta key.";
+      if (set) msg = "(Xterm) Interpret meta key, sets eighth bit.";
+      else     msg = "(Xterm) Don't interpret meta key.";
       break;
     case 1035:
-      if (set) msg = ("\" (Xterm) Enable special modifiers for Alt "
+      if (set) msg = ("(Xterm) Enable special modifiers for Alt "
                       "and NumLock keys.");
-      else     msg = ("\" (Xterm) Disable special modifiers for Alt "
+      else     msg = ("(Xterm) Disable special modifiers for Alt "
                       "and NumLock keys.");
       break;
     case 1036:
-      if (set) msg = "\" (Xterm) Send ESC when Meta modifies a key.";
-      else     msg = "\" (Xterm) Don't send ESC when Meta modifies a key.";
+      if (set) msg = "(Xterm) Send ESC when Meta modifies a key.";
+      else     msg = "(Xterm) Don't send ESC when Meta modifies a key.";
       break;
     case 1037:
-      if (set) msg = "\" (Xterm) Send DEL from the editing-keypad Delete key.";
-      else     msg = ("\" (Xterm) Send VT220 Remove from the "
+      if (set) msg = "(Xterm) Send DEL from the editing-keypad Delete key.";
+      else     msg = ("(Xterm) Send VT220 Remove from the "
                       "editing-keypad Delete key.");
       break;
     case 1039:
-      if (set) msg = "\" (Xterm) Send ESC when Alt modifies a key.";
-      else     msg = "\" (Xterm) Don't send ESC when Alt modifies a key.";
+      if (set) msg = "(Xterm) Send ESC when Alt modifies a key.";
+      else     msg = "(Xterm) Don't send ESC when Alt modifies a key.";
       break;
     case 1040:
-      if (set) msg = "\" (Xterm) Keep selection even if not highlighted.";
-      else     msg = ("\" (Xterm) Do not keep selection even if not "
+      if (set) msg = "(Xterm) Keep selection even if not highlighted.";
+      else     msg = ("(Xterm) Do not keep selection even if not "
                       "highlighted.");
       break;
     case 1041:
-      if (set) msg = "\" (Xterm) Use the CLIPBOARD selection.";
-      else     msg = "\" (Xterm) Don't use the CLIPBOARD selection.";
+      if (set) msg = "(Xterm) Use the CLIPBOARD selection.";
+      else     msg = "(Xterm) Don't use the CLIPBOARD selection.";
       break;
     case 1042:
       if (set) msg = "\
-\" (Xterm) Enable Urgency window manager hint when BEL is received.";
+(Xterm) Enable Urgency window manager hint when BEL is received.";
       else     msg = "\
-\" (Xterm) Disable Urgency window manager hint when BEL is received.";
+(Xterm) Disable Urgency window manager hint when BEL is received.";
       break;
     case 1043:
       if (set) msg = "\
-\" (Xterm) Enable raising of the window when BEL is received.";
+(Xterm) Enable raising of the window when BEL is received.";
       else     msg = "\
-\" (Xterm) Disable raising of the window when BEL is received.";
+(Xterm) Disable raising of the window when BEL is received.";
       break;
     case 1047:
-      if (set) msg = "\" (Xterm) Use the alternate screen buffer.";
-      else     msg = "\" (Xterm) Use the normal screen buffer.";
+      if (set) msg = "(Xterm) Use the alternate screen buffer.";
+      else     msg = "(Xterm) Use the normal screen buffer.";
       break;
     case 1048:
-      if (set) msg = "\" (Xterm) Save the cursor position.";
-      else     msg = "\" (Xterm) Restore the cursor position.";
+      if (set) msg = "(Xterm) Save the cursor position.";
+      else     msg = "(Xterm) Restore the cursor position.";
       break;
     case 1049:
       if (set) msg = "\
-\" (Xterm) Save the cursor position and use the alternate screen buffer,\n\
+(Xterm) Save the cursor position and use the alternate screen buffer,\n\
 \"  clearing it first.";
-      else msg = ("\" (Xterm) Leave the alternate screen buffer and "
+      else msg = ("(Xterm) Leave the alternate screen buffer and "
                   "restore the cursor.");
       break;
     case 2004:
-      if (set) msg = "\" (Xterm) Set bracketed paste mode.";
-      else     msg = "\" (Xterm) Reset bracketed paste mode.";
+      if (set) msg = "(Xterm) Set bracketed paste mode.";
+      else     msg = "(Xterm) Reset bracketed paste mode.";
       break;
     }
 
   if (msg)
-    putter_single (putr, "%s", msg);
+    putter_single_desc (putr, "%s", msg);
 }
 
 static void
@@ -584,7 +587,7 @@ csi_do_sm (unsigned char final, unsigned char priv, struct putter *putr,
       if (m->acro)
         {
           const char *arg = (final == 0x68) ? m->set : m->reset;
-          putter_single (putr, "\" %s (%s) -> %s", m->name, m->acro, arg);
+          putter_single_desc (putr, "%s (%s) -> %s", m->name, m->acro, arg);
         }
     }
 }
@@ -605,7 +608,7 @@ csi_do_tbc (unsigned char final, unsigned char priv, struct putter *putr,
 
   if (priv) return;
   if (params[0] < N_ARY_ELEMS (messages))
-    putter_single (putr, "\" %s", messages[params[0]]);
+    putter_single_desc (putr, "%s", messages[params[0]]);
 }
 
 static void
@@ -642,13 +645,13 @@ csi_do_mc (unsigned char final, unsigned char priv, struct putter *putr,
           break;
         }
 
-      putter_single (putr, "\" %s", msg);
+      putter_single_desc (putr, "%s", msg);
       return;
     }
   else if (priv) return;
   if (p < N_ARY_ELEMS (messages))
     {
-      putter_single (putr, "\" %s", messages[p]);
+      putter_single_desc (putr, "%s", messages[p]);
     }
 }
 
@@ -685,12 +688,12 @@ print_sgr_param_description (struct putter *putr, unsigned int param)
     msg = sgr_param_descriptions[param];
   if (msg)
     {
-      putter_single (putr, "\" %s", msg);
+      putter_single_desc (putr, "%s", msg);
     }
   if (param == 100)
     {
-      putter_single (putr, "\" %s", ("(Rxvt) Set foreground and background "
-                                     "color to default."));
+      putter_single_desc (putr, "%s", ("(Rxvt) Set foreground and background "
+                                       "color to default."));
     }
 }
 
@@ -703,12 +706,12 @@ print_t416_description (struct putter *putr, unsigned char n_params,
     fore_back = "background";
   if (n_params == 3 && params[1] == 5)
     {
-      putter_single (putr, "\" Set %s color to index %u.",
-                     fore_back, params[2]);
+      putter_single_desc (putr, "Set %s color to index %u.",
+                          fore_back, params[2]);
     }
   else
     {
-      putter_single (putr, "\" Set %s color (unknown).", fore_back);
+      putter_single_desc (putr, "Set %s color (unknown).", fore_back);
     }
 }
 
@@ -733,7 +736,7 @@ csi_do_sgr (unsigned char final, unsigned char priv, struct putter *putr,
       if (n_params > 1 && params[1] > 0)
         arg = params[1];
       if (res)
-        putter_single (putr, "\" (Xterm) Set %s to %u.", res, arg);
+        putter_single_desc (putr, "(Xterm) Set %s to %u.", res, arg);
     }
   if (priv) return;
   if (n_params >= 2 && (params[0] == 48 || params[0] == 38))
@@ -770,11 +773,11 @@ csi_do_dsr (unsigned char final, unsigned char priv, struct putter *putr,
         case 4: res = "modifyOtherKeys"; break;
         }
       if (res)
-        putter_single (putr, "\" (Xterm) Disable %s.", res);
+        putter_single_desc (putr, "(Xterm) Disable %s.", res);
     }
   if (priv) return;
   if (p < N_ARY_ELEMS (messages))
-    putter_single (putr, "\" %s", messages[p]);
+    putter_single_desc (putr, "%s", messages[p]);
 }
 
 static void
@@ -784,11 +787,11 @@ csi_do_sr (unsigned char final, unsigned char priv, struct putter *putr,
   if (priv == '?')
     {
       if (final == 'r')
-        putter_single (putr, ("\
-\" *** (Xterm) Restore saved settings for specified modes:"));
+        putter_single_desc (putr, ("\
+*** (Xterm) Restore saved settings for specified modes:"));
       else
-        putter_single (putr, ("\
-\" *** (Xterm) Save current state of specified modes:"));
+        putter_single_desc (putr, ("\
+*** (Xterm) Save current state of specified modes:"));
       csi_do_sm ('h', priv, putr, n_params, params);
     }
   else if (priv)
@@ -796,11 +799,11 @@ csi_do_sr (unsigned char final, unsigned char priv, struct putter *putr,
   else if (final != 'r')
     return;
   else if (n_params == 0)
-    putter_single (putr, "\" (DEC) Set the scrolling region to full size.");
+    putter_single_desc (putr, "(DEC) Set the scrolling region to full size.");
   else if (n_params == 2)
     {
-      putter_single (putr, "\
-\" (DEC) Set the scrolling region to from line %u to line %u.",
+      putter_single_desc (putr, "\
+(DEC) Set the scrolling region to from line %u to line %u.",
                      params[0], params[1]);
     }
 }
@@ -816,80 +819,80 @@ csi_do_wm (unsigned char final, unsigned char priv, struct putter *putr,
   switch (params[0])
     {
     case 1:
-      putter_single (putr, "\" (dtterm) De-iconify window.");
+      putter_single_desc (putr, "(dtterm) De-iconify window.");
       break;
     case 2:
-      putter_single (putr, "\" (dtterm) Iconify window.");
+      putter_single_desc (putr, "(dtterm) Iconify window.");
       break;
     case 3:
       if (n_params >= 3)
-        putter_single (putr, "\" (dtterm) Move window to [%u, %u].",
+        putter_single_desc (putr, "(dtterm) Move window to [%u, %u].",
                        params[1], params[2]);
       break;
     case 4:
       if (n_params >= 3)
-        putter_single (putr, "\
-\" (dtterm) Resize the window to height %u and width %u in pixels.",
+        putter_single_desc (putr, "\
+(dtterm) Resize the window to height %u and width %u in pixels.",
                        params[1], params[2]);
       break;
     case 5:
-      putter_single (putr, "\
-\" (dtterm) Raise the window to the front of the stacking order.");
+      putter_single_desc (putr, "\
+(dtterm) Raise the window to the front of the stacking order.");
       break;
     case 6:
-      putter_single (putr, "\
-\" (dtterm) Lower the xterm window to the bottom of the stacking order.");
+      putter_single_desc (putr, "\
+(dtterm) Lower the xterm window to the bottom of the stacking order.");
       break;
     case 7:
-      putter_single (putr, "\" (dtterm) Refresh the window.");
+      putter_single_desc (putr, "(dtterm) Refresh the window.");
       break;
     case 8:
       if (n_params >= 3)
-        putter_single (putr, "\
-\" (dtterm) Resize the text area to height %u and width %u in characters.",
+        putter_single_desc (putr, "\
+(dtterm) Resize the text area to height %u and width %u in characters.",
                        params[1], params[2]);
       break;
     case 9:
       if (n_params < 2)
         break;
       else if (params[1] == 0)
-        putter_single (putr, "\" (Xterm) Restore maximized window.");
+        putter_single_desc (putr, "(Xterm) Restore maximized window.");
       else if (params[1] == 1)
-        putter_single (putr, "\" (Xterm) Maximize window.");
+        putter_single_desc (putr, "(Xterm) Maximize window.");
       break;
     case 11:
-      putter_single (putr, "\
-\" (dtterm) Request report on the window state (iconified/not iconified).");
+      putter_single_desc (putr, "\
+(dtterm) Request report on the window state (iconified/not iconified).");
       break;
     case 13:
-      putter_single (putr, "\
-\" (dtterm) Request report on the window position.");
+      putter_single_desc (putr, "\
+(dtterm) Request report on the window position.");
       break;
     case 14:
-      putter_single (putr, "\
-\" (dtterm) Request report on window size in pixels.");
+      putter_single_desc (putr, "\
+(dtterm) Request report on window size in pixels.");
       break;
     case 18:
-      putter_single (putr, "\
-\" (dtterm) Request report on text area size in characters.");
+      putter_single_desc (putr, "\
+(dtterm) Request report on text area size in characters.");
       break;
     case 19:
-      putter_single (putr, "\
-\" (Xterm) Request report on the whole screen size in characters.");
+      putter_single_desc (putr, "\
+(Xterm) Request report on the whole screen size in characters.");
       break;
     case 20:
-      putter_single (putr, "\
-\" (dtterm) Request report of the window's icon label.");
+      putter_single_desc (putr, "\
+(dtterm) Request report of the window's icon label.");
       break;
     case 21:
-      putter_single (putr, "\
-\" (dtterm) Request report of the window's title.");
+      putter_single_desc (putr, "\
+(dtterm) Request report of the window's title.");
       break;
     default:
       if (params[0] >= 24)
         {
-          putter_single (putr, "\
-\" (Xterm) Resize the window to %u lines.", params[0]);
+          putter_single_desc (putr, "\
+(Xterm) Resize the window to %u lines.", params[0]);
         }
       break;
     }
@@ -906,23 +909,23 @@ csi_do_decelr (unsigned char final, unsigned char priv,
   switch (params[0])
     {
     case 0:
-      putter_single (putr, "\" Disable locator reports.");
+      putter_single_desc (putr, "Disable locator reports.");
       return; /* (why mention units we won't be reporting with?) */
     case 1:
-      putter_single (putr, "\" Enable locator reports.");
+      putter_single_desc (putr, "Enable locator reports.");
       break;
     case 2:
-      putter_single (putr, "\" Enable a single locator report.");
+      putter_single_desc (putr, "Enable a single locator report.");
       break;
     }
   switch (params[1])
     {
     case 0:
     case 2:
-      putter_single (putr, "\"  Report position in character cells.");
+      putter_single_desc (putr, " Report position in character cells.");
       break;
     case 1:
-      putter_single (putr, "\"  Report position in pixels.");
+      putter_single_desc (putr, " Report position in pixels.");
       break;
     }
 }
@@ -944,7 +947,7 @@ csi_do_decsle (unsigned char final, unsigned char priv,
   if (priv) return;
   for (p = params; p != pend; ++p)
     if (*p < N_ARY_ELEMS (msgs))
-      putter_single (putr, "\" %s", msgs[*p]);
+      putter_single_desc (putr, "%s", msgs[*p]);
 }
 
 static void
@@ -953,7 +956,7 @@ csi_do_decrqlp (unsigned char final, unsigned char priv,
 {
   if (priv) return;
   if (params[0] > 1) return;
-  putter_single (putr, "\" Request a single DECLRP locator report.");
+  putter_single_desc (putr, "Request a single DECLRP locator report.");
 }
 
 static void
@@ -987,7 +990,7 @@ csi_do_decmouse (unsigned char final, unsigned char priv,
       assert (cur - downs < sizeof downs);
       cur = downs;
     }
-  putter_single (putr, "\" (DEC) Mouse%s at [%u,%u].",
+  putter_single_desc (putr, "(DEC) Mouse%s at [%u,%u].",
                  cur, params[2], params[2]);
 }
 

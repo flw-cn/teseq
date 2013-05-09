@@ -111,6 +111,7 @@ fi
 	cntrl-esc
 	high-val
 	hardstatus
+	hardstatus-color
 	controls
         csi-interm
         csi-desc

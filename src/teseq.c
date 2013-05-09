@@ -26,6 +26,7 @@
 #ifdef HAVE_GETOPT_H
 #  include <getopt.h>
 #endif
+#include <limits.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,8 +65,6 @@
 #define IS_PRIVATE_PARAM_CHAR(c)        (((c) >= 0x3c && (c) <= 0x3f) \
                                          || (c) == 0x3a)
 
-#define PUTTER_START_ESC    putter_start (p->putr, ":", "", ": ")
-
 enum processor_state
 {
   ST_INIT,
@@ -100,6 +99,11 @@ const char *control_names[] = {
   "CAN", "EM", "SUB", "ESC",
   "IS4", "IS3", "IS2", "IS1"
 };
+
+static const char default_color_string[] = "|=36;7,.=31,:=33,&=35,\"=32,@=34";
+
+struct sgr_def    sgr_text, sgr_ctrl, sgr_esc,
+                  sgr_label, sgr_desc, sgr_delay;
 
 struct config configuration = { 0 };
 const char *program_name;
@@ -162,7 +166,7 @@ void
 maybe_print_label (struct processor *p, const char *acro, const char *name)
 {
   if (configuration.labels)
-    putter_single (p->putr, "& %s: %s", acro, name);
+    putter_single_label (p->putr, "%s: %s", acro, name);
 }
 
 void
@@ -174,8 +178,8 @@ print_csi_label (struct processor *p, const struct csi_handler *handler,
       const char *privmsg = "";
       if (private)
         privmsg = " (private params)";
-      putter_single (p->putr, "& %s: %s%s", handler->acro, handler->label,
-                     privmsg);
+      putter_single_label (p->putr, "%s: %s%s", handler->acro, handler->label,
+                           privmsg);
     }
 }
 
@@ -185,7 +189,7 @@ print_c1_label (struct processor *p, unsigned char c)
   unsigned char i = c - 0x40;
   const char **label = c1_labels[i];
   if (label[0])
-    putter_single (p->putr, "& %s: %s", label[0], label[1]);
+    putter_single_label (p->putr, "%s: %s", label[0], label[1]);
 }
 
 void
@@ -213,11 +217,12 @@ process_csi_sequence (struct processor *p, const struct csi_handler *handler)
   int private_params = 0;
   int last = 0;
   size_t n_params = 0;
+
   size_t cur_param = 0;
   unsigned int params[255];
 
   if (e)
-    PUTTER_START_ESC;
+    putter_start (p->putr, &sgr_esc, ":", "", ": ");
   
   if (e)
     putter_puts (p->putr, " Esc");
@@ -928,8 +933,8 @@ print_cxd_info (struct processor *p, int intermediate, int final)
 	{
 	  const char *name = iso_ir_c0_name (final);
 	  if (name != NULL)
-	    putter_single (p->putr, "\" Designate C0 Control Set of %s.",
-			   name);
+	    putter_single_desc (p->putr, "Designate C0 Control Set of %s.",
+                                name);
 	}
     }
   else
@@ -939,8 +944,8 @@ print_cxd_info (struct processor *p, int intermediate, int final)
 	{
 	  const char *name = iso_ir_c1_name (final);
 	  if (name != NULL)
-	    putter_single (p->putr, "\" Designate C1 Control Set of %s.",
-			   name);
+	    putter_single_desc (p->putr, "Designate C1 Control Set of %s.",
+                                name);
 	}
     }
 }
@@ -970,8 +975,8 @@ print_gxd_info (struct processor *p, int intermediate, int i1, int final)
 
   if (configuration.labels)
     {
-      putter_single (p->putr, "& G%cD%d: G%d-DESIGNATE 9%d-SET",
-                     desig_strs[designate], set, designate, set);
+      putter_single_label (p->putr, "G%cD%d: G%d-DESIGNATE 9%d-SET",
+                           desig_strs[designate], set, designate, set);
     }
   if (configuration.descriptions)
     {
@@ -1024,9 +1029,9 @@ print_gxd_info (struct processor *p, int intermediate, int i1, int final)
 	    explanation = "";
 	}
 
-      putter_single (p->putr, "\" Designate 9%d-character set "
-                     "%s%s to G%d.",
-                     set, designator, explanation, designate);
+      putter_single_desc (p->putr, "Designate 9%d-character set "
+                          "%s%s to G%d.",
+                          set, designator, explanation, designate);
     }
 }
 
@@ -1062,8 +1067,8 @@ print_gxdm_info (struct processor *p, int i1, int final)
   assert (designate < 4);
   if (configuration.labels)
     {
-      putter_single (p->putr, "& G%cDM%d: G%d-DESIGNATE MULTIBYTE 9%d-SET",
-                     desig_strs[designate], set, designate, set);
+      putter_single_label (p->putr, "G%cDM%d: G%d-DESIGNATE MULTIBYTE 9%d-SET",
+                           desig_strs[designate], set, designate, set);
     }
   if (configuration.descriptions)
     {
@@ -1086,9 +1091,9 @@ print_gxdm_info (struct processor *p, int i1, int final)
 	    explanation = "";
 	}
 
-      putter_single (p->putr, "\" Designate multibyte 9%d-character set "
-                     "%c%s to G%d.",
-                     set, final, explanation, designate);
+      putter_single_desc (p->putr, "Designate multibyte 9%d-character set "
+                          "%c%s to G%d.",
+                          set, final, explanation, designate);
     }
 }
 
@@ -1127,7 +1132,7 @@ handle_nF (struct processor *p, unsigned char i)
     {
       inputbuf_rewind (p->ibuf);
 
-      PUTTER_START_ESC;
+      putter_start (p->putr, &sgr_esc, ":", "", ": ");
       print_esc_char (p, C_ESC);
       do
         {
@@ -1182,7 +1187,7 @@ handle_c1 (struct processor *p, unsigned char c)
     }
 
   if (configuration.escapes)
-    putter_single (p->putr, ": Esc %c", c);
+    putter_single_esc (p->putr, "Esc %c", c);
   if (configuration.labels)
     print_c1_label (p, c);
   return 1;
@@ -1200,7 +1205,7 @@ int
 handle_Fp (struct processor *p, unsigned char c)
 {
   if (configuration.escapes)
-    putter_single (p->putr, ": Esc %c", c);
+    putter_single_esc (p->putr, "Esc %c", c);
   switch (c)
     {
     case '7':
@@ -1228,7 +1233,7 @@ int
 handle_Fs (struct processor *p, unsigned char c)
 {
   if (configuration.escapes)
-    putter_single (p->putr, ": Esc %c", c);
+    putter_single_esc (p->putr, "Esc %c", c);
   switch (c)
     {
     case 0x60:
@@ -1312,7 +1317,7 @@ print_control (struct processor *p, unsigned char c)
   if (p->print_dot)
     {
       p->print_dot = 0;
-      putter_start (p->putr, ".", "", ".");
+      putter_start (p->putr, &sgr_ctrl, ".", "", ".");
     }
   if (IS_CONTROL (c) || c == C_DEL)
     {
@@ -1340,7 +1345,7 @@ init_state (struct processor *p, unsigned char c)
     }
   else
     {
-      putter_start (p->putr, "|", "|-", "-|");
+      putter_start (p->putr, &sgr_text, "|", "|-", "-|");
       p->st = ST_TEXT;
     }
 }
@@ -1582,6 +1587,67 @@ signal_setup (void)
     sigaction (*sig, &sa, NULL);
 }
 
+void
+parse_colors (const char *color_string)
+{
+  const char *p, *s, *e;
+  struct sgr_def *set_me;
+
+  for (p = color_string; p[0] != '\0'; )
+    {
+      set_me = NULL;
+      switch (p[0])
+        {
+        case '|': set_me = &sgr_text; break;
+        case '.': set_me = &sgr_ctrl; break;
+        case ':': set_me = &sgr_esc; break;
+        case '&': set_me = &sgr_label; break;
+        case '"': set_me = &sgr_desc; break;
+        case '@': set_me = &sgr_delay; break;
+        default:
+          ; /* Won't set anything, just skip to next one. */
+        }
+      if (p[1] != '=')
+        {
+          /* Invalid definition, skip to next one. */
+          set_me = NULL;
+        }
+      if (p[1] == '\0')
+        break;
+      for (s = e = &p[2]; e[0] != '\0' && e[0] != ','; ++e)
+        {
+          if (! (e[0] >= 0x30 && e[0] < 0x40))
+            {
+              /* Parameters can't fall outside this range. Skip
+               * assignment. */
+              set_me = NULL;
+            }
+        }
+      if ((set_me != NULL) && ((e - s) <= UINT_MAX))
+        {
+          set_me->sgr = s;
+          set_me->len = e - s;
+        }
+      if (e[0] == '\0')
+        p = e;
+      else
+        p = e + 1; /* Skip comma. */
+    }
+}
+
+void
+color_setup (void)
+{
+  const char *envstr = getenv("TESEQ_COLORS");
+
+  if (configuration.color != CFG_COLOR_ALWAYS)
+    return;
+
+  parse_colors (default_color_string);
+  if (envstr)
+    parse_colors (envstr);
+}
+
 #ifdef HAVE_GETOPT_H
 struct option teseq_opts[] = {
   { "help", 0, NULL, 'h' },
@@ -1726,6 +1792,15 @@ configure (struct processor *p, int argc, char **argv)
 
   output_tty_p = isatty (fileno (outf));
 
+  if (configuration.color != CFG_COLOR_AUTO)
+    ; /* Nothing to do. */
+  else if (output_tty_p)
+    configuration.color = CFG_COLOR_ALWAYS;
+  else
+    configuration.color = CFG_COLOR_NONE;
+
+  color_setup ();
+
   if (configuration.handle_signals)
     {
       if (isatty (infd))
@@ -1765,7 +1840,7 @@ emit_delay (struct processor *p)
       if (first)
         first = 0;
       else
-        putter_single (p->putr, "@ %f", d.time);
+        putter_single_delay (p->putr, "%f", d.time);
     }
   while (configuration.timings && p->mark <= count);
 

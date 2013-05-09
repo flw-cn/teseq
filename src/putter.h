@@ -1,7 +1,7 @@
 /* putter.h */
 
 /*
-    Copyright (C) 2008 Micah Cowan
+    Copyright (C) 2008,2013 Micah Cowan
 
     This file is part of GNU teseq.
 
@@ -29,6 +29,8 @@
 #ifndef PUTTER_H
 #define PUTTER_H
 
+#include "teseq.h"
+
 #include <stdio.h>
 
 struct putter;
@@ -40,11 +42,16 @@ typedef void (*putter_error_handler)(int, void *);
 struct putter *putter_new (FILE *);
 void putter_set_handler (struct putter *, putter_error_handler, void *);
 void putter_delete (struct putter *);
-void putter_start (struct putter *, const char *, const char *, const char *);
+void putter_start (struct putter *, struct sgr_def *,
+                   const char *, const char *, const char *);
 void putter_finish (struct putter *, const char *);
 void putter_putc (struct putter *, unsigned char);
 void putter_puts (struct putter *, const char *);
 void putter_printf (struct putter *, const char *, ...);
-void putter_single (struct putter *, const char *, ...);
+
+void putter_single_esc   (struct putter *, const char *, ...);
+void putter_single_delay (struct putter *, const char *, ...);
+void putter_single_label (struct putter *, const char *, ...);
+void putter_single_desc  (struct putter *, const char *, ...);
 
 #endif

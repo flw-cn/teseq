@@ -1,7 +1,7 @@
 /* putter.c */
 
 /*
-    Copyright (C) 2008 Micah Cowan
+    Copyright (C) 2008,2013 Micah Cowan
 
     This file is part of GNU teseq.
 
@@ -67,6 +67,22 @@ putter_new (FILE * file)
     }                                           \
   while (0)
 
+static struct sgr_def sgr0 = { "", 0 };
+
+static void
+do_color (struct putter *p, struct sgr_def *sgr)
+{
+  int e;
+
+  if (configuration.color != CFG_COLOR_ALWAYS || sgr == NULL)
+    return;
+
+  errno = 0;
+  e = fprintf (p->file, "\033[%.*sm", sgr->len, sgr->sgr);
+  HANDLER_IF(p, e < 0);
+}
+
+
 void
 putter_set_handler (struct putter *p, putter_error_handler f, void *arg)
 {
@@ -84,6 +100,7 @@ putter_delete (struct putter *p)
 static void
 ensure_space (struct putter *p, size_t addition)
 {
+  errno = 0;
   if (p->nc + addition > p->linemax || p->nc + p->presz == p->linemax)
     {
       int cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep);
@@ -94,10 +111,12 @@ ensure_space (struct putter *p, size_t addition)
 }
 
 void
-putter_start (struct putter *p, const char *s,
+putter_start (struct putter *p, struct sgr_def *sgr, const char *s,
               const char *pre, const char *post)
 {
   int e;
+
+  do_color (p, sgr);
 
   p->presep = pre;
   p->postsep = post;
@@ -106,10 +125,12 @@ putter_start (struct putter *p, const char *s,
 
   if (p->nc > 0)
     {
+      errno = 0;
       e = putc ('\n', p->file);
       HANDLER_IF (p, e == EOF);
     }
   p->nc = strlen (s);
+  errno = 0;
   e = fputs (s, p->file);
   HANDLER_IF (p, e == EOF);
 }
@@ -128,12 +149,18 @@ putter_finish (struct putter *p, const char *s)
     return;
   if (p->nc + strlen (s) > p->linemax)
     {
+      errno = 0;
       cs = fprintf (p->file, "%s\n", p->presep);
       HANDLER_IF (p, cs < 0);
     }
   
   p->nc = 0;
-  cs = fprintf (p->file, "%s\n", s);
+  errno = 0;
+  cs = fprintf (p->file, "%s", s);
+  HANDLER_IF (p, cs < 0);
+  do_color (p, &sgr0);
+  errno = 0;
+  cs = fputc ('\n', p->file);
   HANDLER_IF (p, cs < 0);
 }
 
@@ -143,6 +170,7 @@ putter_putc (struct putter *p, unsigned char c)
   int e;
 
   ensure_space (p, 1);
+  errno = 0;
   e = putc (c, p->file);
   HANDLER_IF (p, e == EOF);
 }
@@ -178,26 +206,49 @@ putter_printf (struct putter *p, const char *fmt, ...)
  *      putter_start (p, "", "", "");
  *      putter_printf (p, fmt, ...);
  *      putter_finish (p, ""); */
-void
-putter_single (struct putter *p, const char *fmt, ...)
+static void
+vsingle (struct putter *p, struct sgr_def *sgr,
+         const char *pfx, const char *fmt, va_list ap)
 {
-  va_list ap;
   int e;
+
+  do_color (p, sgr);
 
   if (p->nc > 0)
     {
       e = putc ('\n', p->file);
       HANDLER_IF (p, e == EOF);
     }
-  va_start (ap, fmt);
+
+  fputs (pfx, p->file);
+
   e = vfprintf (p->file, fmt, ap);
-  va_end (ap);
+
   HANDLER_IF (p, e < 0);
+
   p->presep = "";
   p->postsep = "";
   p->presz = 0;
   p->postsz = 0;
   p->nc = 0;
+
+  do_color (p, &sgr0);
+
   e = putc ('\n', p->file);
   HANDLER_IF (p, e == EOF);
 }
+
+#define DEF_SINGLE_WRAP(name, pfx)   \
+  void \
+  putter_single_ ## name (struct putter *p, const char *fmt, ...) \
+  { \
+    va_list ap; \
+    va_start (ap, fmt); \
+    vsingle (p, &sgr_ ## name, (pfx), fmt, ap); \
+    va_end (ap); \
+  }
+
+DEF_SINGLE_WRAP (esc, ": ")
+DEF_SINGLE_WRAP (delay, "@ ")
+DEF_SINGLE_WRAP (label, "& ")
+DEF_SINGLE_WRAP (desc, "\" ")

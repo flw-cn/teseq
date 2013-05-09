@@ -46,7 +46,14 @@ struct config
   FILE *timings;
   int color;
 };
-
 extern struct config configuration;
+
+struct sgr_def {
+    const char *sgr;
+    unsigned int len;
+};
+
+extern struct sgr_def        sgr_text, sgr_ctrl, sgr_esc,
+                             sgr_label, sgr_desc, sgr_delay;
 
 #endif /* TESEQ_H_ */
