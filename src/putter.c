@@ -39,6 +39,7 @@ struct putter
   const char *postsep;
   size_t postsz;
   size_t linemax;
+  struct sgr_def *sgr;
 
   putter_error_handler handler;
   void *handler_arg;
@@ -56,6 +57,7 @@ putter_new (FILE * file)
   p->postsz = 0;
   p->handler = NULL;
   p->handler_arg = NULL;
+  p->sgr = NULL;
   return p;
 }
 
@@ -66,6 +68,9 @@ putter_new (FILE * file)
         (p)->handler (errno, (p)->handler_arg); \
     }                                           \
   while (0)
+
+#define BRACED(p) \
+  ((p)->presep != NULL && (p)->presep[0] != '\0')
 
 static struct sgr_def sgr0 = { "", 0 };
 
@@ -103,8 +108,21 @@ ensure_space (struct putter *p, size_t addition)
   errno = 0;
   if (p->nc + addition > p->linemax || p->nc + p->presz == p->linemax)
     {
-      int cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep);
-      HANDLER_IF (p, cs < 0);
+      int cs;
+      if (BRACED (p))
+        {
+          do_color (p, &sgr0);
+          errno = 0;
+          cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep);
+          HANDLER_IF (p, cs < 0);
+          do_color(p, p->sgr);
+        }
+      else
+        {
+          errno = 0;
+          cs = fprintf (p->file, "\n%s", p->postsep);
+          HANDLER_IF (p, cs < 0);
+        }
       p->nc = p->postsz;
     }
   p->nc += addition;
@@ -116,12 +134,11 @@ putter_start (struct putter *p, struct sgr_def *sgr, const char *s,
 {
   int e;
 
-  do_color (p, sgr);
-
   p->presep = pre;
   p->postsep = post;
   p->presz = strlen (pre);
   p->postsz = strlen (post);
+  p->sgr = sgr;
 
   if (p->nc > 0)
     {
@@ -131,7 +148,11 @@ putter_start (struct putter *p, struct sgr_def *sgr, const char *s,
     }
   p->nc = strlen (s);
   errno = 0;
+  if (! BRACED (p))
+    do_color (p, sgr);
   e = fputs (s, p->file);
+  if (BRACED (p))
+    do_color (p, sgr);
   HANDLER_IF (p, e == EOF);
 }
 
@@ -144,21 +165,16 @@ putter_finish (struct putter *p, const char *s)
   p->postsep = "";
   p->presz = 0;
   p->postsz = 0;
+  p->sgr = NULL;
 
   if (p->nc == 0)
     return;
-  if (p->nc + strlen (s) > p->linemax)
-    {
-      errno = 0;
-      cs = fprintf (p->file, "%s\n", p->presep);
-      HANDLER_IF (p, cs < 0);
-    }
   
   p->nc = 0;
+  do_color (p, &sgr0);
   errno = 0;
   cs = fprintf (p->file, "%s", s);
   HANDLER_IF (p, cs < 0);
-  do_color (p, &sgr0);
   errno = 0;
   cs = fputc ('\n', p->file);
   HANDLER_IF (p, cs < 0);
@@ -231,6 +247,7 @@ vsingle (struct putter *p, struct sgr_def *sgr,
   p->presz = 0;
   p->postsz = 0;
   p->nc = 0;
+  p->sgr = NULL;
 
   do_color (p, &sgr0);
 

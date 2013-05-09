@@ -1,6 +1,8 @@
 |[36;7mScript started on Mon 07 Jul 2008 06:54:59 PM PDT[m|.
 [33m: Esc [ ? 1049 h[m
 [35m& SM: SET MODE (private params)[m
+[32m" (Xterm) Save the cursor position and use the alternate screen buffer,
+"  clearing it first.[m
 [33m: Esc ) 0[m
 [35m& G1D4: G1-DESIGNATE 94-SET[m
 [32m" Designate 94-character set 0 (private) to G1.[m
@@ -9,7 +11,9 @@
 [32m" INSERTION REPLACEMENT MODE (IRM) -> REPLACE[m
 [33m: Esc [ ? 1 h[m
 [35m& SM: SET MODE (private params)[m
+[32m" (DEC) Cursor key mode.[m
 [33m: Esc =[m
+[35m& DECKPAM: KEYPAD APPLICATION MODE[m
 [33m: Esc [ m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear graphic rendition to defaults.[m
@@ -17,6 +21,7 @@
 [35m& GZD4: G0-DESIGNATE 94-SET[m
 [32m" Designate 94-character set B (US-ASCII) to G0.[m
 [33m: Esc [ 1 ; 51 r[m
+[32m" (DEC) Set the scrolling region to from line 1 to line 51.[m
 [33m: Esc [ H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 1, column 1.[m
@@ -148,7 +153,7 @@
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 |[36;7mprompt$ foo[m|
-[31m. CR/^M[m
+[31m. CR
 [33m: Esc [ 50 B[m
 [35m& CUD: CURSOR DOWN[m
 [32m" Move the cursor down 50 lines.[m
@@ -177,7 +182,7 @@
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
-[31m. LF/^J[m
+[31m. LF
 [33m: Esc [ 49 B[m
 [35m& CUD: CURSOR DOWN[m
 [32m" Move the cursor down 49 lines.[m
@@ -207,64 +212,65 @@
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 |[36;7mprompt$ [m|
-[31m. CR/^M[m
+[31m. CR
 [33m: Esc [ 48 B[m
 [35m& CUD: CURSOR DOWN[m
 [32m" Move the cursor down 48 lines.[m
-[31m. LF/^J[m
+[31m. LF
 [33m: Esc [ 3 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
-[31m. LF/^J[m
+[31m. LF
 [33m: Esc [ 3 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 |[36;7mprompt$ bar[m|
-[31m. CR/^M LF/^J[m
+[31m. CR LF
 [33m: Esc [ 3 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Set italicized text.[m
 |[36;7m0 bar                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
-[31m. LF/^J[m
+[31m. LF
 [33m: Esc [ 3 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Set italicized text.[m
 |[36;7m0 bar                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 [33m: Esc [ 1 ; 50 r[m
+[32m" (DEC) Set the scrolling region to from line 1 to line 50.[m
 [33m: Esc [ 50 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 50, column 1.[m
-[31m. LF/^J[m
+[31m. LF
 [33m: Esc [ 51 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 51, column 1.[m
@@ -273,8 +279,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -287,14 +293,14 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 |[36;7mprompt$ [m|
-[31m. CR/^M[m
+[31m. CR
 [33m: Esc [ 51 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 51, column 1.[m
@@ -303,8 +309,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -317,14 +323,14 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 |[36;7mprompt$ baz[m|
-[31m. CR/^M[m
+[31m. CR
 [33m: Esc [ 51 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 51, column 1.[m
@@ -333,8 +339,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 baz                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -347,13 +353,13 @@
 [32m" Set italicized text.[m
 |[36;7m0 baz                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
-[31m. LF/^J[m
+[31m. LF
 [33m: Esc [ 51 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 51, column 1.[m
@@ -362,8 +368,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -376,17 +382,20 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR/^M[m
-[33m: Esc M[m
+[31m. CR[33m
+: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
 [32m" Clear italicized or fraktur text.[m
 |[36;7mprompt$ [m|
 [33m: Esc [ 1 ; 51 r[m
+[32m" (DEC) Set the scrolling region to from line 1 to line 51.[m
 [33m: Esc [ ? 1 l[m
 [35m& RM: RESET MODE (private params)[m
+[32m" (DEC) Cursor key mode off.[m
 [33m: Esc >[m
+[35m& DECKPNM: KEYPAD NORMAL MODE[m
 [33m: Esc [ 51 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 51, column 1.[m
@@ -401,9 +410,10 @@
 [33m: Esc [ 51 ; 1 H[m
 [35m& CUP: CURSOR POSITION[m
 [32m" Move the cursor to line 51, column 1.[m
-[31m. CR/^M LF/^J[m
+[31m. CR LF
 [33m: Esc [ ? 1049 l[m
 [35m& RM: RESET MODE (private params)[m
+[32m" (Xterm) Leave the alternate screen buffer and restore the cursor.[m
 |[36;7m[screen is terminating][m|
-[31m. CR/^M LF/^J LF/^J[m
+[31m. CR LF LF[m
 |[36;7mScript done on Mon 07 Jul 2008 06:55:05 PM PDT[m|.
