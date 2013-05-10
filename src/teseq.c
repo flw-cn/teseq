@@ -100,9 +100,9 @@ const char *control_names[] = {
   "IS4", "IS3", "IS2", "IS1"
 };
 
-static const char default_color_string[] = "|=36;7,.=31,:=33,&=35,\"=32,@=34";
+static const char default_color_string[] = "|>=36;7,.=31,:=33,&=35,\"=32,@=34";
 
-struct sgr_def    sgr_text, sgr_ctrl, sgr_esc,
+struct sgr_def    sgr_text, sgr_text_decor, sgr_ctrl, sgr_esc,
                   sgr_label, sgr_desc, sgr_delay;
 
 struct config configuration = { 0 };
@@ -222,7 +222,7 @@ process_csi_sequence (struct processor *p, const struct csi_handler *handler)
   unsigned int params[255];
 
   if (e)
-    putter_start (p->putr, &sgr_esc, ":", "", ": ");
+    putter_start (p->putr, &sgr_esc, NULL, ":", "", ": ");
   
   if (e)
     putter_puts (p->putr, " Esc");
@@ -1132,7 +1132,7 @@ handle_nF (struct processor *p, unsigned char i)
     {
       inputbuf_rewind (p->ibuf);
 
-      putter_start (p->putr, &sgr_esc, ":", "", ": ");
+      putter_start (p->putr, &sgr_esc, NULL, ":", "", ": ");
       print_esc_char (p, C_ESC);
       do
         {
@@ -1317,7 +1317,7 @@ print_control (struct processor *p, unsigned char c)
   if (p->print_dot)
     {
       p->print_dot = 0;
-      putter_start (p->putr, &sgr_ctrl, ".", "", ".");
+      putter_start (p->putr, &sgr_ctrl, NULL, ".", "", ".");
     }
   if (IS_CONTROL (c) || c == C_DEL)
     {
@@ -1345,7 +1345,7 @@ init_state (struct processor *p, unsigned char c)
     }
   else
     {
-      putter_start (p->putr, &sgr_text, "|", "|-", "-|");
+      putter_start (p->putr, &sgr_text, &sgr_text_decor, "|", "|-", "-|");
       p->st = ST_TEXT;
     }
 }
@@ -1598,7 +1598,15 @@ parse_colors (const char *color_string)
       set_me = NULL;
       switch (p[0])
         {
-        case '|': set_me = &sgr_text; break;
+        case '|':
+          if (p[1] == '>')
+            {
+              set_me = &sgr_text;
+              ++p;
+            }
+          else
+            set_me = &sgr_text_decor;
+          break;
         case '.': set_me = &sgr_ctrl; break;
         case ':': set_me = &sgr_esc; break;
         case '&': set_me = &sgr_label; break;

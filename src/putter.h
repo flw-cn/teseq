@@ -42,7 +42,7 @@ typedef void (*putter_error_handler)(int, void *);
 struct putter *putter_new (FILE *);
 void putter_set_handler (struct putter *, putter_error_handler, void *);
 void putter_delete (struct putter *);
-void putter_start (struct putter *, struct sgr_def *,
+void putter_start (struct putter *, struct sgr_def *, struct sgr_def *,
                    const char *, const char *, const char *);
 void putter_finish (struct putter *, const char *);
 void putter_putc (struct putter *, unsigned char);

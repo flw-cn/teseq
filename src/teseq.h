@@ -53,7 +53,7 @@ struct sgr_def {
     unsigned int len;
 };
 
-extern struct sgr_def        sgr_text, sgr_ctrl, sgr_esc,
+extern struct sgr_def        sgr_text, sgr_text_decor, sgr_ctrl, sgr_esc,
                              sgr_label, sgr_desc, sgr_delay;
 
 #endif /* TESEQ_H_ */

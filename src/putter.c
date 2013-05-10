@@ -40,6 +40,7 @@ struct putter
   size_t postsz;
   size_t linemax;
   struct sgr_def *sgr;
+  struct sgr_def *sgr_decor;
 
   putter_error_handler handler;
   void *handler_arg;
@@ -58,6 +59,7 @@ putter_new (FILE * file)
   p->handler = NULL;
   p->handler_arg = NULL;
   p->sgr = NULL;
+  p->sgr_decor = NULL;
   return p;
 }
 
@@ -112,12 +114,15 @@ ensure_space (struct putter *p, size_t addition)
       if (BRACED (p))
         {
           do_color (p, &sgr0);
+          do_color (p, p->sgr_decor);
           errno = 0;
           cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep);
           HANDLER_IF (p, cs < 0);
+          if (p->sgr_decor)
+            do_color(p, &sgr0);
           do_color(p, p->sgr);
         }
-      else
+      else 
         {
           errno = 0;
           cs = fprintf (p->file, "\n%s", p->postsep);
@@ -129,8 +134,9 @@ ensure_space (struct putter *p, size_t addition)
 }
 
 void
-putter_start (struct putter *p, struct sgr_def *sgr, const char *s,
-              const char *pre, const char *post)
+putter_start (struct putter *p, struct sgr_def *sgr,
+              struct sgr_def *sgr_decor, /* Only used for text decorations. */
+              const char *s, const char *pre, const char *post)
 {
   int e;
 
@@ -139,6 +145,10 @@ putter_start (struct putter *p, struct sgr_def *sgr, const char *s,
   p->presz = strlen (pre);
   p->postsz = strlen (post);
   p->sgr = sgr;
+  p->sgr_decor = sgr_decor;
+
+  if (p->sgr_decor && p->sgr_decor->len == 0)
+    p->sgr_decor = NULL;
 
   if (p->nc > 0)
     {
@@ -148,11 +158,17 @@ putter_start (struct putter *p, struct sgr_def *sgr, const char *s,
     }
   p->nc = strlen (s);
   errno = 0;
-  if (! BRACED (p))
-    do_color (p, sgr);
+  if (BRACED (p))
+    do_color (p, p->sgr_decor);
+  else
+    do_color (p, p->sgr);
   e = fputs (s, p->file);
   if (BRACED (p))
-    do_color (p, sgr);
+    {
+      if (p->sgr_decor)
+        do_color (p, &sgr0);
+      do_color (p, p->sgr);
+    }
   HANDLER_IF (p, e == EOF);
 }
 
@@ -160,24 +176,29 @@ void
 putter_finish (struct putter *p, const char *s)
 {
   int cs;
-  
-  p->presep = "";
-  p->postsep = "";
-  p->presz = 0;
-  p->postsz = 0;
-  p->sgr = NULL;
 
   if (p->nc == 0)
     return;
   
   p->nc = 0;
   do_color (p, &sgr0);
+  if (BRACED (p))
+    do_color (p, p->sgr_decor);
   errno = 0;
   cs = fprintf (p->file, "%s", s);
   HANDLER_IF (p, cs < 0);
+  if (BRACED (p) && p->sgr_decor)
+    do_color (p, &sgr0);
   errno = 0;
   cs = fputc ('\n', p->file);
   HANDLER_IF (p, cs < 0);
+  
+  p->presep = "";
+  p->postsep = "";
+  p->presz = 0;
+  p->postsz = 0;
+  p->sgr = NULL;
+  p->sgr_decor = NULL;
 }
 
 void
@@ -248,6 +269,7 @@ vsingle (struct putter *p, struct sgr_def *sgr,
   p->postsz = 0;
   p->nc = 0;
   p->sgr = NULL;
+  p->sgr_decor = NULL;
 
   do_color (p, &sgr0);
 
