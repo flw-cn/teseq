@@ -12,7 +12,7 @@ dnl implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 AC_PREREQ(2.61)
 AC_INIT([GNU teseq], [1.0.1-devel], [bug-teseq@gnu.org])
-AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 dist-lzma gnu])
+AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 dist-xz gnu])
 AC_CONFIG_SRCDIR([src/teseq.c])
 AC_CONFIG_HEADER([src/config.h])
 
@@ -53,9 +53,9 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strchr])
 
 # Check that vsnprintf take (NULL, 0 ... )
-AC_CACHE_CHECK([for working vsnprintf],
-               teseq_vsnprintf,
-               [AC_RUN_IFELSE(AC_LANG_PROGRAM([
+dnl AC_CACHE_CHECK([for working vsnprintf],
+dnl                _cv_teseq_vsnprintf,
+               AC_RUN_IFELSE([AC_LANG_PROGRAM([[
   #include <stdio.h>
   #include <stdarg.h>
 
@@ -69,11 +69,11 @@ AC_CACHE_CHECK([for working vsnprintf],
     va_end (ap);
     return count;
   }
-],[count_printf ("%s", "supercalifragilisticexpialidocious");])
-, AS_VAR_SET([teseq_vsnprintf], [yes]),
-  AS_VAR_SET([teseq_vsnprintf], [no]))
-])
-AS_IF([test AS_VAR_GET([teseq_vsnprintf]) = yes],,
+]],[[count_printf ("%s", "supercalifragilisticexpialidocious");]])]
+, [AS_VAR_SET(_cv_teseq_vsnprintf, yes)],
+  [AS_VAR_SET(_cv_teseq_vsnprintf, no)])
+dnl )
+AS_IF([test AS_VAR_GET([_cv_teseq_vsnprintf]) = yes],,
             AC_MSG_FAILURE([
 
   You do not have a reasonable implmentation of vsnprintf.
