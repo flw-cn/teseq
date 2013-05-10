@@ -71,6 +71,15 @@ putter_new (FILE * file)
     }                                           \
   while (0)
 
+#define HANDLE_ERROR(p, action, cond)           \
+  do                                            \
+    {                                           \
+      errno = 0;                                \
+      action;                                   \
+      HANDLER_IF(p, cond);                      \
+    }                                           \
+  while (0)
+
 #define BRACED(p) \
   ((p)->presep != NULL && (p)->presep[0] != '\0')
 
@@ -84,9 +93,12 @@ do_color (struct putter *p, struct sgr_def *sgr)
   if (configuration.color != CFG_COLOR_ALWAYS || sgr == NULL)
     return;
 
-  errno = 0;
-  e = fprintf (p->file, "\033[%.*sm", sgr->len, sgr->sgr);
-  HANDLER_IF(p, e < 0);
+  HANDLE_ERROR
+    (
+      p,
+      e = fprintf (p->file, "\033[%.*sm", sgr->len, sgr->sgr),
+      e < 0
+    );
 }
 
 
@@ -115,18 +127,24 @@ ensure_space (struct putter *p, size_t addition)
         {
           do_color (p, &sgr0);
           do_color (p, p->sgr_decor);
-          errno = 0;
-          cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep);
-          HANDLER_IF (p, cs < 0);
+          HANDLE_ERROR
+            (
+              p,
+              cs = fprintf (p->file, "%s\n%s", p->presep, p->postsep),
+              cs < 0
+            );
           if (p->sgr_decor)
             do_color(p, &sgr0);
           do_color(p, p->sgr);
         }
       else 
         {
-          errno = 0;
-          cs = fprintf (p->file, "\n%s", p->postsep);
-          HANDLER_IF (p, cs < 0);
+          HANDLE_ERROR
+            (
+              p,
+              cs = fprintf (p->file, "\n%s", p->postsep),
+              cs < 0
+            );
         }
       p->nc = p->postsz;
     }
@@ -152,9 +170,12 @@ putter_start (struct putter *p, struct sgr_def *sgr,
 
   if (p->nc > 0)
     {
-      errno = 0;
-      e = putc ('\n', p->file);
-      HANDLER_IF (p, e == EOF);
+      HANDLE_ERROR
+        (
+          p,
+          e = putc ('\n', p->file),
+          e == EOF
+        );
     }
   p->nc = strlen (s);
   errno = 0;
@@ -162,14 +183,15 @@ putter_start (struct putter *p, struct sgr_def *sgr,
     do_color (p, p->sgr_decor);
   else
     do_color (p, p->sgr);
+  errno = 0;
   e = fputs (s, p->file);
+  HANDLER_IF (p, e == EOF);
   if (BRACED (p))
     {
       if (p->sgr_decor)
         do_color (p, &sgr0);
       do_color (p, p->sgr);
     }
-  HANDLER_IF (p, e == EOF);
 }
 
 void
@@ -184,14 +206,20 @@ putter_finish (struct putter *p, const char *s)
   do_color (p, &sgr0);
   if (BRACED (p))
     do_color (p, p->sgr_decor);
-  errno = 0;
-  cs = fprintf (p->file, "%s", s);
-  HANDLER_IF (p, cs < 0);
+  HANDLE_ERROR
+    (
+      p,
+      cs = fprintf (p->file, "%s", s),
+      cs < 0
+    );
   if (BRACED (p) && p->sgr_decor)
     do_color (p, &sgr0);
-  errno = 0;
-  cs = fputc ('\n', p->file);
-  HANDLER_IF (p, cs < 0);
+  HANDLE_ERROR
+    (
+      p,
+      cs = fputc ('\n', p->file),
+      cs < 0
+    );
   
   p->presep = "";
   p->postsep = "";
@@ -207,9 +235,12 @@ putter_putc (struct putter *p, unsigned char c)
   int e;
 
   ensure_space (p, 1);
-  errno = 0;
-  e = putc (c, p->file);
-  HANDLER_IF (p, e == EOF);
+  HANDLE_ERROR
+    (
+      p,
+      e = putc (c, p->file),
+      e == EOF
+    );
 }
 
 void
@@ -218,6 +249,7 @@ putter_puts (struct putter *p, const char *s)
   int e;
   
   ensure_space (p, strlen (s));
+  errno = 0;
   e = fputs (s, p->file);
   HANDLER_IF (p, e == EOF);
 }
@@ -225,7 +257,7 @@ putter_puts (struct putter *p, const char *s)
 void
 putter_printf (struct putter *p, const char *fmt, ...)
 {
-  int len, ret;
+  int len, ret, serr;
   va_list ap;
 
   va_start (ap, fmt);
@@ -233,8 +265,11 @@ putter_printf (struct putter *p, const char *fmt, ...)
   va_end (ap);
   ensure_space (p, len);
   va_start (ap, fmt);
+  errno = 0;
   ret = vfprintf (p->file, fmt, ap);
+  serr = errno;
   va_end (ap);
+  errno = serr;
   HANDLER_IF (p, ret < 0);
   return;
 }
@@ -253,14 +288,15 @@ vsingle (struct putter *p, struct sgr_def *sgr,
 
   if (p->nc > 0)
     {
+      errno = 0;
       e = putc ('\n', p->file);
       HANDLER_IF (p, e == EOF);
     }
 
   fputs (pfx, p->file);
 
+  errno = 0;
   e = vfprintf (p->file, fmt, ap);
-
   HANDLER_IF (p, e < 0);
 
   p->presep = "";
@@ -273,6 +309,7 @@ vsingle (struct putter *p, struct sgr_def *sgr,
 
   do_color (p, &sgr0);
 
+  errno = 0;
   e = putc ('\n', p->file);
   HANDLER_IF (p, e == EOF);
 }
