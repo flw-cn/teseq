@@ -53,9 +53,9 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strchr])
 
 # Check that vsnprintf take (NULL, 0 ... )
-dnl AC_CACHE_CHECK([for working vsnprintf],
-dnl                [_cv_teseq_vsnprintf],
-               AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+AC_CACHE_CHECK([for working vsnprintf],
+               [teseq_cv_vsnprintf_works], [dnl
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[
   #include <stdio.h>
   #include <stdarg.h>
 
@@ -70,10 +70,9 @@ dnl                [_cv_teseq_vsnprintf],
     return count;
   }
 ]],[[count_printf ("%s", "supercalifragilisticexpialidocious");]])]
-, [AS_VAR_SET([[_cv_teseq_vsnprintf]], [[yes]] )],
-  [AS_VAR_SET([[_cv_teseq_vsnprintf]], [[no]] )] )
-dnl )
-AS_IF([test AS_VAR_GET([_cv_teseq_vsnprintf]) = yes],,
+, [teseq_cv_vsnprintf_works=yes], [teseq_cv_vsnprintf_works=no] )]
+)
+AS_IF([test AS_VAR_GET([teseq_cv_vsnprintf_works]) = yes],,
             AC_MSG_FAILURE([
 
   You do not have a reasonable implmentation of vsnprintf.
