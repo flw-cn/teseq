@@ -22,7 +22,6 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 bin_PROGRAMS = teseq
 dist_bin_SCRIPTS  = reseq
-dist_libexec_SCRIPTS = src/teseq-post.sed
 
 teseq_SOURCES = src/teseq.c src/inputbuf.c src/ringbuf.c src/putter.c \
                 src/csi.c \
