@@ -183,9 +183,12 @@ putter_start (struct putter *p, struct sgr_def *sgr,
     do_color (p, p->sgr_decor);
   else
     do_color (p, p->sgr);
-  errno = 0;
-  e = fputs (s, p->file);
-  HANDLER_IF (p, e == EOF);
+  HANDLE_ERROR
+    (
+      p,
+      e = fputs (s, p->file),
+      e == EOF
+    );
   if (BRACED (p))
     {
       if (p->sgr_decor)
@@ -249,9 +252,12 @@ putter_puts (struct putter *p, const char *s)
   int e;
   
   ensure_space (p, strlen (s));
-  errno = 0;
-  e = fputs (s, p->file);
-  HANDLER_IF (p, e == EOF);
+  HANDLE_ERROR
+    (
+      p,
+      e = fputs (s, p->file),
+      e == EOF
+    );
 }
 
 void
@@ -288,16 +294,22 @@ vsingle (struct putter *p, struct sgr_def *sgr,
 
   if (p->nc > 0)
     {
-      errno = 0;
-      e = putc ('\n', p->file);
-      HANDLER_IF (p, e == EOF);
+      HANDLE_ERROR
+        (
+          p,
+          e = putc ('\n', p->file),
+          e == EOF
+        );
     }
 
   fputs (pfx, p->file);
 
-  errno = 0;
-  e = vfprintf (p->file, fmt, ap);
-  HANDLER_IF (p, e < 0);
+  HANDLE_ERROR
+    (
+      p,
+      e = vfprintf (p->file, fmt, ap),
+      e < 0
+    );
 
   p->presep = "";
   p->postsep = "";
@@ -309,9 +321,12 @@ vsingle (struct putter *p, struct sgr_def *sgr,
 
   do_color (p, &sgr0);
 
-  errno = 0;
-  e = putc ('\n', p->file);
-  HANDLER_IF (p, e == EOF);
+  HANDLE_ERROR
+    (
+      p,
+      e = putc ('\n', p->file),
+      e == EOF
+    );
 }
 
 #define DEF_SINGLE_WRAP(name, pfx)   \
