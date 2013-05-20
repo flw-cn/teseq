@@ -139,10 +139,18 @@ ensure_space (struct putter *p, size_t addition)
         }
       else 
         {
+          do_color (p, &sgr0);
           HANDLE_ERROR
             (
               p,
-              cs = fprintf (p->file, "\n%s", p->postsep),
+              cs = fputc ('\n', p->file),
+              cs == EOF
+            );
+          do_color(p, p->sgr);
+          HANDLE_ERROR
+            (
+              p,
+              cs = fputs (p->postsep, p->file),
               cs < 0
             );
         }
@@ -290,10 +298,9 @@ vsingle (struct putter *p, struct sgr_def *sgr,
 {
   int e;
 
-  do_color (p, sgr);
-
   if (p->nc > 0)
     {
+      do_color (p, &sgr0);
       HANDLE_ERROR
         (
           p,
@@ -302,6 +309,7 @@ vsingle (struct putter *p, struct sgr_def *sgr,
         );
     }
 
+  do_color (p, sgr);
   fputs (pfx, p->file);
 
   HANDLE_ERROR

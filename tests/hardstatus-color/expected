@@ -222,8 +222,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -234,8 +234,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -247,8 +247,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 bar                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -259,8 +259,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 bar                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -279,8 +279,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -293,8 +293,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -309,8 +309,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -323,8 +323,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -339,8 +339,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 baz                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -353,8 +353,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 baz                                                                      [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -368,8 +368,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
@@ -382,8 +382,8 @@
 [32m" Set italicized text.[m
 |[36;7m0 x                                                                        [m|-
 -|[36;7m     [m|
-[31m. CR[33m
-: Esc M[m
+[31m. CR[m
+[33m: Esc M[m
 [35m& RI: REVERSE LINE FEED[m
 [33m: Esc [ 23 m[m
 [35m& SGR: SELECT GRAPHIC RENDITION[m
