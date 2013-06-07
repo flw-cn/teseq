@@ -15,8 +15,8 @@ Ecma-6@tie{}/ ISO@tie{}646
 @macro thirtyfive
 @cindex standards
 @cindex Ecma-35
-@cindex ISO/IEC@tie{}2200
-Ecma-35@tie{}/ ISO/IEC@tie{}2200
+@cindex ISO/IEC@tie{}2022
+Ecma-35@tie{}/ ISO/IEC@tie{}2022
 @end macro
 
 @macro fortyeight
