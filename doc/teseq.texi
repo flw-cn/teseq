@@ -91,6 +91,7 @@ Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
 * Overview::                    What does Teseq do? (with example)
 * Invoking Teseq::              How to run Teseq, with options 'n' stuff.
 * Output Format::               How Teseq's output looks.
+* Color Mode::                  Customized color output.
 
 * Reseq::                       Reversing Teseq's output.
 
@@ -360,19 +361,6 @@ are apt to be interpreted as special by the shell, and must be quoted
 with a backslash (@code{-\&} and @code{-\"})
 in order to pass them to the @command{teseq} command.
 
-@unnumberedsec Color Mode
-@opindex --color
-@opindex --colour
-@cindex color
-@cindex colour
-Teseq can provide color formatting to its output. This feature is
-disabled by default, but can be activated via @option{--color=auto}
-or @option{--color=always}. If @samp{auto} is used, then color will be
-added to the output only if the output is to a terminal; otherwise not.
-If @samp{always} is specified, then color formatting codes will be
-provided for the output unconditionally. Note that such output may not
-be fed to @command{reseq}, which will not be able to handle these codes.
-
 @unnumberedsec Interactive Mode
 @cindex non-canonical mode
 @cindex @command{teseq}, interactive mode
@@ -422,7 +410,7 @@ this can result in much longer processing time overall. To force
 @opindex -b
 @option{--buffered} (@option{-b}) option.
 
-@node Output Format, Reseq, Invoking Teseq, Top
+@node Output Format, Color Mode, Invoking Teseq, Top
 @chapter Output Format
 
 Teseq produces output that is primarily intended to be read by humans
@@ -1129,7 +1117,64 @@ already provides such an indication.
 The halt line can be useful for creating animated demonstrations of
 program usage, and similar sorts of presentation-oriented scripts.
 
-@node Reseq, Standards, Output Format, Top
+@node Color Mode, Reseq, Output Format, Top
+@chapter Color Mode
+@opindex --color
+@opindex --colour
+@cindex color
+@cindex colour
+@cindex TESEQ_COLORS
+Teseq can provide color formatting to its output. This feature is
+disabled by default, but can be activated via @option{--color=auto}
+or @option{--color=always}.
+If @samp{auto} is used, then color will be added to the output only if
+the output is to a terminal; otherwise not.
+If @samp{always} is specified, then color formatting codes will be
+provided for the output unconditionally. Note that such output may not
+be fed to @command{reseq}, which will not be able to handle these codes.
+
+The default colors used are suitable for use against a dark/black
+background, but may be less suitable for use on terminals with
+light-colored backgrounds.
+The colors used may be altered by setting the environment variable
+@samp{TESEQ_COLORS}.
+It consists of comma-separated key=value pairs, where the key is usually
+the prefix character of the line to be colored, and the value consists
+of parameter values for the terminal SGR control.
+Any prefixes not specified in @samp{TESEQ_COLORS} retain their default
+values.
+
+In the case of text lines, in which literal text is bracketed by pipe
+characters (@samp{|}), color may be specified separately for the inner
+text, and for the bracketing pipes, including the @samp{|-} and
+@samp{-|} around formatting (non-literal) line breaks, and any final
+@samp{.} signifying a literal line break.
+The inner text is specified by the key @samp{|>}, while the decorations
+are specified by the key @samp{|}.
+Currently, no default color settings are made for the decorations; only
+the inner text.
+
+Here is an example setting for TESEQ_COLORS:
+
+@example
+TESEQ_COLORS='|>=36;7,|=1,.=31,:=33,&=35,\"=32,@=34'
+@end example
+
+This sets the literal text content of text lines to a cyan foreground,
+and then standout (reverse) mode, so that the result is a cyan
+background with a foreground of whatever the usual background would be
+(i.e., if the background is normally black, then the foreground will be
+black). The color of the text line decorations is not changed, but the
+decorations are displayed in bold. Control lines (@samp{.}) are set to
+red, escape-sequence lines (@samp{:}) are set to amber, label lines
+(@samp{&}) to violet, descriptions (@samp{"}) to green, and delay lines
+(@samp{@@}) to blue.
+
+Note that halt lines (lines consisting of exactly @samp{@@@@@@}), though
+recognized by reseq, are never emitted by teseq, and thus have no means
+of specification in @samp{TESEQ_COLORS}.
+
+@node Reseq, Standards, Color Mode, Top
 @chapter The Reseq Command
 @cindex @command{reseq}
 @cindex Reversing the output of @command{teseq}
