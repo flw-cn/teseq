@@ -1820,10 +1820,10 @@ configure (struct processor *p, int argc, char **argv)
   p->putr = putter_new (outf);
   if (!p->ibuf || !p->putr)
     {
-      fputs ("Out of memory.\n", stderr);
+      fprintf (stderr, "%s: Out of memory.\n", program_name);
       exit (EXIT_FAILURE);
     }
-  putter_set_handler (p->putr, handle_write_error, argv[0]);
+  putter_set_handler (p->putr, handle_write_error, program_name);
 }
 
 void
@@ -1902,6 +1902,6 @@ main (int argc, char **argv)
     }
   finish_state (&p);
   if ((err = inputbuf_io_error (p.ibuf)) != 0)
-    fprintf (stderr, "%s: %s: %s\n", argv[0], "read error", strerror (err));
+    fprintf (stderr, "%s: %s: %s\n", program_name, "read error", strerror (err));
   return EXIT_SUCCESS;
 }
