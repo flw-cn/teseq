@@ -1,1 +1,4 @@
-GNU Teseq was written by Micah Cowan <micah@cowan.name>.
+Micah Cowan <micah@cowan.name>. Author and maintainer.
+
+Bruno Haible <bruno@clisp.org>. Contributed bugfixes, and expanded
+charset-identification code.

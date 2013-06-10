@@ -1,11 +1,27 @@
                                                                 -*- text -*
 NEWS file for GNU Teseq
 
-Copyright (C) 2008  Micah Cowan  <micah@cowan.name>
+Copyright (C) 2008,2013  Micah Cowan  <micah@cowan.name>
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.
+
+Version 1.1
+
+* Colorized output now supported via the --color (or --colour) option,
+  and the TESEQ_COLORS environment variable.
+
+* Descriptions and labels for non-standard controls from DEC, Xterm,
+  Rxvt, etc, are now always issued, without the need for the -x option.
+
+* Reseq now recognizes "halt" (@@@) lines (with --halts option), waiting
+  for keypress before continuing.
+
+* Teseq now identifies which charset is being switched, by its ISO IR
+  registration.
+
+* BUG FIX: Teseq could crash on the input, `\033$z'.
 
 Version 1.0.0
 
