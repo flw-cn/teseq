@@ -1823,7 +1823,7 @@ configure (struct processor *p, int argc, char **argv)
       fprintf (stderr, "%s: Out of memory.\n", program_name);
       exit (EXIT_FAILURE);
     }
-  putter_set_handler (p->putr, handle_write_error, program_name);
+  putter_set_handler (p->putr, handle_write_error, (void *)program_name);
 }
 
 void
