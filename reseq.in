@@ -14,12 +14,14 @@ use warnings;
 use Getopt::Long;
 
 use POSIX;
+use Time::HiRes qw(gettimeofday);
 
 our $VERSION = '@VERSION@';
 
 our $inf;
 our $outf;
 our $replay = 0;
+our $last_time;
 our $halts = 0;
 our $timings;
 our $divisor = 1.0;
@@ -123,8 +125,14 @@ sub process_sequence {
 
 sub process_delay {
     if ($replay) {
-        return if !defined($_[0]) || ($_[0] / $divisor) <= 0.0001;
-        select (undef, undef, undef, $_[0] / $divisor);
+        my $lt = $last_time;
+        $last_time = gettimeofday;
+        my $delay = $_[0];
+        return if !defined($delay);
+        $delay /= $divisor;
+        $delay -= ($last_time - $lt);
+        return if $delay <= 0.0001;
+        select (undef, undef, undef, $delay);
     }
     elsif ($timings) {
         # Why must we wait until we've seen a second delay line before
@@ -276,6 +284,9 @@ if ($timings) {
 my $line;
 select $outf;
 $| = 1;
+if ($replay) {
+    $last_time = gettimeofday;
+}
 while (defined ($line = <$inf>)) {
     &process_line ("$line");
 }
