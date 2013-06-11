@@ -1154,7 +1154,7 @@ the inner text.
 Here is an example setting for TESEQ_COLORS:
 
 @example
-TESEQ_COLORS='|>=36;7,|=1,.=31,:=33,&=35,\"=32,@=34'
+TESEQ_COLORS='|>=36;7,|=1,.=31,:=33,&=35,"=32,@=34'
 @end example
 
 This sets the literal text content of text lines to a cyan foreground,
