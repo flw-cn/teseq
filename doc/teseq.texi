@@ -1060,13 +1060,7 @@ remembering what a given function does; to really understand the
 actual semantics of a function, you should read the terminal device's
 documentation, and/or @fortyeight{}.
 
-Description lines currently are never wrapped; however, future
-versions of Teseq may wrap label lines. At that time, continuation
-label lines will probably consist of an extra space after the
-double-quote (just as label lines are wrapped). Lines will never be
-split in the middle of a word.
-
-Future versions of Teseq may use description lines to describe thigns
+Future versions of Teseq may use description lines to describe things
 besides escape sequences; for instance, control characters or control
 strings, or other strings that may be interpreted specially by some
 devices or applications.
