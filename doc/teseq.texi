@@ -50,7 +50,7 @@ Ecma-48@tie{}/ ISO/IEC@tie{}6429
 @copying
 This manual is for GNU Teseq, version @value{VERSION}.
 
-Copyright @copyright{} 2008 Micah Cowan <@email{micah@@cowan.name}>
+Copyright @copyright{} 2008, 2013 Micah Cowan <@email{micah@@cowan.name}>
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -84,7 +84,7 @@ Texts.  A copy of the license is included in the section entitled
 This manual is for GNU Teseq, version @value{VERSION}.
 
 @noindent
-Copyright @copyright{} 2008 Micah Cowan @email{micah@@cowan.name}
+Copyright @copyright{} 2008, 2013 Micah Cowan @email{micah@@cowan.name}
 @end ifnottex
 
 @menu

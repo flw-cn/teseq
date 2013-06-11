@@ -5,7 +5,7 @@ and terminal control sequences. It is intended to be useful for diagnosing
 terminal emulators, and programs that make heavy use of terminal
 features (such as those based on the Curses library).
  
-  Copyright (C) 2008 Micah Cowan
+  Copyright (C) 2008,2013 Micah Cowan
 
   Copying and distribution of this file, with or without modification,
   are permitted in any medium without royalty provided the copyright
