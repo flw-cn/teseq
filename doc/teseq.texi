@@ -6,7 +6,7 @@
 @paragraphindent asis
 
 @macro six
-
+@c
 @cindex standards
 @cindex Ecma-6
 @cindex ISO 646
@@ -14,7 +14,7 @@ Ecma-6@tie{}/ ISO@tie{}646
 @end macro
 
 @macro thirtyfive
-
+@c
 @cindex standards
 @cindex Ecma-35
 @cindex ISO/IEC@tie{}2022
@@ -22,7 +22,7 @@ Ecma-35@tie{}/ ISO/IEC@tie{}2022
 @end macro
 
 @macro fortyeight
-
+@c
 @cindex standards
 @cindex Ecma-48
 @cindex ISO/IEC@tie{}6429
