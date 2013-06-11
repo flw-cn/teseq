@@ -959,7 +959,7 @@ forms as well, at which time control sequences using the single-byte
 @cindex control string
 ``control strings''. These are not interpreted by Teseq; the
 control characters involved (for example, @samp{SOS/^X} and
-@samp{ST/^\} will be printed on control-character lines, and any text
+@samp{ST/^\}) will be printed on control-character lines, and any text
 characters will be displayed on text lines.
 
 Future versions of Teseq will probably not depart from this display
