@@ -234,7 +234,7 @@ sequences that produced it. @xref{Reseq}.
 The format for running the @code{teseq} program is:
 
 @example
-teseq @var{options} [@var{input-file}] [@var{output-file}]
+teseq @var{options} [@var{input-file} [@var{output-file}]]
 teseq -h | --help
 teseq -V | --version
 @end example

@@ -1456,7 +1456,7 @@ usage (int status)
 {
   FILE *f = status == EXIT_SUCCESS ? stdout : stderr;
   fputs ("\
-Usage: teseq [-CLDEx] [in] [out]\n\
+Usage: teseq [-CLDEx] [in [out]]\n\
    or: teseq -h | --help\n\
    or: teseq -V | --version\n\
 Format text with terminal escapes and control sequences for human\n\
@@ -1495,7 +1495,7 @@ version (void)
 {
   puts (PACKAGE_STRING);
   puts ("\
-Copyright (C) 2008 Micah Cowan <micah@cowan.name>.\n\
+Copyright (C) 2008,2013 Micah Cowan <micah@cowan.name>.\n\
 License GPLv3+: GNU GPL version 3 or later \
 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\

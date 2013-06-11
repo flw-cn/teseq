@@ -79,7 +79,7 @@ END_USAGE
 sub version {
     print <<END_VERSION;
 reseq (GNU teseq) $VERSION
-Copyright (C) 2008  Micah Cowan <micah\@cowan.name>.
+Copyright (C) 2008,2013  Micah Cowan <micah\@cowan.name>.
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.
