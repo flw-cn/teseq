@@ -1473,7 +1473,7 @@ consumption.\n", f);
   fputs ("\
      --color=[WHEN], --colour=[WHEN]\n\
                  Colorize the output. WHEN defaults to 'always'\n\
-                 or can be 'never' or 'auto'. See manual.\n\
+                 or can be 'never' or 'auto'. See the full documentation.\n\
  -I, --no-interactive\n\
                  Don't put the terminal into non-canonical or no-echo\n\
                  mode, and don't try to ensure output lines are finished\n\
