@@ -27,12 +27,12 @@ Ecma-48@tie{}/ ISO/IEC@tie{}6429
 @end macro
 
 @ifinfo
-@macro th{content}
+@macro mjcth{content}
 \content\@tie{}@tie{}|
 @end macro
 @end ifinfo
 @ifnotinfo
-@macro th{content}
+@macro mjcth{content}
 @strong{\content\}
 @end macro
 @end ifnotinfo
@@ -816,42 +816,42 @@ which codes.
 
 @float Table,ascii
 @cindex table of printable ASCII characters
-@multitable {@th{xFF}} {Spc} {Spc} {Spc} {Spc} {Spc} {Spc}
+@multitable {@mjcth{xFF}} {Spc} {Spc} {Spc} {Spc} {Spc} {Spc}
 @headitem @tab x2X @tab x3X @tab x4X @tab x5X
 @tab x6X @tab x7X
 @c
-@item @th{xX0} @tab @sc{spc} @tab 0 @tab @@ @tab P
+@item @mjcth{xX0} @tab @sc{spc} @tab 0 @tab @@ @tab P
 @tab ` @tab p
 @c
-@item @th{xX1} @tab ! @tab 1 @tab A @tab Q @tab a @tab q
+@item @mjcth{xX1} @tab ! @tab 1 @tab A @tab Q @tab a @tab q
 @c
-@item @th{xX2} @tab " @tab 2 @tab B @tab R @tab b @tab r
+@item @mjcth{xX2} @tab " @tab 2 @tab B @tab R @tab b @tab r
 @c
-@item @th{xX3} @tab # @tab 3 @tab C @tab S @tab c @tab s
+@item @mjcth{xX3} @tab # @tab 3 @tab C @tab S @tab c @tab s
 @c
-@item @th{xX4} @tab $ @tab 4 @tab D @tab T @tab d @tab t
+@item @mjcth{xX4} @tab $ @tab 4 @tab D @tab T @tab d @tab t
 @c
-@item @th{xX5} @tab % @tab 5 @tab E @tab U @tab e @tab u
+@item @mjcth{xX5} @tab % @tab 5 @tab E @tab U @tab e @tab u
 @c
-@item @th{xX6} @tab & @tab 6 @tab F @tab V @tab f @tab v
+@item @mjcth{xX6} @tab & @tab 6 @tab F @tab V @tab f @tab v
 @c
-@item @th{xX7} @tab ' @tab 7 @tab G @tab W @tab g @tab w
+@item @mjcth{xX7} @tab ' @tab 7 @tab G @tab W @tab g @tab w
 @c
-@item @th{xX8} @tab ( @tab 8 @tab H @tab X @tab h @tab x
+@item @mjcth{xX8} @tab ( @tab 8 @tab H @tab X @tab h @tab x
 @c
-@item @th{xX9} @tab ) @tab 9 @tab I @tab Y @tab i @tab y
+@item @mjcth{xX9} @tab ) @tab 9 @tab I @tab Y @tab i @tab y
 @c
-@item @th{xXA} @tab * @tab : @tab J @tab Z @tab j @tab z
+@item @mjcth{xXA} @tab * @tab : @tab J @tab Z @tab j @tab z
 @c
-@item @th{xXB} @tab + @tab ; @tab K @tab [ @tab k @tab @{
+@item @mjcth{xXB} @tab + @tab ; @tab K @tab [ @tab k @tab @{
 @c
-@item @th{xXC} @tab , @tab < @tab L @tab \ @tab l @tab |
+@item @mjcth{xXC} @tab , @tab < @tab L @tab \ @tab l @tab |
 @c
-@item @th{xXD} @tab - @tab = @tab M @tab ] @tab m @tab @}
+@item @mjcth{xXD} @tab - @tab = @tab M @tab ] @tab m @tab @}
 @c
-@item @th{xXE} @tab . @tab > @tab N @tab ^ @tab n @tab ~
+@item @mjcth{xXE} @tab . @tab > @tab N @tab ^ @tab n @tab ~
 @c
-@item @th{xXF} @tab / @tab ? @tab O @tab _ @tab o @tab @sc{del}
+@item @mjcth{xXF} @tab / @tab ? @tab O @tab _ @tab o @tab @sc{del}
 @end multitable
 @end float
 
