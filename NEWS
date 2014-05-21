@@ -1,11 +1,17 @@
                                                                 -*- text -*
 NEWS file for GNU Teseq
 
-Copyright (C) 2008,2013  Micah Cowan  <micah@cowan.name>
+Copyright (C) 2008,2013  Micah Cowan  <micah@addictivecode.org>
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.
+
+Version 1.1.1
+
+* Updated all files to reflect new email address for maintainer:
+  micah@addictivecode.org (previous address, micah@cowan.name, can no
+  longer be used)
 
 Version 1.1
 

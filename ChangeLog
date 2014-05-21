@@ -2,7 +2,7 @@
 
 	* tests/run.in: protect options within string arguments to test.
 
-2008-08-24  Micah Cowan  <micah@cowan.name>
+2008-08-24  Micah Cowan  <micah@addictivecode.org>
 
 	* src/teseq.c (iso_ir_names, iso_ir_control_names): Move
 	ISO_8859-X names back to ISO-8859-1, to match the IANA-preferred
@@ -10,7 +10,7 @@
 	control names section, since it refers to a standard, rather than
 	a MIME charset designation.
 
-2008-08-23  Micah Cowan  <micah@cowan.name>
+2008-08-23  Micah Cowan  <micah@addictivecode.org>
 
 	* src/teseq.c (iso_ir_names, iso_ir_control_names): Be consistent
 	about choice of underscore in place of the space character, and
@@ -47,7 +47,7 @@
 	is set.
 	(handle_nF): Update print_gxd_info call.
 
-2008-08-23  Micah Cowan  <micah@cowan.name>
+2008-08-23  Micah Cowan  <micah@addictivecode.org>
 
 	* tests/iso-2022/input, tests/iso-2022/expected: Add test sequence
 	for Bruno's print_gxdm_info fix.
@@ -61,7 +61,7 @@
 
 	* Makefile.am: Provide text for NAMES sections in the manpages.
 
-2008-08-06  Micah Cowan  <micah@cowan.name>
+2008-08-06  Micah Cowan  <micah@addictivecode.org>
 
 	* Makefile.am: Remove AM_CFLAGS; it's not appropriate as a spot
 	for overridable defaults.
@@ -73,7 +73,7 @@
 	* tests/iso-2022/input, tests/iso-2022/output: Tests for
 	print_gxdm_info fix ("Esc $ z").
 
-2008-08-01  Micah Cowan  <micah@cowan.name>
+2008-08-01  Micah Cowan  <micah@addictivecode.org>
 
 	* Initial release, vesion 1.0.0!
 

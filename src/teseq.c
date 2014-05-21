@@ -1495,7 +1495,7 @@ version (void)
 {
   puts (PACKAGE_STRING);
   puts ("\
-Copyright (C) 2008,2013 Micah Cowan <micah@cowan.name>.\n\
+Copyright (C) 2008,2013 Micah Cowan <micah@addictivecode.org>.\n\
 License GPLv3+: GNU GPL version 3 or later \
 <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
