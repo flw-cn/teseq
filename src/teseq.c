@@ -1122,7 +1122,7 @@ handle_nF (struct processor *p, unsigned char i)
       c = f;
       while (IS_nF_INTERMEDIATE_CHAR (c))
         c = inputbuf_get (p->ibuf);
-      if (c == EOF || IS_CONTROL (c))
+      if (! IS_nF_FINAL_CHAR (c))
         return 0;
     }
   else if (! IS_nF_FINAL_CHAR (f))
