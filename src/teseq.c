@@ -157,6 +157,8 @@ delay_read (FILE *f, struct delay *d)
 void
 print_esc_char (struct processor *p, unsigned char c)
 {
+    assert(c > 0 && c < 0x7f);
+
     if (c == C_ESC)
       putter_puts (p->putr, " Esc");
     else if (c == ' ')
