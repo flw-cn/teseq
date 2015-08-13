@@ -6,10 +6,6 @@ use warnings;
 my $TESEQ = 'teseq';
 $TESEQ = $ENV{'TESEQ'} if exists $ENV{'TESEQ'};
 
-print "\nNOTE: This test program ($0) can take a minute to run\n\n";
-
-system("sleep 3");
-
 #my @rows = map { sprintf ". x%X0", $_ } (0..15);
 my @interesting =
     # Following are interesting characters that exercise various
@@ -23,6 +19,12 @@ my @inputs = (
 );
 
 my (@hangs, @nonzeroes, @nonasciis);
+
+$SIG{'INT'} = sub {
+    print "\n\nSIGINT received. Results so far:\n";
+    &summarize;
+    exit 1;
+};
 
 &process([], [@inputs]);
 &summarize;
@@ -64,6 +66,7 @@ BEGIN {
 
     sub run_test {
         local $" = '';
+
         my $input = "@_";
         my $sanitized = $input;
         $sanitized =~ s/[^\x21-\x7e'"\\]/ sprintf "\\%03o", ord($&) /eg;
