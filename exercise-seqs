@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-use File::Temp qw/ :seekable /;
-
 my $TESEQ = 'teseq';
 $TESEQ = $ENV{'TESEQ'} if exists $ENV{'TESEQ'};
 
@@ -26,8 +24,6 @@ my @inputs = (
 
 my (@hangs, @nonzeroes, @nonasciis);
 
-my $tfh = File::Temp->new;
-my $tmpname = $tfh->filename;
 &process([], [@inputs]);
 &summarize;
 
@@ -70,17 +66,15 @@ BEGIN {
         local $" = '';
         my $input = "@_";
         my $sanitized = $input;
-        $sanitized =~ s/[^\x21-\x7e]/ sprintf "\\x%02X", ord($&) /eg;
+        $sanitized =~ s/[^\x21-\x7e'"\\]/ sprintf "\\%03o", ord($&) /eg;
         print "INPUT: $sanitized : ";
-        open my $run, "| ulimit -c 0; { $TESEQ | head -c 200; } > $tmpname 2>&1" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
-        print $run $input;
+        open my $run, "ulimit -c 0; printf '%b' '$sanitized' | $TESEQ 2>&1 |" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
+        my $toread = 400;
+        my $nread = read($run, my $stuff, $toread);
         close $run;
         my $ret = $?;
-        $tfh->seek(0, 0) or die "Couldn't seek on $tmpname";
-        undef local $/;
-        defined (my $stuff = <$tfh>) or die "Couldn't read from $tmpname";
 
-        if ((length $stuff) == 200) {
+        if ($nread == $toread) {
             print "*** hangs\a\n";
             push @hangs, $sanitized;
         }
