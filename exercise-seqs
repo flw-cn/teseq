@@ -3,33 +3,63 @@
 use strict;
 use warnings;
 
+use File::Temp qw/ :seekable /;
+
 my $TESEQ = 'teseq';
 my $RESEQ = 'reseq';
 $TESEQ = $ENV{'TESEQ'} if exists $ENV{'TESEQ'};
 $RESEQ = $ENV{'RESEQ'} if exists $ENV{'RESEQ'};
 
-my @rows = map { sprintf ". x%X0", $_ } (0..15);
+print "\nNOTE: This test program ($0) can take a while to run (< 5m for
+me)\n\n";
+
+system("sleep 5");
+
+#my @rows = map { sprintf ". x%X0", $_ } (0..15);
+my @interesting =
+    # Following are interesting characters that exercise various
+    # divisions that might be encountered by escape-sequence parsing.
+    map { sprintf ". %s", $_ } qw(
+        x00 x1f x20 x21 x3a x3e x3f x40 x5f x60
+        x7e x7f x80 xC0
+    );
 my @inputs = (
     ['. ESC'],
-    [undef, '|[|', @rows],
-#   [undef, @rows],
-#   [undef, @rows],
-    [undef, @rows],
-    [undef, @rows]
+    [undef, '|[|', @interesting],
+    [undef, @interesting],
+    [undef, @interesting]
 );
 
+my (@hangs, @nonzeroes, @nonasciis);
+
+my $tfh = File::Temp->new;
+my $tmpname = $tfh->filename;
 &process([], [@inputs]);
+&summarize;
+
+# Note, the following would probably produce a "0" on multiples of 256.
+# I judge it unlikely we would reach such a high number.
+exit (@hangs + @nonzeroes + @nonasciis);
+
+###
 
 BEGIN {
     sub process {
         my @decideds = @{ (shift) };
         my @undecideds = @{ (shift) };
 
-        if (@decideds > 0 && ! defined ($decideds[$#decideds])) {
+        if (@decideds == 0) {
+            # Do nothing; the other else-if clauses here don't apply.
+        }
+        elsif (! defined ($decideds[$#decideds])) {
             # An attempt on an undef value means "try an EOF here", so
             # this is a leaf condition.
             pop @decideds;
             @undecideds = ();
+        }
+        elsif ($decideds[$#decideds] eq '') {
+            # A value of '' means "ignore me and keep processing".
+            pop @decideds;
         }
 
         if (@undecideds == 0) {
@@ -46,10 +76,67 @@ BEGIN {
         print "=== INPUT ===\n";
         local $" = "\n";
         print "@_\n";
-        print "=== OUTPUT ===\n";
-        open my $run, "| $RESEQ - - | $TESEQ" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
+        open my $run, "| $RESEQ - - | $TESEQ | head -c 200 > $tmpname 2>&1" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
         print $run "@_\n";
         close $run;
+        my $ret = $?;
+        print "=== OUTPUT ===\n";
+        $tfh->seek(0, 0) or die "Couldn't seek on $tmpname";
+        undef local $/;
+        defined (my $stuff = <$tfh>) or die "Couldn't read from $tmpname";
+        print $stuff;
+        print "\n=== VERDICT ===\n\n";
+
+        if ((length $stuff) == 200) {
+            print "*** Excessive output (probably hung)\a\n\n";
+            push @hangs, [@_];
+        }
+        elsif ($stuff =~ /[^[:ascii:]]|[\x00-\x09\x0b-\x12\x14-\x1f\x7F]/) {
+            # Above hexadecimal stuff identifies the ASCII control
+            # characters, including DEL, but skipping CR and LF as permitted.
+            print "*** Teseq emitted non-printable-ascii bytes\a\n\n";
+            push @nonasciis, [@_];
+        }
+        elsif ($ret != 0) {
+            print "*** Teseq exited with non-zero status.\a\n";
+            if ($ret & 127) {
+                printf "*** SIGNAL %d\n", ($ret & 127);
+            }
+            print "\n";
+            push @nonzeroes, [@_];
+        }
+        else {
+            print "Status appears normal.\n";
+        }
+
         print "===\n\n";
+    }
+
+    sub summarize {
+        print "Results: ";
+        if (@hangs + @nonzeroes + @nonasciis == 0) {
+            print "All runs look okay.\n";
+            return;
+        }
+
+        my ($nhangs, $nnz, $nna) =
+            (scalar @hangs, scalar @nonzeroes, scalar @nonasciis);
+        print "$nhangs hangs, $nnz non-zero exits, $nna non-ascii outputs\n";
+
+        local $" = "\n";
+        foreach (['Hanging', \@hangs], ['Non-zero exit', \@nonzeroes],
+                 ['Non-printable-ascii result', \@nonasciis]) {
+             my $title = $_->[0];
+
+             my @inputs = map "@{$_}", @{$_->[1]};
+
+             next unless @inputs;
+
+             printf "\n\n=== %s inputs (pseudo-reseq): ===\n", $title;
+             {
+                 local $" = "\n===\n";
+                 print "@inputs\n=== End $title ===\n\n";
+             }
+        }
     }
 } # BEGIN
