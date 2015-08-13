@@ -53,7 +53,7 @@ doc/reseq.1: ./reseq.in
 .cm.c:
 	$(CHECKMK) $< > $@ || ( rm -f $@ && false )
 
-check: check-teseq check-reseq
+check: check-teseq check-reseq check-seqs
 
 check-teseq: teseq run-tests
 	./run-tests
@@ -61,7 +61,10 @@ check-teseq: teseq run-tests
 check-reseq: reseq run-tests
 	./run-tests -r
 
-EXTRA_DIST=src/test-inputbuf.inf
+check-seqs: teseq
+	TESEQ=$(builddir)/teseq ./exercise-seqs
+
+EXTRA_DIST=src/test-inputbuf.inf exercise-seqs
 
 dist-hook:
 	cp -R -- `find $(srcdir)/tests -type d ! -name tests` $(distdir)/tests
