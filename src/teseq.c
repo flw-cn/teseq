@@ -56,7 +56,8 @@
 #define IS_CSI_INTERMEDIATE_COLUMN(col) ((col) == 2)
 #define IS_CSI_INTERMEDIATE_CHAR(c) \
   IS_CSI_INTERMEDIATE_COLUMN (GET_COLUMN (c))
-#define IS_CSI_FINAL_CHAR(c)        IS_CSI_FINAL_COLUMN (GET_COLUMN (c))
+#define IS_CSI_FINAL_CHAR(c)        (((c) != C_DEL) && \
+                                        IS_CSI_FINAL_COLUMN (GET_COLUMN (c)))
 
 #define IS_nF_INTERMEDIATE_CHAR(c)      (GET_COLUMN (c) == 2)
 #define IS_nF_FINAL_CHAR(c)             ((c) >= 0x30 && (c) < 0x7f)
@@ -351,7 +352,11 @@ read_csi_sequence (struct processor *p)
             }
           /* Fall through */
         case SEQ_CSI_INTERMEDIATE:
-          if (IS_CSI_FINAL_COLUMN (col))
+          if (c == C_DEL)
+            {
+              return NULL;
+            }
+          else if (IS_CSI_FINAL_COLUMN (col))
             {
               inputbuf_rewind (p->ibuf);
               return get_csi_handler (private_params, intermsz, interm, c);
