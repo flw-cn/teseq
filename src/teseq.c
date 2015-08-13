@@ -31,6 +31,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_STRINGS_H
+#  include <strings.h>
+#endif
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
@@ -154,6 +157,8 @@ delay_read (FILE *f, struct delay *d)
 void
 print_esc_char (struct processor *p, unsigned char c)
 {
+    assert(c > 0 && c < 0x7f);
+
     if (c == C_ESC)
       putter_puts (p->putr, " Esc");
     else if (c == ' ')
@@ -1122,7 +1127,7 @@ handle_nF (struct processor *p, unsigned char i)
       c = f;
       while (IS_nF_INTERMEDIATE_CHAR (c))
         c = inputbuf_get (p->ibuf);
-      if (c == EOF || IS_CONTROL (c))
+      if (! IS_nF_FINAL_CHAR (c))
         return 0;
     }
   else if (! IS_nF_FINAL_CHAR (f))
