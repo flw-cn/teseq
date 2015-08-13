@@ -6,26 +6,20 @@ use warnings;
 use File::Temp qw/ :seekable /;
 
 my $TESEQ = 'teseq';
-my $RESEQ = 'reseq';
 $TESEQ = $ENV{'TESEQ'} if exists $ENV{'TESEQ'};
-$RESEQ = $ENV{'RESEQ'} if exists $ENV{'RESEQ'};
 
-print "\nNOTE: This test program ($0) can take a while to run (< 5m for
-me)\n\n";
+print "\nNOTE: This test program ($0) can take a minute to run\n\n";
 
-system("sleep 5");
+system("sleep 3");
 
 #my @rows = map { sprintf ". x%X0", $_ } (0..15);
 my @interesting =
     # Following are interesting characters that exercise various
     # divisions that might be encountered by escape-sequence parsing.
-    map { sprintf ". %s", $_ } qw(
-        x00 x1f x20 x21 x3a x3e x3f x40 x5f x60
-        x7e x7f x80 xC0
-    );
+    split //, "\x00\x1b\x1f\x20\x21\x3a\x3e\x3f\x40\x5f\x60\x7e\x7f\x80\xC0";
 my @inputs = (
-    ['. ESC'],
-    [undef, '|[|', @interesting],
+    ["\x1b"],
+    [undef, '[', @interesting],
     [undef, @interesting],
     [undef, @interesting]
 );
@@ -73,47 +67,47 @@ BEGIN {
     }
 
     sub run_test {
-        print "=== INPUT ===\n";
-        local $" = "\n";
-        print "@_\n";
-        open my $run, "| $RESEQ - - | $TESEQ | head -c 200 > $tmpname 2>&1" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
-        print $run "@_\n";
+        local $" = '';
+        my $input = "@_";
+        my $sanitized = $input;
+        $sanitized =~ s/[^\x21-\x7e]/ sprintf "\\x%02X", ord($&) /eg;
+        print "INPUT: $sanitized : ";
+        open my $run, "| ulimit -c 0; { $TESEQ | head -c 200; } > $tmpname 2>&1" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
+        print $run $input;
         close $run;
         my $ret = $?;
-        print "=== OUTPUT ===\n";
         $tfh->seek(0, 0) or die "Couldn't seek on $tmpname";
         undef local $/;
         defined (my $stuff = <$tfh>) or die "Couldn't read from $tmpname";
-        print $stuff;
-        print "\n=== VERDICT ===\n\n";
 
         if ((length $stuff) == 200) {
-            print "*** Excessive output (probably hung)\a\n\n";
-            push @hangs, [@_];
+            print "*** hangs\a\n";
+            push @hangs, $sanitized;
         }
         elsif ($stuff =~ /[^[:ascii:]]|[\x00-\x09\x0b-\x12\x14-\x1f\x7F]/) {
             # Above hexadecimal stuff identifies the ASCII control
             # characters, including DEL, but skipping CR and LF as permitted.
-            print "*** Teseq emitted non-printable-ascii bytes\a\n\n";
-            push @nonasciis, [@_];
+            print "*** non-ascii\a\n";
+            push @nonasciis, $sanitized;
         }
         elsif ($ret != 0) {
-            print "*** Teseq exited with non-zero status.\a\n";
+            print "*** non-zero exit ";
             if ($ret & 127) {
-                printf "*** SIGNAL %d\n", ($ret & 127);
+                printf "(SIGNAL %d)", ($ret & 127);
             }
-            print "\n";
-            push @nonzeroes, [@_];
+            else {
+                printf "%d", ($ret >> 8);
+            }
+            print "\a\n";
+            push @nonzeroes, $sanitized;
         }
         else {
-            print "Status appears normal.\n";
+            print "ok\n";
         }
-
-        print "===\n\n";
     }
 
     sub summarize {
-        print "Results: ";
+        print "\nResults: ";
         if (@hangs + @nonzeroes + @nonasciis == 0) {
             print "All runs look okay.\n";
             return;
@@ -126,16 +120,14 @@ BEGIN {
         local $" = "\n";
         foreach (['Hanging', \@hangs], ['Non-zero exit', \@nonzeroes],
                  ['Non-printable-ascii result', \@nonasciis]) {
-             my $title = $_->[0];
+             my ($title, $inputs) = @$_;
 
-             my @inputs = map "@{$_}", @{$_->[1]};
+             next unless @$inputs;
 
-             next unless @inputs;
-
-             printf "\n\n=== %s inputs (pseudo-reseq): ===\n", $title;
+             printf "\n\n=== %s inputs: ===\n", $title;
              {
-                 local $" = "\n===\n";
-                 print "@inputs\n=== End $title ===\n\n";
+                 local $" = "\n";
+                 print "@$inputs\n=== End $title ===\n\n";
              }
         }
     }
