@@ -1,0 +1,55 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $TESEQ = 'teseq';
+my $RESEQ = 'reseq';
+$TESEQ = $ENV{'TESEQ'} if exists $ENV{'TESEQ'};
+$RESEQ = $ENV{'RESEQ'} if exists $ENV{'RESEQ'};
+
+my @rows = map { sprintf ". x%X0", $_ } (0..15);
+my @inputs = (
+    ['. ESC'],
+    [undef, '|[|', @rows],
+#   [undef, @rows],
+#   [undef, @rows],
+    [undef, @rows],
+    [undef, @rows]
+);
+
+&process([], [@inputs]);
+
+BEGIN {
+    sub process {
+        my @decideds = @{ (shift) };
+        my @undecideds = @{ (shift) };
+
+        if (@decideds > 0 && ! defined ($decideds[$#decideds])) {
+            # An attempt on an undef value means "try an EOF here", so
+            # this is a leaf condition.
+            pop @decideds;
+            @undecideds = ();
+        }
+
+        if (@undecideds == 0) {
+            &run_test(@decideds);
+        }
+        else {
+            foreach (@{ $undecideds[0] }) {
+                &process([@decideds, $_],[@undecideds[1..$#undecideds]])
+            }
+        }
+    }
+
+    sub run_test {
+        print "=== INPUT ===\n";
+        local $" = "\n";
+        print "@_\n";
+        print "=== OUTPUT ===\n";
+        open my $run, "| $RESEQ - - | $TESEQ" or die "$0: Couldn't run reseq or teseq. Exiting.\n";
+        print $run "@_\n";
+        close $run;
+        print "===\n\n";
+    }
+} # BEGIN
