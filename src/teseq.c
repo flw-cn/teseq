@@ -157,14 +157,15 @@ delay_read (FILE *f, struct delay *d)
 void
 print_esc_char (struct processor *p, unsigned char c)
 {
-    assert(c >= 0x20 && c < 0x7f);
-
     if (c == C_ESC)
       putter_puts (p->putr, " Esc");
     else if (c == ' ')
       putter_puts (p->putr, " Spc");
     else
-      putter_printf (p->putr, " %c", c);
+      {
+        assert(c > 0x20 && c < 0x7f);
+        putter_printf (p->putr, " %c", c);
+      }
 }
 
 void
