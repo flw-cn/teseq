@@ -13,6 +13,18 @@ Version 1.1.1
   micah@addictivecode.org (previous address, micah@cowan.name, can no
   longer be used)
 
+* BUG FIX: Fixed an issue where teseq could spin indefinitely churning
+  out \xFF bytes on no further input. Input from a command such as
+    $ printf '\033!!\177'
+  would produce this issue.
+
+  This issue was discovered by means of american fuzzy lop,
+  http://lcamtuf.coredump.cx/afl/
+
+* BUG FIX: Fixed an issue with \x7F (DEL) being treated as a valid final
+  character for control sequences, and being printed on teseq's output
+  (which should not be printing non-whitespace control characters).
+
 Version 1.1
 
 * Colorized output now supported via the --color (or --colour) option,
