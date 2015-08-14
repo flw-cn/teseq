@@ -157,7 +157,7 @@ software}. @xref{Copying}, for copying conditions.
 You can't beat a short example to demonstrate what a program does, so
 here goes (note: a video version of this example may be seen at
 @uref{http://www.gnu.org/software/teseq/, the main Teseq project page},
-or at @uref{https://asciinema.org/a/7443}. Suppose you've got a program that writes the following
+or at @uref{https://asciinema.org/a/7443}). Suppose you've got a program that writes the following
 output to a terminal.
 
 @example
