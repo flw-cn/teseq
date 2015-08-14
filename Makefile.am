@@ -62,7 +62,7 @@ check-reseq: reseq run-tests
 	./run-tests -r
 
 check-seqs: teseq
-	TESEQ=$(builddir)/teseq ./exercise-seqs
+	TESEQ=$(builddir)/teseq $(srcdir)/exercise-seqs
 
 EXTRA_DIST=src/test-inputbuf.inf exercise-seqs
 
