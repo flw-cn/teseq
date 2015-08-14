@@ -23,6 +23,9 @@ Version 1.1.1
 * Added example in the manual for using teseq to strip escapes out of a
   typescript file.
 
+* Note: a new (optional) build dependency has been introduced:
+  pkg-config, which is now used to find whether libcheck is installed.
+
 * BUG FIX: Fixed an issue where teseq could spin indefinitely churning
   out \xFF bytes on no further input. Input from a command such as
     $ printf '\033!!\177'
