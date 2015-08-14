@@ -1528,7 +1528,9 @@ please take advantage of the mailing list at
 @email{bug-teseq@@gnu.org}. To subscribe, send an empty email with the
 Subject ``subscribe'' to @email{bug-teseq-request@@gnu.org}; or use
 the web interface at
-@uref{http://lists.gnu.org/mailman/listinfo/bug-teseq}.
+@uref{http://lists.gnu.org/mailman/listinfo/bug-teseq}. You can also
+contact the author/maintainer directly at
+@email{micah@@addictivecode.org}.
 
 The official website for GNU Teseq is at
 @uref{http://www.gnu.org/software/teseq/}.  For the latest updates and
