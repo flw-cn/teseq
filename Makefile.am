@@ -34,9 +34,11 @@ if DO_CHECK_TESTS
   TESTS = $(check_PROGRAMS)
 endif
 src_test_ringbuf_SOURCES = src/test-ringbuf.c src/ringbuf.c
-src_test_ringbuf_LDADD = @LIBCHECK@
+src_test_ringbuf_CFLAGS = @libcheck_CFLAGS@
+src_test_ringbuf_LDADD = @libcheck_LIBS@
 src_test_inputbuf_SOURCES = src/test-inputbuf.c src/inputbuf.c src/ringbuf.c
-src_test_inputbuf_LDADD = @LIBCHECK@
+src_test_inputbuf_LDADD = @libcheck_LIBS@
+src_test_inputbuf_CFLAGS = @libcheck_CFLAGS@
 
 info_TEXINFOS = doc/teseq.texi
 doc_teseq_TEXINFOS = doc/fdl.texi

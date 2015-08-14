@@ -25,18 +25,8 @@ AM_MISSING_PROG([CHECKMK], [checkmk])
 
 # Checks for libraries.
 
-AC_SUBST([LIBCHECK])
-AC_CHECK_LIB([check], [suite_add_tcase],
-  [AC_DEFINE([HAVE_LIBCHECK], 1,
-             [Define to 1 if you have the `check' library (-lcheck).])
-    LIBCHECK="-lcheck"
-  ], [AC_MSG_WARN([
-
-  You do not have Check (http://check.sourceforge.net/);
-  You will not be able to run the full set of tests.
-])
-])
-AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "$LIBCHECK"])
+PKG_CHECK_MODULES([libcheck], [check], , : )
+AM_CONDITIONAL([DO_CHECK_TESTS], [test -n "${libcheck_LIBS:-}"])
 
 # Checks for header files.
 AC_HEADER_STDC
