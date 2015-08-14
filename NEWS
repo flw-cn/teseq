@@ -10,8 +10,18 @@ notice and this notice are preserved.
 Version 1.1.1
 
 * Updated all files to reflect new email address for maintainer:
-  micah@addictivecode.org (previous address, micah@cowan.name, can no
-  longer be used)
+  micah@addictivecode.org (previous address, micah@cowan.name, is no
+  longer valid)
+
+* Added links in the (Texinfo) manual to playable videos that
+  demonstrate basic teseq functionality, and how to use teseq to create
+  _and edit_ interactive terminal demos:
+
+  * https://asciinema.org/a/7443
+  * https://asciinema.org/a/7445
+
+* Added example in the manual for using teseq to strip escapes out of a
+  typescript file.
 
 * BUG FIX: Fixed an issue where teseq could spin indefinitely churning
   out \xFF bytes on no further input. Input from a command such as
