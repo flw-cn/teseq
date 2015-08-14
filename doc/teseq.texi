@@ -1539,8 +1539,6 @@ GNU Teseq uses Savannah to manage bug-tracking, and to host the
 development source repository in Mercurial:
 @uref{https://savannah.gnu.org/projects/teseq/}.
 
-There is also an IRC channel (@t{#teseq}), hosted on irc.freenode.net.
-
 @node Copying, Index, Contact and Info, Top
 @appendix Copying
 @include fdl.texi
