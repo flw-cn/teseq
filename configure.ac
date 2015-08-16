@@ -11,7 +11,7 @@ dnl implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
 AC_PREREQ(2.61)
-AC_INIT([GNU teseq], [1.1.1], [bug-teseq@gnu.org])
+AC_INIT([GNU teseq], [1.2-devel], [bug-teseq@gnu.org])
 AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 dist-xz gnu])
 AC_CONFIG_SRCDIR([src/teseq.c])
 AC_CONFIG_HEADER([src/config.h])
