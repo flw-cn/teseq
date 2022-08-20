@@ -812,6 +812,9 @@ static void
 csi_do_wm (unsigned char final, unsigned char priv, struct putter *putr,
            size_t n_params, unsigned int *params)
 {
+  char action[10];
+  char dir[10];
+
   if (priv)
     return;
   if (n_params == 0)
@@ -887,6 +890,22 @@ csi_do_wm (unsigned char final, unsigned char priv, struct putter *putr,
     case 21:
       putter_single_desc (putr, "\
 (dtterm) Request report of the window's title.");
+      break;
+    case 22:
+    case 23:
+      if (n_params < 2)
+        break;
+      if (params[0] == 22) {
+        strcpy(action, "Save");
+        strcpy(dir, "on");
+      } else {
+        strcpy(action, "Restore");
+        strcpy(dir, "from");
+      };
+      if (params[1] == 1)
+        putter_single_desc (putr, "(Xterm) %s xterm icon title %s stack.", action, dir);
+      else if (params[1] == 2)
+        putter_single_desc (putr, "(Xterm) %s xterm window title %s stack.", action, dir);
       break;
     default:
       if (params[0] >= 24)
@@ -1104,7 +1123,7 @@ const static struct csi_handler csi_spc_handlers[] =
 const static struct csi_handler csi_sr_handler =
   {NULL, NULL, CSI_FUNC_PN_ANY, csi_do_sr, -1, -1};
 const static struct csi_handler csi_wm_handler =
-  {NULL, NULL, CSI_FUNC_PS_ANY, csi_do_wm, -1, -1};
+  {"WM", "Window manipulation (XTWINOPS)", CSI_FUNC_PS_ANY, csi_do_wm, -1, -1};
 const static struct csi_handler csi_decelr_handler =
   {"DECELR", "ENABLE LOCATOR REPORTING", CSI_FUNC_PS_PS, csi_do_decelr, 0, 0};
 const static struct csi_handler csi_decsle_handler =
