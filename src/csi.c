@@ -488,6 +488,14 @@ handle_private_mode (struct putter *putr, unsigned int param, int set)
       if (set) msg = "(Xterm) Send FocusIn/FocusOut events.";
       else     msg = "(Xterm) Don't send FocusIn/FocusOut events.";
       break;
+    case 1005:
+      if (set) msg = "(Xterm) Enable UTF-8 Mouse Mode, xterm.";
+      else     msg = "(Xterm) Disable UTF-8 Mouse Mode, xterm.";
+      break;
+    case 1006:
+      if (set) msg = "(Xterm) Enable SGR Mouse Mode, xterm.";
+      else     msg = "(Xterm) Disable SGR Mouse Mode, xterm.";
+      break;
     case 1010:
       if (set) msg = "(Rxvt) Scroll to bottom on tty output.";
       else     msg = "(Rxvt) Don't scroll to bottom on tty output.";
@@ -550,8 +558,8 @@ handle_private_mode (struct putter *putr, unsigned int param, int set)
       break;
     case 1049:
       if (set) msg = "\
-(Xterm) Save the cursor position and use the alternate screen buffer,\n\
-\"  clearing it first.";
+(Xterm) Save the cursor position and use the alternate screen buffer, "
+"clearing it first.";
       else msg = ("(Xterm) Leave the alternate screen buffer and "
                   "restore the cursor.");
       break;
