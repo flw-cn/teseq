@@ -420,7 +420,7 @@ handle_private_mode (struct putter *putr, unsigned int param, int set)
       break;
     case 12:
       if (set) msg = "(Att610) Start blinking cursor.";
-      else     msg = "(Att610) Stop blinkin cursor.";
+      else     msg = "(Att610) Stop blinking cursor.";
       break;
     case 25:
       if (set) msg = "(DEC) Show cursor.";
