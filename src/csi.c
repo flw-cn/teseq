@@ -709,6 +709,17 @@ print_t416_description (struct putter *putr, unsigned char n_params,
       putter_single_desc (putr, "Set %s color to index %u.",
                           fore_back, params[2]);
     }
+  else if (n_params == 5 && params[1] == 2)
+    {
+      putter_single_desc (putr, "Set %s color to "
+                          "\x1b[0m\x1b[%d;%d;2;%d;%d;%dmRGB(%d,%d,%d)"
+                          "        \x1b[0m",
+                          fore_back,
+                          params[0],
+                          params[1],
+                          params[2], params[3], params[4],
+                          params[2], params[3], params[4]);
+    }
   else
     {
       putter_single_desc (putr, "Set %s color (unknown).", fore_back);
